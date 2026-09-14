@@ -1,0 +1,177 @@
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+
+<h3 class="mb-4" data-testid="text-page-title">Manage Bookings</h3>
+
+
+<div class="card shadow-sm mb-4">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="card-title mb-0">Filters</h5>
+      <a href="/admin/bookings/book-on-behalf" class="btn btn-primary btn-sm" data-testid="link-book-on-behalf">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-1" viewBox="0 0 16 16"><path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/></svg>
+        Book on Behalf
+      </a>
+    </div>
+    <form method="GET" action="/admin/bookings" class="row g-2 align-items-end" data-testid="form-booking-filters">
+      <div class="col-md-3">
+        <label class="form-label small">Term</label>
+        <select name="termId" class="form-select form-select-sm" data-testid="select-term" onchange="this.form.submit()">
+          <% terms.forEach(t => { %>
+            <option value="<%= t.TermID %>" <%= selectedTermId === t.TermID ? 'selected' : '' %>><%= t.TermLabel %> (<%= t.YearLabel %>)<%= t.IsActive ? ' ★' : '' %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label small">Meeting Date</label>
+        <select name="dateId" class="form-select form-select-sm" data-testid="select-date">
+          <option value="">All Dates</option>
+          <% meetingDates.forEach(d => { %>
+            <option value="<%= d.DateID %>" <%= selectedDateId == d.DateID ? 'selected' : '' %>><%= d.DayLabel %> — <%= new Date(d.MeetingDate).toLocaleDateString() %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label small">Teacher</label>
+        <select name="teacherCode" class="form-select form-select-sm" data-testid="select-teacher">
+          <option value="">All Teachers</option>
+          <% teachers.forEach(t => { %>
+            <option value="<%= t.TeacherCode %>" <%= selectedTeacher === t.TeacherCode ? 'selected' : '' %>><%= t.TeacherName %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label small">Status</label>
+        <select name="status" class="form-select form-select-sm" data-testid="select-status">
+          <option value="">All</option>
+          <option value="CONFIRMED" <%= selectedStatus === 'CONFIRMED' ? 'selected' : '' %>>Confirmed</option>
+          <option value="CANCELLED" <%= selectedStatus === 'CANCELLED' ? 'selected' : '' %>>Cancelled</option>
+          <option value="UNLOCKED" <%= selectedStatus === 'UNLOCKED' ? 'selected' : '' %>>Unlocked</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <button type="submit" class="btn btn-primary btn-sm w-100" data-testid="button-filter">Filter</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="card shadow-sm">
+  <div class="card-body p-0">
+    <% if (bookings.length === 0) { %>
+      <div class="text-center text-muted py-4" data-testid="text-no-bookings">
+        No bookings found. <% if (!selectedTermId) { %>Select a term to view bookings.<% } %>
+      </div>
+    <% } else { %>
+      <div class="table-responsive">
+        <table id="bookingsTable" class="table table-hover table-sm mb-0 w-100" data-testid="table-bookings">
+          <thead class="table-light">
+            <tr>
+              <th>ID</th>
+              <th>Student</th>
+              <th>Teacher</th>
+              <th>Date</th>
+              <th>Slot</th>
+              <th>Time</th>
+              <th>Translator</th>
+              <th>By</th>
+              <th>Status</th>
+              <th>Booked</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% bookings.forEach(b => { %>
+              <tr data-testid="row-booking-<%= b.BookingID %>">
+                <td><%= b.BookingID %></td>
+                <td>
+                  <strong><%= b.StudentName || b.StudentID %></strong>
+                  <% if (b.PCClass) { %><br><small class="text-muted"><%= b.PCClass %></small><% } %>
+                </td>
+                <td><%= b.TeacherName || b.TeacherCode %><% if (b.TeacherNickname) { %> (<%= b.TeacherNickname %>)<% } %></td>
+                <td><%= b.DayLabel %><br><small class="text-muted"><%= b.MeetingDate ? new Date(b.MeetingDate).toLocaleDateString() : '' %></small></td>
+                <td><strong><%= b.ScheduleCode %></strong></td>
+                <td><%= b.StartTime ? b.StartTime.toString().substring(0,5) : '' %> – <%= b.EndTime ? b.EndTime.toString().substring(0,5) : '' %></td>
+                <td>
+                  <% if (b.TranslatorRequired) { %>
+                    <span class="badge bg-info"><%= b.TranslatorLanguage || 'Yes' %></span>
+                  <% } else { %>
+                    <span class="text-muted">—</span>
+                  <% } %>
+                </td>
+                <td><span class="badge bg-<%= b.BookedBy === 'ADMIN' ? 'warning' : 'secondary' %>"><%= b.BookedBy %></span></td>
+                <td>
+                  <% if (b.Status === 'CONFIRMED') { %>
+                    <span class="badge bg-success" data-testid="badge-status-<%= b.BookingID %>">Confirmed</span>
+                  <% } else if (b.Status === 'CANCELLED') { %>
+                    <span class="badge bg-danger" data-testid="badge-status-<%= b.BookingID %>">Cancelled</span>
+                  <% } else if (b.Status === 'UNLOCKED') { %>
+                    <span class="badge bg-warning text-dark" data-testid="badge-status-<%= b.BookingID %>">Unlocked</span>
+                  <% } %>
+                </td>
+                <td><small><%= b.CreatedAt ? new Date(b.CreatedAt).toLocaleString() : '' %></small></td>
+                <td>
+                  <div class="btn-group btn-group-sm">
+                    <% if (b.Status === 'CONFIRMED') { %>
+                      <form method="POST" action="/admin/bookings/<%= b.BookingID %>/unlock" class="d-inline"
+                            data-confirm="Unlock this booking? The student will be able to rebook." data-confirm-btn="Yes, unlock">
+                        <input type="hidden" name="termId" value="<%= selectedTermId %>">
+                        <button type="submit" class="btn btn-outline-warning btn-sm" data-testid="button-unlock-<%= b.BookingID %>">Unlock</button>
+                      </form>
+                      <form method="POST" action="/admin/bookings/<%= b.BookingID %>/cancel" class="d-inline"
+                            data-confirm="Cancel this booking? This action cannot be undone." data-confirm-danger="true" data-confirm-btn="Yes, cancel">
+                        <input type="hidden" name="termId" value="<%= selectedTermId %>">
+                        <button type="submit" class="btn btn-outline-danger btn-sm" data-testid="button-cancel-<%= b.BookingID %>">Cancel</button>
+                      </form>
+                    <% } %>
+                    <form method="POST" action="/admin/bookings/<%= b.BookingID %>/delete" class="d-inline mt-2"
+                          data-confirm="DELETE this booking permanently? This cannot be undone." data-confirm-danger="true" data-confirm-btn="Yes, delete">
+                      <input type="hidden" name="termId" value="<%= selectedTermId %>">
+                      <button type="submit" class="btn btn-danger btn-sm" data-testid="button-delete-<%= b.BookingID %>">Delete</button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<!-- DataTables JS -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+  $(document).ready(function() {
+    if ($('#bookingsTable').length) {
+      $('#bookingsTable').DataTable({
+        pageLength: 20,
+        lengthMenu: [10, 20, 50, 100],
+        pagingType: 'full',
+        order: [],
+        language: {
+          search: "",
+          searchPlaceholder: "Search bookings...",
+          lengthMenu: "Rows per page: _MENU_",
+          info: "_START_-_END_ of _TOTAL_",
+          paginate: {
+            first: '<i class="bi bi-chevron-bar-left"></i>',
+            previous: '<i class="bi bi-chevron-left"></i>',
+            next: '<i class="bi bi-chevron-right"></i>',
+            last: '<i class="bi bi-chevron-bar-right"></i>'
+          }
+        },
+        dom: "<'row mb-3'<'col-sm-12 col-md-6'><'col-sm-12 col-md-6'f>>" +
+             "<'row'<'col-sm-12'tr>>" +
+             "<'row mt-3 align-items-center'<'col-sm-12 col-md-4'l><'col-sm-12 col-md-4 text-center'i><'col-sm-12 col-md-4 d-flex justify-content-end'p>>",
+        columnDefs: [
+          { orderable: false, targets: -1 }
+        ]
+      });
+    }
+  });
+</script>

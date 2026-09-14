@@ -1,0 +1,193 @@
+/* ==========================================================================
+   PGJ Premium Design System
+   ========================================================================== */
+
+:root {
+  /* Color Palette */
+  --pgj-primary: #1a45b8;
+  --pgj-primary-light: #2c65e8;
+  --pgj-primary-dark: #0f2c7a;
+  
+  --pgj-secondary: #0ea5e9;
+  --pgj-accent: #f59e0b;
+  
+  --pgj-bg: #f8fafc;
+  --pgj-surface: #ffffff;
+  
+  --pgj-text-main: #1e293b;
+  --pgj-text-muted: #64748b;
+  
+  --pgj-border: #e2e8f0;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-hover: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Base Typo & Body */
+body {
+  min-height: 100vh;
+  background-color: var(--pgj-bg);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: var(--pgj-text-main);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  color: var(--pgj-text-main);
+}
+
+/* Navbar */
+.premium-navbar {
+  background: linear-gradient(135deg, var(--pgj-primary) 0%, var(--pgj-primary-light) 100%) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+.logo-img {
+  max-height: 44px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+/* Premium Cards */
+.card {
+  border: 1px solid var(--pgj-border);
+  border-radius: 12px;
+  background-color: var(--pgj-surface);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-normal);
+}
+
+.card-header {
+  background-color: var(--pgj-surface);
+  border-bottom: 1px solid var(--pgj-border);
+  border-top-left-radius: 12px !important;
+  border-top-right-radius: 12px !important;
+  font-weight: 600;
+}
+
+/* Interactive Dashboard Cards */
+.dashboard-card {
+  cursor: pointer;
+  border: 1px solid var(--pgj-border);
+  height: 100%;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md) !important;
+  border-color: var(--pgj-primary-light);
+}
+
+.dashboard-card .card-body {
+  padding: 2rem 1.5rem;
+}
+
+.dashboard-card svg {
+  transition: transform var(--transition-fast);
+}
+
+.dashboard-card:hover svg {
+  transform: scale(1.1);
+}
+
+/* Buttons */
+.btn {
+  font-weight: 500;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  transition: all var(--transition-fast);
+}
+
+.btn-primary {
+  background-color: var(--pgj-primary);
+  border-color: var(--pgj-primary);
+  box-shadow: 0 2px 4px rgba(26, 69, 184, 0.2);
+}
+
+.btn-primary:hover {
+  background-color: var(--pgj-primary-light);
+  border-color: var(--pgj-primary-light);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(26, 69, 184, 0.3);
+}
+
+.btn-outline-light:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border-color: transparent;
+}
+
+/* Data Tables */
+.table {
+  vertical-align: middle;
+}
+.table th {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--pgj-text-muted);
+  font-weight: 600;
+  border-bottom-width: 2px;
+}
+.table td {
+  color: var(--pgj-text-main);
+  padding: 1rem 0.75rem;
+}
+.table-hover tbody tr:hover {
+  background-color: #f1f5f9;
+}
+
+/* Badges */
+.badge {
+  font-weight: 500;
+  padding: 0.4em 0.8em;
+  border-radius: 6px;
+}
+
+/* Forms */
+.form-control, .form-select {
+  border-radius: 8px;
+  border-color: var(--pgj-border);
+  padding: 0.6rem 1rem;
+  transition: all var(--transition-fast);
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: var(--pgj-primary-light);
+  box-shadow: 0 0 0 0.25rem rgba(44, 101, 232, 0.25);
+}
+
+/* Slot Selection (Booking Flow) */
+.slot-available {
+  border: 1px solid var(--pgj-border);
+  background-color: var(--pgj-surface);
+}
+.slot-available:hover {
+  border-color: #22c55e;
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.15);
+}
+.slot-available.selected {
+  border-color: #2c65e8;
+  border-width: 2px;
+  background-color: #e8f0fe !important;
+  box-shadow: 0 0 0 2px #2c65e8, 0 4px 16px rgba(44, 101, 232, 0.25);
+  transform: scale(1.03);
+  transition: all 0.2s ease;
+}
+
+/* Utilities */
+.text-primary { color: var(--pgj-primary) !important; }
+.bg-primary { background-color: var(--pgj-primary) !important; }
+.text-muted { color: var(--pgj-text-muted) !important; }

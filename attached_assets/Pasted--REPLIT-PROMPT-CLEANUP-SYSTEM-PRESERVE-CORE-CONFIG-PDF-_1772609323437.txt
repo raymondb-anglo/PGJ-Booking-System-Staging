@@ -1,0 +1,179 @@
+📌 REPLIT PROMPT — CLEANUP SYSTEM, PRESERVE CORE CONFIG + PDF + EMAIL
+
+Reset the application to a clean slate while preserving core admin configuration and communication templates.
+
+⚠️ This is NOT a full wipe.
+Only specific modules must remain intact.
+
+🧱 DATA & FEATURES TO KEEP (DO NOT DELETE)
+✅ Admin & Authentication
+
+AdminUsers table
+
+Admin roles & SUPER_ADMIN logic
+
+Admin login & route protection
+
+✅ System Configuration
+
+School Year setup
+
+Terms of Booking (PGJ1, PGJ2, etc.)
+
+Terms & Conditions templates
+
+Parent Login Page Designer
+
+Logo
+
+Background options (including no background)
+
+Mobile / Desktop preview
+
+✅ Communication Templates
+
+PDF Builder
+
+Layout designer
+
+Header / Body / Footer
+
+Image support
+
+Variable placeholders (student, teacher, date, time)
+
+Email Templates
+
+Subject & body editor
+
+Variable placeholders
+
+Manual send option (not auto-send)
+
+These must:
+
+Retain all saved templates
+
+Remain editable from Admin
+
+Not be tied to booking availability yet
+
+🗑️ DATA & FEATURES TO REMOVE / RESET
+❌ Remove or Reset All Booking-Related Data
+
+Students
+
+Teachers
+
+Teacher availability
+
+Teacher blocked times
+
+Meeting dates & time slots
+
+Translations
+
+Bookings
+
+Unlock booking records
+
+Reports data
+
+Audit logs (can be truncated)
+
+❌ Remove UI Pages & APIs
+
+Parent booking flow
+
+Teacher public schedule page
+
+Admin pages for:
+
+Students
+
+Teachers
+
+Bookings
+
+Unlock Booking
+
+Reports
+
+Translations (data page only, config logic remains if needed)
+
+🔄 TECHNICAL CLEANUP RULES
+
+TRUNCATE tables where possible
+
+DROP tables only if they are not referenced by preserved modules
+
+Remove unused API endpoints
+
+Remove unused frontend components
+
+Keep project structure clean (no dead routes)
+
+🚧 SYSTEM STATE AFTER CLEANUP
+
+Admin dashboard is functional
+
+Configuration pages work
+
+PDF templates can be edited
+
+Email templates can be edited
+
+No booking actions possible
+
+No student or teacher data exists
+
+Add system banner:
+
+“System in Configuration Mode — Bookings Disabled”
+
+🧪 VERIFICATION CHECKLIST
+
+After reset, verify:
+
+✅ Admin login works
+
+✅ SUPER_ADMIN permissions enforced
+
+✅ School Year & Terms pages load
+
+✅ T&C editor works
+
+✅ Login Page Designer works (mobile/desktop)
+
+✅ PDF Builder opens and previews
+
+✅ Email Templates editor works
+
+❌ Parent booking disabled
+
+❌ No student/teacher data exists
+
+❌ No booking endpoints accessible
+
+✅ ACCEPTANCE CRITERIA
+
+Clean slate achieved
+
+Core configuration preserved
+
+PDF & Email templates preserved
+
+No runtime or reference errors
+
+Ready to rebuild safely
+
+🧭 REBUILD ORDER (RECOMMENDED NEXT)
+
+1️⃣ Students
+2️⃣ Teachers
+3️⃣ Meeting Dates & Slots
+4️⃣ Teacher Availability
+5️⃣ Booking Engine (locking & concurrency)
+6️⃣ Parent Flow
+7️⃣ Teacher Schedule
+8️⃣ Reports

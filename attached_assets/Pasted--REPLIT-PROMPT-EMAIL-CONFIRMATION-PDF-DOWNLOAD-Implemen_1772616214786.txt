@@ -1,0 +1,211 @@
+📌 REPLIT PROMPT — EMAIL CONFIRMATION + PDF DOWNLOAD
+
+Implement Email Confirmation and PDF Download after a booking is successfully confirmed.
+
+⚠️ Important behavior:
+
+Email is NOT automatic
+
+Parent chooses whether to:
+
+Send email
+
+Download PDF
+
+Do both
+
+Use the existing PDF Builder and Email Templates.
+
+🧭 PARENT FLOW (AFTER BOOKING CONFIRMED)
+
+After booking success, show a Confirmation Page with:
+
+Display (Read-Only)
+
+Student Name
+
+Student ID
+
+PC Class
+
+Teacher Name
+
+Meeting Date
+
+Day Number
+
+Schedule Code (A01, B02…)
+
+Time Range
+
+Translator Required (Yes / No)
+
+Language (if applicable)
+
+✉️ EMAIL CONFIRMATION (MANUAL SEND)
+Parent Options
+
+Button: “Send Confirmation Email”
+
+Email input field:
+
+Pre-filled with:
+
+Student.email (if exists)
+
+Editable
+
+Required before sending
+
+Behavior
+
+Parent clicks “Send Email”
+
+Show global loader
+
+Generate PDF
+
+Attach PDF to email
+
+Send using selected Email Template
+
+Show success / failure message
+
+⚠️ Do NOT auto-save email to student unless admin later edits it.
+
+📄 PDF DOWNLOAD
+Parent Options
+
+Button: “Download Confirmation PDF”
+
+Behavior
+
+Generate PDF using Admin-defined PDF Template
+
+Insert dynamic fields:
+
+Student Name
+
+Student ID
+
+PC Class
+
+Teacher
+
+Meeting Date
+
+Day Number
+
+Schedule Code
+
+Time Range
+
+Translator info
+
+Download immediately
+
+No email required
+
+🧱 PDF BUILDER INTEGRATION
+
+Use existing PDF Builder:
+
+Must Support
+
+Header / Body / Footer
+
+Logo / Image
+
+Variable placeholders:
+
+{{student_name}}
+{{student_id}}
+{{pc_class}}
+{{teacher_name}}
+{{meeting_date}}
+{{day_label}}
+{{schedule_code}}
+{{time_range}}
+{{translator}}
+
+⚠️ PDF template selection is admin-defined, not parent-selectable.
+
+📧 EMAIL TEMPLATE INTEGRATION
+
+Use existing Email Template system:
+
+Requirements
+
+Subject editor
+
+Body editor
+
+Variable placeholders (same as PDF)
+
+Attach generated PDF
+
+Email Rules
+
+Send only on parent action
+
+Log email send result:
+
+Sent / Failed
+
+Timestamp
+
+Target email
+
+📊 ADMIN — REPORTING UPDATE
+
+Update Reports to include:
+
+Booking has PDF generated (Yes/No)
+
+Email sent (Yes/No)
+
+Email address used
+
+Timestamp
+
+🔒 SECURITY & SAFETY
+
+Only confirmed bookings can:
+
+Send email
+
+Generate PDF
+
+Prevent repeated rapid sends:
+
+Disable button while sending
+
+Global loader on all actions
+
+🧪 ERROR HANDLING
+
+Email failure:
+
+Show clear error
+
+Allow retry
+
+PDF failure:
+
+Show error
+
+Do not affect booking
+
+✅ ACCEPTANCE CRITERIA
+
+No automatic emails
+
+Parent controls sending
+
+Email supports custom input
+
+PDF downloads correctly
+
+Admin templates are respected
+
+No booking logic altered

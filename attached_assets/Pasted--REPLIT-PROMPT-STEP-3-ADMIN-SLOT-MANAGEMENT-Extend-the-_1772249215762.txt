@@ -1,0 +1,173 @@
+📌 REPLIT PROMPT — STEP 3: ADMIN SLOT MANAGEMENT
+Extend the PGJ Booking System Node.js Express application with Admin Slot Creation, Blocking, and Manual Booking.
+
+🔒 DATABASE & SAFETY RULES
+Use the existing MySQL database
+
+
+Do NOT drop tables
+
+
+Do NOT modify table structure
+
+
+Only INSERT or UPDATE records related to slots and bookings
+
+
+Use MySQL transactions
+
+
+Enforce no double booking
+
+
+
+🧠 BUSINESS RULES (MANDATORY)
+Slots are created only by Admin
+
+
+Parents can only book slots created by Admin
+
+
+Booking is first-come-first-served
+
+
+Slot statuses:
+
+
+AVAILABLE
+
+
+BOOKED
+
+
+BLOCKED
+
+
+Once a slot is BOOKED, it cannot be booked again
+
+
+Admin may override and book any slot
+
+
+
+🛠 ADMIN ROUTES
+GET /admin/slots/create/:teacherId
+Display slot creation form
+
+
+Inputs:
+
+
+Meeting Date
+
+
+Start Time
+
+
+End Time
+
+
+Slot Duration (minutes)
+
+
+POST /admin/slots/create
+Auto-generate slots based on duration
+
+
+Skip blocked ranges
+
+
+Prevent overlapping slots
+
+
+POST /admin/slots/block
+Block a slot
+
+
+Inputs:
+
+
+Slot ID
+
+
+Block Reason (Lunch, Snack, Unavailable)
+
+
+POST /admin/slots/book
+Admin manually books a slot
+
+
+Lock slot row using SELECT ... FOR UPDATE
+
+
+Update status to BOOKED
+
+
+Record booking source as ADMIN
+
+
+
+🧩 DATA INTEGRITY
+Reject booking if slot status ≠ AVAILABLE
+
+
+Reject slot creation if overlap detected
+
+
+All booking operations must be transactional
+
+
+
+🖥 UI REQUIREMENTS
+Use EJS templates
+
+
+Use Bootstrap 5
+
+
+Mobile-first admin forms
+
+
+Clear success and error feedback
+
+
+
+📁 FILES TO UPDATE / CREATE
+/routes/admin.js
+
+
+/views/admin/create-slots.ejs
+
+
+/views/admin/slots.ejs
+
+
+/db.js (transaction helper if needed)
+
+
+
+❌ DO NOT
+Do NOT add parent booking
+
+
+Do NOT auto-book slots
+
+
+Do NOT allow double booking
+
+
+Do NOT bypass transactions
+
+
+This step must result in conflict-free admin-controlled scheduling.
+
+✅ Success Checklist
+After STEP 3:
+✔ Admin can generate slots
+ ✔ Slot times never overlap
+ ✔ Blocked slots are enforced
+ ✔ Admin booking cannot conflict
+ ✔ DB remains consistent
+If any of those fail → stop and fix.
+
+

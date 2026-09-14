@@ -1,0 +1,201 @@
+📌 REPLIT PROMPT — BOOKING ENGINE (FCFS + DB LOCKING)
+
+Implement the Booking Engine with strict first-come-first-served behavior.
+
+The system must prevent ALL double bookings, even under concurrent requests.
+
+⚠️ This must be enforced at the database level, not just UI.
+
+This engine connects:
+
+Students
+
+Teachers
+
+Meeting Dates
+
+Time Slots
+
+Teacher Availability
+
+🧱 DATABASE — BOOKINGS TABLE (CREATE IF NOT EXISTS)
+
+Create a bookings table with:
+
+id
+
+student_id (FK → students.student_id)
+
+teacher_id (FK → teachers.teacher_id)
+
+meeting_date_id (FK → meeting_dates.id)
+
+time_slot_id (FK → time_slots.id)
+
+schedule_code (A01, B02, etc)
+
+translator_required (BOOLEAN)
+
+translator_language (nullable)
+
+status (CONFIRMED, CANCELLED, UNLOCKED)
+
+created_at
+
+🔒 HARD DATABASE PROTECTION (MANDATORY)
+🔐 UNIQUE CONSTRAINT (CRITICAL)
+
+Prevent double booking by enforcing:
+
+UNIQUE (teacher_id, meeting_date_id, time_slot_id)
+
+This ensures:
+
+Only ONE booking per teacher per slot
+
+Even if 100 users click at the same millisecond
+
+⚠️ Do NOT rely on UI checks alone.
+
+🧠 BOOKING TRANSACTION FLOW (NON-NEGOTIABLE)
+
+Every booking must follow this order:
+
+1️⃣ Begin database transaction
+2️⃣ Lock the teacher availability row for the selected slot
+3️⃣ Validate:
+
+Slot exists
+
+Slot is NOT globally blocked
+
+Slot is available for that teacher
+
+Student has NO existing booking
+4️⃣ Insert booking
+5️⃣ Update teacher availability → unavailable
+6️⃣ Commit transaction
+
+If ANY step fails → rollback.
+
+🚫 FAILURE BEHAVIOR
+
+If booking fails due to conflict:
+
+Return HTTP 409 Conflict
+
+Message:
+
+“This time slot has already been booked. Please select another.”
+
+No generic errors allowed.
+
+🧑‍👩‍👧 PARENT BOOKING FLOW (SERVER-SIDE)
+
+After Student ID login:
+
+Display:
+
+Student Name
+
+PC Class
+
+Assigned Teacher
+
+Parent selects:
+
+Meeting Date
+
+Time Slot (only available ones)
+
+Parent selects:
+
+Translator required? (Yes/No)
+
+Language (if Yes)
+
+Parent confirms booking
+
+⚠️ Once confirmed:
+
+Parent cannot edit or cancel
+
+Changes require admin unlock
+
+🔓 ADMIN OVERRIDE RULES
+
+Admin can:
+
+Book on behalf of a student
+
+Unlock a booking
+
+Cancel a booking
+
+Unlocking:
+
+Sets booking status to UNLOCKED
+
+Restores teacher availability
+
+Allows parent to rebook
+
+🧪 CONCURRENCY TESTS (MANDATORY)
+
+Create automated tests that simulate:
+
+Test 1 — Same Slot, Same Teacher
+
+20 parallel booking requests
+
+Expected:
+
+1 success
+
+19 failures
+
+Test 2 — Same Time, Different Teachers
+
+All succeed
+
+Test 3 — Same Teacher, Different Slots
+
+All succeed
+
+Test 4 — Admin vs Parent Conflict
+
+Parent wins if booked first
+
+🖥️ UI REQUIREMENTS
+
+Global loader on booking submit
+
+Disable submit button after click
+
+Clear success / error messages
+
+Slot colors update instantly after booking
+
+🔒 SECURITY RULES
+
+Student can only book ONCE
+
+Student ID validation required
+
+Admin routes protected
+
+Booking API protected against duplicate submits
+
+✅ ACCEPTANCE CRITERIA
+
+No double booking possible
+
+Database enforces uniqueness
+
+Race conditions handled
+
+Admin override works
+
+Booking is irreversible without admin
+
+Ready for Email + PDF next

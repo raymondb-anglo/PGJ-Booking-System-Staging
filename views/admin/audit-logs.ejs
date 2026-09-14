@@ -1,0 +1,193 @@
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+
+<a href="/admin/dashboard" class="text-decoration-none text-muted small">&larr; Back to Dashboard</a>
+<h1 class="h3 mt-1 mb-4" data-testid="text-page-title">Audit Logs</h1>
+
+
+
+<div class="card shadow-sm mb-4" style="position: sticky; top: 56px; z-index: 10; background: white;">
+  <div class="card-body py-2">
+    <form method="GET" action="/admin/audit-logs" class="row g-2 align-items-end">
+      <div class="col-6 col-md-2">
+        <label class="form-label small mb-1">Category</label>
+        <select name="category" class="form-select form-select-sm" data-testid="select-category">
+          <option value="">All Categories</option>
+          <% categories.forEach(function(c) { %>
+            <option value="<%= c %>" <%= filters.category === c ? 'selected' : '' %>><%= c %></option>
+          <% }); %>
+        </select>
+      </div>
+      <div class="col-6 col-md-2">
+        <label class="form-label small mb-1">Action</label>
+        <select name="action" class="form-select form-select-sm" data-testid="select-action">
+          <option value="">All Actions</option>
+          <% actions.forEach(function(a) { %>
+            <option value="<%= a %>" <%= filters.action === a ? 'selected' : '' %>><%= a %></option>
+          <% }); %>
+        </select>
+      </div>
+      <div class="col-6 col-md-2">
+        <label class="form-label small mb-1">Admin</label>
+        <input type="text" name="admin" class="form-control form-control-sm" value="<%= filters.admin %>" placeholder="Username..." data-testid="input-admin">
+      </div>
+      <div class="col-6 col-md-2">
+        <label class="form-label small mb-1">Date From</label>
+        <input type="date" name="dateFrom" class="form-control form-control-sm" value="<%= filters.dateFrom %>" data-testid="input-date-from">
+      </div>
+      <div class="col-6 col-md-2">
+        <label class="form-label small mb-1">Date To</label>
+        <input type="date" name="dateTo" class="form-control form-control-sm" value="<%= filters.dateTo %>" data-testid="input-date-to">
+      </div>
+      <div class="col-6 col-md-2 d-flex gap-1">
+        <button type="submit" class="btn btn-sm btn-primary flex-grow-1" data-testid="button-filter">Filter</button>
+        <a href="/admin/audit-logs" class="btn btn-sm btn-outline-secondary" data-testid="button-clear">Clear</a>
+      </div>
+    </form>
+    <% if (typeof adminRole !== 'undefined' && adminRole === 'SUPER_ADMIN') { %>
+      <div class="mt-2">
+        <a href="/admin/audit-logs/export?category=<%= encodeURIComponent(filters.category) %>&action=<%= encodeURIComponent(filters.action) %>&admin=<%= encodeURIComponent(filters.admin) %>&dateFrom=<%= encodeURIComponent(filters.dateFrom) %>&dateTo=<%= encodeURIComponent(filters.dateTo) %>" class="btn btn-sm btn-outline-success" data-testid="button-export-csv">
+          <i class="bi bi-download me-1"></i>Export CSV
+        </a>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+
+
+<% if (logs.length === 0) { %>
+  <div class="alert alert-info" data-testid="text-no-logs">No audit logs found.</div>
+<% } else { %>
+
+  <!-- Mobile -->
+  <div class="d-md-none">
+    <% logs.forEach(function(log) { %>
+      <div class="card mb-2" data-testid="card-log-<%= log.LogID %>">
+        <div class="card-body py-2 px-3">
+          <div class="d-flex justify-content-between align-items-start gap-1 mb-1">
+            <div>
+              <span class="badge bg-<%= log.Category === 'AUTH' ? 'primary' : log.Category === 'DELETE' ? 'danger' : log.Category === 'CREATE' ? 'success' : log.Category === 'UPDATE' ? 'warning' : 'secondary' %> me-1"><%= log.Category %></span>
+              <strong class="small"><%= log.Action %></strong>
+            </div>
+            <small class="text-muted"><%= new Date(log.CreatedAt).toLocaleDateString('en-GB') %></small>
+          </div>
+          <div class="small text-muted"><%= log.AdminUsername || 'System' %></div>
+          <% if (log.Details) { %>
+            <div class="small mt-1" style="word-break:break-word;">
+              <%
+                var detailsParsed = null;
+                try { detailsParsed = JSON.parse(log.Details); } catch(e) {}
+              %>
+              <% if (detailsParsed && (detailsParsed.old || detailsParsed.before || detailsParsed.new || detailsParsed.after)) { %>
+                <% var beforeVal = detailsParsed.old || detailsParsed.before; %>
+                <% var afterVal = detailsParsed.new || detailsParsed.after; %>
+                <% if (beforeVal) { %>
+                  <div><strong>Before:</strong> <span class="text-danger"><%= typeof beforeVal === 'object' ? JSON.stringify(beforeVal) : beforeVal %></span></div>
+                <% } %>
+                <% if (afterVal) { %>
+                  <div><strong>After:</strong> <span class="text-success"><%= typeof afterVal === 'object' ? JSON.stringify(afterVal) : afterVal %></span></div>
+                <% } %>
+              <% } else { %>
+                <%= log.Details %>
+              <% } %>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    <% }); %>
+  </div>
+
+  <!-- Desktop -->
+  <div class="d-none d-md-block">
+    <div class="card shadow-sm">
+      <div class="card-body p-0">
+        <table id="auditLogsTable" class="table table-hover mb-0 align-middle small w-100">
+          <thead class="table-light">
+            <tr>
+              <th style="width:160px;">Date / Time</th>
+              <th style="width:110px;">Category</th>
+              <th style="width:150px;">Action</th>
+              <th style="width:120px;">Admin</th>
+              <th>Details</th>
+              <th style="width:120px;">IP Address</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% logs.forEach(function(log) { %>
+              <tr data-testid="row-log-<%= log.LogID %>">
+                <td class="text-nowrap">
+                  <%= new Date(log.CreatedAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) %>
+                  <br><small class="text-muted"><%= new Date(log.CreatedAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) %></small>
+                </td>
+                <td>
+                  <span class="badge bg-<%= log.Category === 'AUTH' ? 'primary' : log.Category === 'DELETE' ? 'danger' : log.Category === 'CREATE' ? 'success' : log.Category === 'UPDATE' ? 'warning' : 'secondary' %>">
+                    <%= log.Category %>
+                  </span>
+                </td>
+                <td><%= log.Action %></td>
+                <td><%= log.AdminUsername || 'System' %></td>
+                <td style="max-width:300px;word-break:break-word;">
+                  <%
+                    var detailsParsed = null;
+                    try { detailsParsed = JSON.parse(log.Details); } catch(e) {}
+                  %>
+                  <% if (detailsParsed && (detailsParsed.old || detailsParsed.before || detailsParsed.new || detailsParsed.after)) { %>
+                    <% var beforeVal = detailsParsed.old || detailsParsed.before; %>
+                    <% var afterVal = detailsParsed.new || detailsParsed.after; %>
+                    <% if (beforeVal) { %>
+                      <div><strong>Before:</strong> <span class="text-danger"><%= typeof beforeVal === 'object' ? JSON.stringify(beforeVal) : beforeVal %></span></div>
+                    <% } %>
+                    <% if (afterVal) { %>
+                      <div><strong>After:</strong> <span class="text-success"><%= typeof afterVal === 'object' ? JSON.stringify(afterVal) : afterVal %></span></div>
+                    <% } %>
+                  <% } else { %>
+                    <%= log.Details || '\u2014' %>
+                  <% } %>
+                </td>
+                <td class="text-muted"><%= log.IPAddress || '\u2014' %></td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+<% } %>
+
+<!-- DataTables JS -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+  $(document).ready(function() {
+    if ($('#auditLogsTable').length) {
+      $('#auditLogsTable').DataTable({
+        pageLength: 20,
+        lengthMenu: [10, 20, 50, 100],
+        pagingType: 'full',
+        order: [],
+        language: {
+          search: "",
+          searchPlaceholder: "Search logs...",
+          lengthMenu: "Rows per page: _MENU_",
+          info: "_START_-_END_ of _TOTAL_",
+          paginate: {
+            first: '<i class="bi bi-chevron-bar-left"></i>',
+            previous: '<i class="bi bi-chevron-left"></i>',
+            next: '<i class="bi bi-chevron-right"></i>',
+            last: '<i class="bi bi-chevron-bar-right"></i>'
+          }
+        },
+        dom: "<'row mb-3'<'col-sm-12 col-md-6'><'col-sm-12 col-md-6'f>>" +
+             "<'row'<'col-sm-12'tr>>" +
+             "<'row mt-3 align-items-center'<'col-sm-12 col-md-4'l><'col-sm-12 col-md-4 text-center'i><'col-sm-12 col-md-4 d-flex justify-content-end'p>>",
+        columnDefs: [
+          { orderable: false, targets: [4, 5] }
+        ]
+      });
+    }
+  });
+</script>

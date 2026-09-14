@@ -1,0 +1,79 @@
+<a href="/admin/dashboard" class="text-decoration-none text-muted small">&larr; Back to Dashboard</a>
+<h1 class="h3 mt-1 mb-4">Parent Login Page Content</h1>
+
+
+
+
+<% if (terms.length === 0) { %>
+  <div class="alert alert-warning">
+    No booking terms configured yet. <a href="/admin/config/school-year">Create a school year and term first</a>.
+  </div>
+<% } else { %>
+
+  <div class="card shadow-sm mb-4">
+    <div class="card-header bg-white">
+      <h6 class="mb-0">Terms & Templates</h6>
+    </div>
+    <div class="card-body p-0">
+      <div class="list-group list-group-flush">
+        <% terms.forEach(function(t) { %>
+          <a href="/admin/config/parent-login?termId=<%= t.TermID %>"
+             class="list-group-item list-group-item-action d-flex justify-content-between align-items-center <%= t.TermID === selectedTermId ? 'active' : '' %>"
+             data-testid="tab-term-<%= t.TermID %>">
+            <div>
+              <strong><%= t.TermLabel %></strong>
+              <span class="<%= t.TermID === selectedTermId ? 'text-white-50' : 'text-muted' %> ms-1">(<%= t.YearLabel %>)</span>
+              <% if (t.hasContent) { %>
+                <span class="badge <%= t.TermID === selectedTermId ? 'bg-light text-dark' : 'bg-info text-dark' %> ms-1" style="font-size:0.7em;">Has Content</span>
+              <% } else { %>
+                <span class="badge <%= t.TermID === selectedTermId ? 'bg-light text-dark' : 'bg-secondary' %> ms-1" style="font-size:0.7em;">Empty</span>
+              <% } %>
+            </div>
+            <div>
+              <% if (t.IsActive) { %>
+                <span class="badge bg-success">Active Term</span>
+              <% } %>
+            </div>
+          </a>
+        <% }); %>
+      </div>
+    </div>
+  </div>
+
+  <% if (selectedTermId) { %>
+    <% var selectedTerm = terms.find(function(t) { return t.TermID === selectedTermId; }); %>
+    <div class="card shadow-sm">
+      <div class="card-header bg-white d-flex justify-content-between align-items-center">
+        <h6 class="mb-0">
+          Editing: <strong><%= selectedTerm ? selectedTerm.TermLabel : '' %></strong>
+          <% if (selectedTerm && selectedTerm.YearLabel) { %>
+            <span class="text-muted fw-normal">(<%= selectedTerm.YearLabel %>)</span>
+          <% } %>
+        </h6>
+        <% if (selectedTerm && selectedTerm.IsActive) { %>
+          <span class="badge bg-success">Active — Shown to Parents</span>
+        <% } else { %>
+          <span class="badge bg-secondary">Inactive</span>
+        <% } %>
+      </div>
+      <div class="card-body">
+        <form method="POST" action="/admin/config/parent-login/save">
+          <input type="hidden" name="termId" value="<%= selectedTermId %>">
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Terms & Conditions / Welcome Message</label>
+            <textarea name="content" class="form-control" rows="12" placeholder="Enter the content that parents will see on the login page..." data-testid="textarea-content"><%= content %></textarea>
+            <div class="form-text">
+              <% if (selectedTerm && selectedTerm.IsActive) { %>
+                This content is currently being shown to parents on the login page.
+              <% } else { %>
+                This term is not active. Content will only be shown when this term is set as active.
+              <% } %>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary" data-testid="button-save-content">Save Content</button>
+        </form>
+      </div>
+    </div>
+  <% } %>
+
+<% } %>

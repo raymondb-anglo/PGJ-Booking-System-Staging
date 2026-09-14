@@ -1,0 +1,345 @@
+<div class="row justify-content-center mt-3">
+  <div class="col-lg-10">
+    <h3 class="mb-1" data-testid="text-page-title">Teacher Schedule</h3>
+    <p class="text-muted mb-3">View confirmed booking schedules for each teacher.</p>
+
+    
+
+    <% if (activeTerm) { %>
+      <div class="mb-3">
+        <small class="text-muted" data-testid="text-active-term"><%= activeTerm.TermLabel %> — <%= activeTerm.YearLabel %></small>
+      </div>
+    <% } %>
+
+    <div class="filter-bar-sticky mb-4">
+      <div class="row g-2 align-items-end">
+        <div class="col-12 col-md-7">
+          <label for="teacherSelect" class="form-label fw-semibold mb-1">Select Teacher</label>
+          <select id="teacherSelect" class="form-select" data-testid="select-teacher">
+            <option value="">Select a teacher</option>
+            <% teachers.forEach(function(t) { %>
+              <option value="<%= t.TeacherCode %>" data-testid="option-teacher-<%= t.TeacherCode %>">
+                <%= t.TeacherName %><% if (t.TeacherNickname) { %> (<%= t.TeacherNickname %>)<% } %><% if (t.Room) { %> — Room <%= t.Room %><% } %>
+              </option>
+            <% }); %>
+          </select>
+        </div>
+        <div class="col-6 col-md-2">
+          <button class="btn btn-primary w-100" onclick="onFilterChange()" data-testid="button-load-schedule">Load</button>
+        </div>
+        <div class="col-6 col-md-3 d-none d-md-flex gap-2 justify-content-end" id="action-buttons-desktop">
+          <button class="btn btn-outline-secondary btn-sm d-none" id="btn-print-desktop" onclick="printSchedule()" data-testid="button-print">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="me-1" viewBox="0 0 16 16"><path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1"/><path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4zm1 10a1 1 0 0 1-1-1V9h8v3a1 1 0 0 1-1 1z"/></svg>
+            Print
+          </button>
+          <button class="btn btn-outline-primary btn-sm d-none" id="btn-pdf-desktop" onclick="downloadPdf()" data-testid="button-download-pdf">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="me-1" viewBox="0 0 16 16"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/><path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z"/></svg>
+            PDF
+          </button>
+        </div>
+        <div class="col-12 d-md-none" id="action-buttons-mobile">
+          <div class="d-none gap-2" id="mobile-actions">
+            <button class="btn btn-outline-secondary btn-sm flex-fill" onclick="printSchedule()" data-testid="button-print-mobile">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="me-1" viewBox="0 0 16 16"><path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1"/><path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4zm1 10a1 1 0 0 1-1-1V9h8v3a1 1 0 0 1-1 1z"/></svg>
+              Print
+            </button>
+            <button class="btn btn-outline-primary btn-sm flex-fill" onclick="downloadPdf()" data-testid="button-pdf-mobile">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="me-1" viewBox="0 0 16 16"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/><path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z"/></svg>
+              PDF
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="schedule-empty" data-testid="text-empty-state">
+      <div class="text-center text-muted py-5">
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="mb-3 opacity-25" viewBox="0 0 16 16"><path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M2 2a1 1 0 0 0-1 1v1h14V3a1 1 0 0 0-1-1zm13 3H1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1z"/></svg>
+        <p class="mb-0">Please select a teacher to view schedule.</p>
+      </div>
+    </div>
+
+    <div id="schedule-loading" class="text-center py-5 d-none" data-testid="loading-indicator">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="text-muted mt-2 mb-0">Loading schedule...</p>
+    </div>
+
+    <div id="schedule-content" class="d-none">
+      <div class="d-flex flex-wrap align-items-center justify-content-between mb-3">
+        <h5 class="mb-0" id="schedule-teacher-name" data-testid="text-schedule-teacher"></h5>
+        <span class="badge bg-light text-dark border" id="schedule-booking-count" data-testid="text-booking-count"></span>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-hover table-bordered align-middle mb-0" id="schedule-table" data-testid="table-schedule">
+          <thead class="table-light">
+            <tr>
+              <th>Meeting Date</th>
+              <th>Day</th>
+              <th>Code</th>
+              <th>Time Range</th>
+              <th>Student Name</th>
+              <th>Student ID</th>
+              <th>PC Class</th>
+              <th>Translation</th>
+              <th>Language</th>
+            </tr>
+          </thead>
+          <tbody id="schedule-tbody" data-testid="schedule-tbody">
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="schedule-no-bookings" class="d-none" data-testid="text-no-bookings">
+      <div class="text-center text-muted py-5">
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="mb-3 opacity-25" viewBox="0 0 16 16"><path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/><path d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/></svg>
+        <p class="mb-0">No bookings scheduled for this teacher.</p>
+      </div>
+    </div>
+
+    <div id="schedule-error" class="d-none" data-testid="alert-schedule-error">
+      <div class="alert alert-danger mt-3">
+        <span id="schedule-error-msg"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="print-area" class="d-none">
+  <div id="print-header"></div>
+  <div id="print-table-wrap"></div>
+</div>
+
+<style>
+  .filter-bar-sticky {
+    position: sticky;
+    top: 56px;
+    z-index: 10;
+    background: #fff;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+  }
+  @media (max-width: 767px) {
+    .filter-bar-sticky { position: static; border-bottom: none; }
+  }
+  @media print {
+    body * { visibility: hidden !important; }
+    #print-area, #print-area * { visibility: visible !important; }
+    #print-area {
+      display: block !important;
+      position: absolute;
+      left: 0; top: 0; width: 100%;
+      padding: 20px;
+    }
+    #print-area table { width: 100%; border-collapse: collapse; font-size: 11px; }
+    #print-area th, #print-area td { border: 1px solid #999; padding: 4px 6px; text-align: left; }
+    #print-area th { background: #eee !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    #print-area h4, #print-area p { margin: 0 0 4px; }
+    @page { size: A4 portrait; margin: 15mm; }
+  }
+</style>
+
+<script>
+var currentBookings = [];
+var currentTeacher = null;
+
+function onFilterChange() {
+  var teacherCode = document.getElementById('teacherSelect').value;
+  loadSchedule(teacherCode);
+}
+
+function showActions(show) {
+  var printD = document.getElementById('btn-print-desktop');
+  var pdfD = document.getElementById('btn-pdf-desktop');
+  var mobileActions = document.getElementById('mobile-actions');
+
+  if (show) {
+    printD.classList.remove('d-none');
+    pdfD.classList.remove('d-none');
+    mobileActions.classList.remove('d-none');
+    mobileActions.classList.add('d-flex');
+  } else {
+    printD.classList.add('d-none');
+    pdfD.classList.add('d-none');
+    mobileActions.classList.add('d-none');
+    mobileActions.classList.remove('d-flex');
+  }
+}
+
+function loadSchedule(teacherCode) {
+  var emptyEl = document.getElementById('schedule-empty');
+  var loadingEl = document.getElementById('schedule-loading');
+  var contentEl = document.getElementById('schedule-content');
+  var noBookingsEl = document.getElementById('schedule-no-bookings');
+  var errorEl = document.getElementById('schedule-error');
+
+  emptyEl.classList.add('d-none');
+  contentEl.classList.add('d-none');
+  noBookingsEl.classList.add('d-none');
+  errorEl.classList.add('d-none');
+  showActions(false);
+
+  if (!teacherCode) {
+    emptyEl.classList.remove('d-none');
+    currentBookings = [];
+    currentTeacher = null;
+    return;
+  }
+
+  loadingEl.classList.remove('d-none');
+
+  var url = '/teacher-schedule/api/schedule/' + encodeURIComponent(teacherCode);
+
+  fetch(url)
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      loadingEl.classList.add('d-none');
+
+      if (!data.success) {
+        document.getElementById('schedule-error-msg').textContent = data.message || 'Failed to load schedule.';
+        errorEl.classList.remove('d-none');
+        return;
+      }
+
+      currentTeacher = data.teacher;
+      currentBookings = data.bookings;
+
+      if (data.bookings.length === 0) {
+        noBookingsEl.classList.remove('d-none');
+        showActions(false);
+        return;
+      }
+
+      var teacher = data.teacher;
+      var nameText = teacher.TeacherName;
+      if (teacher.TeacherNickname) nameText += ' (' + teacher.TeacherNickname + ')';
+      if (teacher.Room) nameText += ' — Room ' + teacher.Room;
+      document.getElementById('schedule-teacher-name').textContent = nameText;
+      document.getElementById('schedule-booking-count').textContent = data.bookings.length + ' booking' + (data.bookings.length !== 1 ? 's' : '');
+
+      var tbody = document.getElementById('schedule-tbody');
+      var html = '';
+      data.bookings.forEach(function(b, idx) {
+        var dateStr = '';
+        if (b.meetingDate) {
+          var d = new Date(b.meetingDate);
+          dateStr = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+        }
+        html += '<tr data-testid="row-booking-' + idx + '">';
+        html += '<td data-testid="text-date-' + idx + '">' + dateStr + '</td>';
+        html += '<td data-testid="text-day-' + idx + '">' + b.dayLabel + '</td>';
+        html += '<td data-testid="text-code-' + idx + '"><strong>' + b.scheduleCode + '</strong></td>';
+        html += '<td data-testid="text-time-' + idx + '">' + b.startTime + ' – ' + b.endTime + '</td>';
+        html += '<td data-testid="text-student-' + idx + '">' + b.studentName + '</td>';
+        html += '<td data-testid="text-studentid-' + idx + '">' + b.studentId + '</td>';
+        html += '<td data-testid="text-class-' + idx + '">' + (b.pcClass || '—') + '</td>';
+        html += '<td data-testid="text-translator-' + idx + '">' + (b.translatorRequired ? 'Yes' : 'No') + '</td>';
+        html += '<td data-testid="text-language-' + idx + '">' + (b.translatorLanguage || '—') + '</td>';
+        html += '</tr>';
+      });
+      tbody.innerHTML = html;
+      contentEl.classList.remove('d-none');
+      showActions(true);
+    })
+    .catch(function(err) {
+      loadingEl.classList.add('d-none');
+      document.getElementById('schedule-error-msg').textContent = 'Failed to load schedule. Please try again.';
+      errorEl.classList.remove('d-none');
+    });
+}
+
+function getDateLabel() {
+  return 'All Dates';
+}
+
+function printSchedule() {
+  if (!currentTeacher || currentBookings.length === 0) return;
+
+  var teacher = currentTeacher;
+  var nameText = teacher.TeacherName;
+  if (teacher.TeacherNickname) nameText += ' (' + teacher.TeacherNickname + ')';
+  var dateLabel = getDateLabel();
+  var now = new Date().toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' });
+
+  var schoolName = '<%= typeof activeTerm !== "undefined" && activeTerm ? activeTerm.YearLabel : "PGJ Booking System" %>';
+  var headerHtml = '<h4 style="margin-bottom:2px">' + schoolName + '</h4>';
+  headerHtml += '<p style="font-size:14px;margin-bottom:2px"><strong>Teacher Schedule</strong></p>';
+  headerHtml += '<p style="font-size:12px;color:#555">Teacher: ' + nameText + (teacher.Room ? ' | Room: ' + teacher.Room : '') + '</p>';
+  headerHtml += '<p style="font-size:12px;color:#555">Date: ' + dateLabel + ' | Generated: ' + now + '</p>';
+  headerHtml += '<hr style="margin:8px 0">';
+
+  var tableHtml = '<table><thead><tr>';
+  tableHtml += '<th>Meeting Date</th><th>Day</th><th>Code</th><th>Time Range</th><th>Student Name</th><th>Student ID</th><th>PC Class</th><th>Translation</th><th>Language</th>';
+  tableHtml += '</tr></thead><tbody>';
+  currentBookings.forEach(function(b) {
+    var dateStr = '';
+    if (b.meetingDate) {
+      var d = new Date(b.meetingDate);
+      dateStr = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+    tableHtml += '<tr>';
+    tableHtml += '<td>' + dateStr + '</td>';
+    tableHtml += '<td>' + b.dayLabel + '</td>';
+    tableHtml += '<td><strong>' + b.scheduleCode + '</strong></td>';
+    tableHtml += '<td>' + b.startTime + ' – ' + b.endTime + '</td>';
+    tableHtml += '<td>' + b.studentName + '</td>';
+    tableHtml += '<td>' + b.studentId + '</td>';
+    tableHtml += '<td>' + (b.pcClass || '—') + '</td>';
+    tableHtml += '<td>' + (b.translatorRequired ? 'Yes' : 'No') + '</td>';
+    tableHtml += '<td>' + (b.translatorLanguage || '—') + '</td>';
+    tableHtml += '</tr>';
+  });
+  tableHtml += '</tbody></table>';
+  tableHtml += '<p style="font-size:11px;color:#888;margin-top:8px">Total bookings: ' + currentBookings.length + '</p>';
+
+  document.getElementById('print-header').innerHTML = headerHtml;
+  document.getElementById('print-table-wrap').innerHTML = tableHtml;
+
+  var printArea = document.getElementById('print-area');
+  printArea.classList.remove('d-none');
+  window.print();
+  setTimeout(function() { printArea.classList.add('d-none'); }, 500);
+}
+
+function downloadPdf() {
+  if (!currentTeacher) return;
+
+  var teacherCode = document.getElementById('teacherSelect').value;
+  var url = '/teacher-schedule/api/pdf/' + encodeURIComponent(teacherCode);
+
+  var btn = document.querySelector('#btn-pdf-desktop:not(.d-none)') || document.querySelector('[data-testid="button-pdf-mobile"]');
+  if (btn) {
+    var origText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Generating...';
+  }
+
+  fetch(url)
+    .then(function(res) {
+      if (!res.ok) throw new Error('PDF generation failed');
+      var disposition = res.headers.get('Content-Disposition') || '';
+      var match = disposition.match(/filename="?([^";\s]+)"?/);
+      var filename = match ? match[1] : 'TeacherSchedule.pdf';
+      return res.blob().then(function(blob) { return { blob: blob, filename: filename }; });
+    })
+    .then(function(result) {
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(result.blob);
+      a.download = result.filename;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    })
+    .catch(function(err) {
+      alert('Failed to generate PDF. Please try again.');
+    })
+    .finally(function() {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = origText;
+      }
+    });
+}
+</script>

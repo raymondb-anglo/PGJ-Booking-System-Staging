@@ -1,0 +1,128 @@
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <a href="/admin/dashboard" class="text-decoration-none text-muted small">&larr; Back to Dashboard</a>
+    <h1 class="h3 mt-1 mb-0" data-testid="text-page-title">Translator Languages</h1>
+    <small class="text-muted">Manage languages available for translator requests during booking</small>
+  </div>
+</div>
+
+
+
+
+<div class="row g-4">
+  <div class="col-lg-5">
+    <div class="card shadow-sm">
+      <div class="card-header bg-primary text-white">
+        <h6 class="mb-0">Add New Language</h6>
+      </div>
+      <div class="card-body">
+        <form method="POST" action="/admin/translations/add" data-testid="form-add-language">
+          <div class="mb-3">
+            <label class="form-label">Language Name <span class="text-danger">*</span></label>
+            <input type="text" name="languageName" class="form-control" placeholder="e.g. Thai, Chinese, Japanese" required data-testid="input-language-name">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Language Code <small class="text-muted">(optional)</small></label>
+            <input type="text" name="languageCode" class="form-control" placeholder="e.g. TH, ZH, JA" maxlength="10" data-testid="input-language-code">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Sort Order</label>
+            <input type="number" name="sortOrder" class="form-control" value="0" min="0" data-testid="input-sort-order">
+            <small class="text-muted">Lower numbers appear first in the dropdown</small>
+          </div>
+          <button type="submit" class="btn btn-primary w-100" data-testid="button-add-language">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-1" viewBox="0 0 16 16"><path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/></svg>
+            Add Language
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-7">
+    <div class="card shadow-sm">
+      <div class="card-header bg-light d-flex justify-content-between align-items-center">
+        <h6 class="mb-0">Configured Languages</h6>
+        <span class="badge bg-primary" data-testid="text-language-count"><%= languages.length %></span>
+      </div>
+      <div class="card-body p-0">
+        <% if (languages.length === 0) { %>
+          <div class="text-center text-muted py-4" data-testid="text-no-languages">
+            No languages configured yet. Add one using the form.
+          </div>
+        <% } else { %>
+          <div class="table-responsive">
+            <table class="table table-hover table-sm mb-0 align-middle" data-testid="table-languages">
+              <thead class="table-light">
+                <tr>
+                  <th>Language</th>
+                  <th>Code</th>
+                  <th class="text-center">Order</th>
+                  <th class="text-center">Status</th>
+                  <th class="text-end">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% languages.forEach(function(lang) { %>
+                  <tr data-testid="row-language-<%= lang.TranslationID %>">
+                    <td><strong><%= lang.LanguageName %></strong></td>
+                    <td><%= lang.LanguageCode || '—' %></td>
+                    <td class="text-center"><%= lang.SortOrder %></td>
+                    <td class="text-center">
+                      <% if (lang.IsActive) { %>
+                        <span class="badge bg-success">Active</span>
+                      <% } else { %>
+                        <span class="badge bg-secondary">Inactive</span>
+                      <% } %>
+                    </td>
+                    <td class="text-end">
+                      <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editModal<%= lang.TranslationID %>" data-testid="button-edit-<%= lang.TranslationID %>">Edit</button>
+                      <form method="POST" action="/admin/translations/<%= lang.TranslationID %>/delete" class="d-inline" data-confirm="Delete this language?" data-confirm-danger="true" data-confirm-btn="Delete">
+                        <button type="submit" class="btn btn-sm btn-outline-danger" data-testid="button-delete-<%= lang.TranslationID %>">Delete</button>
+                      </form>
+                    </td>
+                  </tr>
+
+                  <div class="modal fade" id="editModal<%= lang.TranslationID %>" tabindex="-1">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <form method="POST" action="/admin/translations/<%= lang.TranslationID %>/update">
+                          <div class="modal-header">
+                            <h6 class="modal-title">Edit Language</h6>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                          </div>
+                          <div class="modal-body">
+                            <div class="mb-3">
+                              <label class="form-label">Language Name</label>
+                              <input type="text" name="languageName" class="form-control" value="<%= lang.LanguageName %>" required data-testid="input-edit-name-<%= lang.TranslationID %>">
+                            </div>
+                            <div class="mb-3">
+                              <label class="form-label">Language Code</label>
+                              <input type="text" name="languageCode" class="form-control" value="<%= lang.LanguageCode || '' %>" maxlength="10" data-testid="input-edit-code-<%= lang.TranslationID %>">
+                            </div>
+                            <div class="mb-3">
+                              <label class="form-label">Sort Order</label>
+                              <input type="number" name="sortOrder" class="form-control" value="<%= lang.SortOrder %>" min="0" data-testid="input-edit-order-<%= lang.TranslationID %>">
+                            </div>
+                            <div class="form-check form-switch">
+                              <input type="checkbox" name="isActive" class="form-check-input" id="active<%= lang.TranslationID %>" <%= lang.IsActive ? 'checked' : '' %> data-testid="switch-active-<%= lang.TranslationID %>">
+                              <label class="form-check-label" for="active<%= lang.TranslationID %>">Active</label>
+                            </div>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary" data-testid="button-save-<%= lang.TranslationID %>">Save Changes</button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>

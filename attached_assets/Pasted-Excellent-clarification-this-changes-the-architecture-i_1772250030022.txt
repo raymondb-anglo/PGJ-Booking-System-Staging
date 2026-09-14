@@ -1,0 +1,115 @@
+Excellent clarification — this changes the architecture in the right way 👍
+What you’re describing is a System Configuration Layer that must exist before teachers and slots.
+So we pause STEP 3 and insert a new STEP 3A (Admin Configuration).
+Only after this do we continue to slot creation.
+Below is a clean Replit prompt that enforces exactly what you want.
+
+🧱 STEP 3A — Admin System Configuration (NO Teachers Required)
+This step creates global configuration pages that define how the entire system behaves.
+⚠️ These pages:
+Are admin-only
+Exist even if there are ZERO teachers
+Must be completed before slots and bookings
+
+🎯 What This Step Adds
+Admin can configure:
+School Year & Booking Term
+Parent Login Page Content (Terms & Conditions)
+Meeting Date Range & Daily Time Rules
+Global Blocked Time Rules (Lunch, Snack, etc.)
+No teachers required.
+No slots generated yet.
+
+✅ Replit Prompt — STEP 3A (Admin Configuration)
+Copy-paste everything below into Replit AI 👇
+
+📌 REPLIT PROMPT — STEP 3A: ADMIN SYSTEM CONFIGURATION
+Extend the PGJ Booking System with Admin-Only System Configuration Pages.
+
+🔒 ACCESS RULES
+All pages are Admin-only
+These pages must work even if no teachers exist
+These configurations define system behavior for later steps
+
+🧠 CORE CONFIGURATION CONCEPT
+System configuration is global and independent of teachers and slots.
+Teachers and slots will later consume these settings.
+
+📄 REQUIRED ADMIN PAGES (SEPARATE PAGES)
+1️⃣ School Year & Booking Term Setup
+Route
+GET /admin/config/school-year
+Features
+Create & activate School Years
+Example: 2025–2026, 2026–2027
+Create Booking Terms per School Year
+Example: PGJ1, PGJ2
+Only one active School Year + Term at a time
+
+2️⃣ Parent Login Page Content Management
+Route
+GET /admin/config/parent-login
+Features
+Editable Terms & Conditions (rich text or textarea)
+Content is displayed on the parent login page
+Content is term-specific
+
+3️⃣ Meeting Date & Daily Time Rules
+Route
+GET /admin/config/meeting-window
+Features
+Set meeting date range
+Example: March 25 – March 27, 2026
+Set daily meeting time window
+Example: 07:30 – 15:30
+
+4️⃣ Global Blocked Time Rules
+Route
+GET /admin/config/blocked-times
+Features
+Define reusable blocked times:
+Snack Time (10:00 – 10:30)
+Lunch Time (12:00 – 13:00)
+Label each block
+These blocks apply to all future slot generation
+
+🗄 DATABASE RULES
+Use existing MySQL database
+You MAY create configuration tables if missing
+Do NOT touch teacher or slot tables yet
+Configuration tables must be:
+SchoolYears
+BookingTerms
+SystemSettings
+BlockedTimeRules
+
+🖥 UI REQUIREMENTS
+Use EJS templates
+Use Bootstrap 5
+Mobile-friendly admin pages
+Clear “Active Configuration” indicators
+
+📁 FILE STRUCTURE
+/views/admin/config
+├── school-year.ejs
+├── parent-login.ejs
+├── meeting-window.ejs
+├── blocked-times.ejs
+
+
+❌ DO NOT
+Do NOT require teachers to exist
+Do NOT generate slots yet
+Do NOT allow parent access
+These pages define the system state before teachers, slots, or bookings exist.
+
+✅ What “Success” Looks Like
+After STEP 3A:
+✔ Admin can configure the system with zero teachers
+✔ Active school year & term are defined
+✔ Parent login content is editable per term
+✔ Meeting dates & hours are globally defined
+✔ Blocked times are reusable rules
+At this point, your system is properly initialized.
+
+

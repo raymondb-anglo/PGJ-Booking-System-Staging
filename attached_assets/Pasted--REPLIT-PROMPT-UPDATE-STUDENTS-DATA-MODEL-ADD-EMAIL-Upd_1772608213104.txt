@@ -1,0 +1,121 @@
+📌 REPLIT PROMPT — UPDATE STUDENTS DATA MODEL (ADD EMAIL)
+
+Update the existing Students data model to include an Email Address field.
+
+The database already exists and is in use.
+⚠️ Do NOT recreate tables. Only ALTER and update affected logic safely.
+
+🧱 DATABASE CHANGE (MANDATORY)
+🔹 Alter Students Table
+
+Add a new column:
+
+email
+
+Type: VARCHAR(255)
+
+Nullable: YES (to support legacy records)
+
+Must be editable in Admin
+
+Example (MySQL):
+
+ALTER TABLE students
+ADD COLUMN email VARCHAR(255) NULL AFTER student_id;
+
+⚠️ Do NOT delete or rename existing columns.
+
+🔄 SYSTEM-WIDE UPDATES REQUIRED
+1️⃣ Admin – Students Management Page
+
+Display Email column
+
+Allow:
+
+Create student with email
+
+Edit student email
+
+Bulk import with email support
+
+Validate email format (basic validation only)
+
+2️⃣ Parent Login Flow (AFTER STUDENT ID LOGIN)
+
+After successful Student ID validation:
+
+Load student email if available
+
+Pre-fill email field in:
+
+Booking confirmation screen
+
+“Send confirmation email” option
+
+Allow parent to:
+
+Use existing email
+
+OR overwrite with a different email (do NOT auto-save overwrite unless confirmed)
+
+3️⃣ Booking Confirmation Logic
+
+When sending confirmation email:
+
+Priority order:
+
+Email entered by parent manually
+
+Student.email (if exists)
+
+If no email available:
+
+Show input field as required
+
+4️⃣ PDF Generation
+
+If student email exists:
+
+Optionally include it in PDF (footer or details section)
+
+Must not break existing PDF templates
+
+5️⃣ Reports Page
+
+Update reports to include:
+
+Student Email (if available)
+
+Email sent status remains unchanged
+
+🧪 BACKWARD COMPATIBILITY (IMPORTANT)
+
+Existing students without email must:
+
+Still be able to log in
+
+Still be able to book
+
+No runtime errors if email is NULL
+
+🔒 SECURITY & DATA HANDLING
+
+Do NOT expose student email publicly
+
+Only Admin / Super Admin can edit stored email
+
+Parent-entered email during booking is NOT auto-saved unless explicitly confirmed
+
+✅ ACCEPTANCE CRITERIA
+
+Students table altered safely
+
+No data loss
+
+Admin can manage student emails
+
+Parent booking flow supports email properly
+
+Email confirmations work with or without stored email
+
+Reports reflect email when available

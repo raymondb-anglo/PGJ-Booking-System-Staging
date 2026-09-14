@@ -1,0 +1,179 @@
+Create a new reporting page called:
+
+Super Admin Booking Export Report
+
+This page must ONLY be accessible by users with role = SUPER_ADMIN.
+
+Do not allow ADMIN users to access this page.
+
+Location in Admin Dashboard:
+
+Reports
+ └── Advanced Booking Export (Super Admin Only)
+
+--------------------------------------------------
+
+PAGE PURPOSE
+
+Generate a detailed exportable report of all confirmed bookings.
+
+--------------------------------------------------
+
+REPORT TABLE COLUMNS
+
+Display the following columns in this exact order:
+
+1. Schedule (SlotCode)
+   Example: A01, A02, B01, B02
+
+2. TeacherEmail
+
+3. StudentEmail
+
+4. StudentCode
+   (StudentID)
+
+5. TeacherName
+
+6. Student Nickname
+   Format:
+   StudentNickname + " " + First letter of LastName
+
+Example:
+Kai S
+Lina T
+Miki K
+
+--------------------------------------------------
+
+DATA SOURCE
+
+Join the following tables:
+
+Bookings
+Students
+Teachers
+TimeSlots
+MeetingDates
+
+Example logic:
+
+Bookings.TeacherID → Teachers.TeacherID
+Bookings.StudentID → Students.StudentID
+Bookings.SlotID → TimeSlots.ID
+TimeSlots.MeetingDateID → MeetingDates.ID
+
+--------------------------------------------------
+
+SORTING
+
+Default sorting must be:
+
+1. Student Class
+2. DayNumber
+3. Slot Start Time
+4. SlotCode
+
+Example order:
+
+Class 1A
+Day 1
+A01
+A02
+A03
+
+--------------------------------------------------
+
+FILTER OPTIONS
+
+At the top of the page add filters:
+
+Meeting Day
+Teacher
+Class
+Student
+Teacher Email
+Student Email
+
+Also include:
+
+Show All toggle
+
+Filters must update the table dynamically.
+
+--------------------------------------------------
+
+SEARCH FUNCTION
+
+Add global search box.
+
+Search should match:
+
+Student Name
+Student ID
+Teacher Name
+Teacher Email
+Student Email
+SlotCode
+
+--------------------------------------------------
+
+EXPORT OPTIONS
+
+Add export buttons:
+
+Export CSV
+Export Excel
+Export PDF
+
+Exports must include the exact same columns shown in the table.
+
+--------------------------------------------------
+
+TABLE DISPLAY
+
+Columns displayed:
+
+Schedule
+TeacherEmail
+StudentEmail
+StudentCode
+TeacherName
+StudentNickname
+
+Add pagination.
+
+Default rows per page = 50
+
+--------------------------------------------------
+
+SECURITY
+
+Before loading this page:
+
+Check user role.
+
+If role != SUPER_ADMIN
+
+Return:
+
+403 Unauthorized
+
+--------------------------------------------------
+
+PERFORMANCE
+
+Use indexed queries.
+
+Avoid loading unnecessary columns.
+
+Only fetch confirmed bookings.
+
+--------------------------------------------------
+
+UI LOCATION
+
+Admin Dashboard
+
+Reports
+ └── Advanced Booking Export

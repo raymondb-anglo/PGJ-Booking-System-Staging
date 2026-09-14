@@ -1,0 +1,152 @@
+📌 REPLIT PROMPT — ADD MEETING DAY NUMBER & TIMESLOT SCHEDULE NAME
+
+Before building the Meeting Dates & Time Slot Engine, update the data model to support:
+
+Meeting Day Number (Day 1, Day 2, Day 3, etc.)
+
+Human-readable Time Slot Schedule Names per day (A01, A02… B01, B02…)
+
+This must be configurable, predictable, and reusable.
+
+🗓️ MEETING DATES — DATA MODEL
+🔹 MeetingDates Table (Create or Update)
+
+Each meeting date must include:
+
+id
+
+meeting_date (DATE)
+
+day_number (INT)
+
+Example values: 1, 2, 3
+
+day_label (VARCHAR)
+
+Example:
+
+Day 1
+
+Day 2
+
+created_at
+
+⚠️ day_number is admin-defined, not auto-calculated.
+
+⏱️ TIME SLOTS — DATA MODEL
+🔹 TimeSlots Table (Create Later / Extend Now)
+
+Each generated time slot must include:
+
+id
+
+meeting_date_id (FK → MeetingDates)
+
+day_number (INT, duplicated for easy queries)
+
+schedule_prefix (CHAR(1))
+
+Mapping:
+
+Day 1 → A
+
+Day 2 → B
+
+Day 3 → C
+
+schedule_code (VARCHAR)
+
+Example:
+
+A01, A02, A03
+
+B01, B02, B03
+
+start_time (TIME)
+
+end_time (TIME)
+
+is_blocked (BOOLEAN)
+
+block_reason (nullable)
+
+⚠️ schedule_code must be unique per meeting day.
+
+🔤 SCHEDULE NAMING RULES
+
+Schedule codes must be generated sequentially per day
+
+Format:
+
+{PREFIX}{2-digit number}
+
+Examples:
+
+25 March 2026 – Day 1
+
+A01, A02, A03 … AXX
+
+26 March 2026 – Day 2
+
+B01, B02, B03 …
+
+27 March 2026 – Day 3
+
+C01, C02, C03 …
+
+⚠️ Numbers reset per day
+⚠️ Prefix is derived from Day Number
+
+🧠 PREFIX LOGIC (MANDATORY)
+
+Use a deterministic mapping:
+
+Day 1 → A
+Day 2 → B
+Day 3 → C
+Day 4 → D
+...
+
+Do NOT hardcode dates.
+
+🧩 ADMIN UI REQUIREMENTS (PREP ONLY)
+
+For Meeting Dates setup page:
+
+Admin inputs:
+
+Meeting Date (calendar)
+
+Day Number (dropdown or number input)
+
+Display:
+
+“25 March 2026 — Day 1 (Prefix A)”
+
+Prevent duplicate:
+
+Same meeting date
+
+Same day number
+
+🔒 DATA INTEGRITY RULES
+
+Day Number must be unique per School Year / Term
+
+TimeSlot schedule codes must be unique within the same day
+
+Do NOT allow renaming schedule codes after bookings exist (future safeguard)
+
+✅ ACCEPTANCE CRITERIA
+
+Meeting Day Number is stored and visible
+
+Prefix mapping works correctly
+
+TimeSlot schedule name structure is ready
+
+No slots generated yet
+
+No booking logic touched
+
+Clean foundation for next step

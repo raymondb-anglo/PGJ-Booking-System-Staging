@@ -1,0 +1,190 @@
+📌 REPLIT PROMPT — REBUILD STUDENTS & TEACHERS MODULES
+
+Rebuild the Students and Teachers modules from a clean slate.
+
+The database already exists.
+⚠️ Do NOT recreate the database.
+Create or adjust tables only if required.
+
+🧑‍🎓 STUDENTS — REQUIREMENTS
+🔹 Student Table Rules
+
+Students already exist in the database.
+Ensure the system uses all existing columns, including:
+
+student_id (VARCHAR / numeric string, e.g. 21400001)
+
+student_name
+
+pc_class
+
+teacher_id (PC Teacher reference)
+
+email (nullable)
+
+Any other existing fields (do NOT drop)
+
+⚠️ student_id is the login credential for parents
+
+🔹 Admin – Students Page
+
+Create an Admin → Students page with:
+
+Features
+
+List all students
+
+Search by:
+
+Student ID
+
+Name
+
+PC Class
+
+Create student
+
+Edit student
+
+Delete student (soft delete preferred)
+
+View assigned PC Teacher
+
+Bulk Import
+
+CSV upload
+
+Preview before import
+
+Validation:
+
+Duplicate Student ID
+
+Missing required fields
+
+Import summary:
+
+Success count
+
+Failed rows + reason
+
+🔹 Student Data Rules
+
+Student email:
+
+Editable by Admin
+
+Nullable
+
+Student email is NOT required for login
+
+Student email is used only for booking confirmation (later)
+
+🧑‍🏫 TEACHERS — REQUIREMENTS
+🔹 Teachers Table
+
+Create or ensure Teachers table includes:
+
+teacher_id (custom format, e.g. 64T00125)
+
+teacher_name
+
+teacher_image (image path or URL)
+
+email (optional)
+
+active (boolean)
+
+⚠️ teacher_id is NOT auto-generated — Admin inputs it.
+
+🔹 Admin – Teachers Page
+
+Create an Admin → Teachers page with:
+
+Features
+
+List teachers
+
+Create teacher
+
+Edit teacher
+
+Activate / Deactivate teacher
+
+Upload teacher image
+
+Assign PC Classes (if applicable)
+
+Bulk Import
+
+CSV upload
+
+Preview + validation
+
+Duplicate Teacher ID handling
+
+Import summary
+
+🔗 STUDENT ↔ TEACHER RELATIONSHIP
+
+Each student is assigned ONE PC Teacher
+
+Teacher can have MANY students
+
+Relationship must:
+
+Reflect after student login
+
+Be editable from Admin (Student edit page)
+
+🔒 ACCESS CONTROL
+
+Only ADMIN and SUPER_ADMIN can access:
+
+Students page
+
+Teachers page
+
+Parents and teachers have NO access
+
+🧪 VALIDATION & SAFETY
+
+Prevent duplicate:
+
+Student IDs
+
+Teacher IDs
+
+Confirm before delete
+
+All CRUD actions trigger global loader
+
+All DB operations wrapped in try/catch with error messages
+
+🧭 UI REQUIREMENTS
+
+Mobile-friendly tables
+
+Sticky action buttons on mobile
+
+Clear empty states:
+
+“No students found”
+
+“No teachers added yet”
+
+Consistent with Admin dashboard design
+
+✅ ACCEPTANCE CRITERIA
+
+Students module fully functional
+
+Teachers module fully functional
+
+Bulk import works for both
+
+No booking logic exists yet
+
+Clean data relationships
+
+Ready for Meeting Dates & Slots next

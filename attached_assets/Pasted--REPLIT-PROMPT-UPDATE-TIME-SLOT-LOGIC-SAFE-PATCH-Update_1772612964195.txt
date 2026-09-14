@@ -1,0 +1,141 @@
+📌 REPLIT PROMPT — UPDATE TIME SLOT LOGIC (SAFE PATCH)
+
+Update the existing Meeting Dates & Time Slot Engine to support:
+
+Configurable Session Duration (minutes)
+
+Configurable Interval / Buffer Between Sessions (minutes)
+
+⚠️ IMPORTANT:
+
+Do NOT rebuild the module
+
+Do NOT remove existing pages
+
+Apply changes as a backward-compatible update
+
+🧱 DATABASE UPDATES (ALTER ONLY)
+🔹 Add Columns to Meeting Dates (or Slot Rules Table)
+
+Add:
+
+session_duration_minutes (INT, default 10)
+
+session_interval_minutes (INT, default 5)
+
+Example (MySQL):
+
+ALTER TABLE meeting_dates
+ADD COLUMN session_duration_minutes INT NOT NULL DEFAULT 10,
+ADD COLUMN session_interval_minutes INT NOT NULL DEFAULT 5;
+
+⚠️ Do NOT remove existing columns.
+
+🔄 UPDATE SLOT GENERATION LOGIC (CRITICAL)
+
+Replace existing slot generation logic with:
+
+🔁 Updated Algorithm
+
+Slot Start = current_time
+
+Slot End = start + session_duration_minutes
+
+Next Slot Start = slot_end + session_interval_minutes
+
+Repeat while slot_end ≤ day_end_time
+
+⚠️ If a slot would exceed the end time, do NOT generate it.
+
+🏷️ PRESERVE SCHEDULE NAMING
+
+Keep existing A01 / B01 / C01 logic
+
+Regenerate numbering when slots are regenerated
+
+Prefix mapping remains unchanged
+
+🚫 UPDATE BLOCKED TIME HANDLING
+
+Ensure blocked logic still works:
+
+Slot overlaps blocked range → marked blocked
+
+Blocked slots still generated
+
+🖥️ ADMIN UI UPDATE (MINIMAL CHANGE)
+
+On Time Slot Configuration page, add:
+
+Session Duration (minutes)
+
+Default: 10
+
+Interval / Buffer (minutes)
+
+Default: 5
+
+Do NOT redesign the page
+Just extend the existing form.
+
+🔁 SLOT REGENERATION RULES
+
+When admin changes:
+
+Start time
+
+End time
+
+Session duration
+
+Interval
+
+Prompt:
+
+“This will regenerate all slots for this day. Continue?”
+
+Regenerate slots inside a transaction
+
+⚠️ No booking logic exists yet, so safe to regenerate.
+
+🧪 VERIFICATION CHECKLIST
+
+Test with:
+
+07:30 – 16:00
+
+Session: 10
+
+Interval: 5
+
+Expected:
+
+A01 → 07:30–07:40
+
+A02 → 07:45–07:55
+
+A03 → 08:00–08:10
+
+Also test:
+
+Session: 15
+
+Interval: 5
+
+Session: 20
+
+Interval: 10
+
+✅ ACCEPTANCE CRITERIA
+
+No rebuild performed
+
+Existing meeting dates remain
+
+Slot logic updated correctly
+
+UI shows new inputs
+
+No data loss
+
+Ready for Teacher Availability next

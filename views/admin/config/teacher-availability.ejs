@@ -1,0 +1,432 @@
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+  <h1 class="h3 mb-0" data-testid="text-page-title">Teacher Availability</h1>
+  <div class="d-flex gap-2">
+    <a href="/admin/config/teacher-availability/import" class="btn btn-outline-primary btn-sm" data-testid="link-import-availability">Import CSV</a>
+    <a href="/admin/dashboard" class="btn btn-outline-secondary btn-sm" data-testid="link-back">Back to Dashboard</a>
+  </div>
+</div>
+
+
+
+
+<% if (teachers.length === 0) { %>
+  <div class="alert alert-warning">No active teachers found. Please <a href="/admin/teachers">add teachers</a> first.</div>
+<% } else if (terms.length === 0) { %>
+  <div class="alert alert-warning">No booking terms found. Please <a href="/admin/config/school-year">create a school year and term</a> first.</div>
+<% } else { %>
+
+<div class="card shadow-sm mb-4">
+  <div class="card-body">
+    <form method="GET" action="/admin/config/teacher-availability" class="row g-2 align-items-end" data-testid="form-select-filters">
+      <div class="col-12 col-sm-4">
+        <label class="form-label small">Teacher</label>
+        <select name="teacherCode" class="form-select form-select-sm" required data-testid="select-teacher">
+          <option value="">— Select Teacher —</option>
+          <% teachers.forEach(t => { %>
+            <option value="<%= t.TeacherCode %>" <%= selectedTeacher === t.TeacherCode ? 'selected' : '' %>>
+              <%= t.TeacherName %> (<%= t.TeacherCode %>)
+            </option>
+          <% }) %>
+        </select>
+      </div>
+      <div class="col-12 col-sm-3">
+        <label class="form-label small">Term</label>
+        <select name="termId" id="termSelect" class="form-select form-select-sm" data-testid="select-term">
+          <% terms.forEach(t => { %>
+            <option value="<%= t.TermID %>" <%= selectedTermId === t.TermID ? 'selected' : '' %>>
+              <%= t.YearLabel %> — <%= t.TermLabel %><%= t.IsActive ? ' ★' : '' %>
+            </option>
+          <% }) %>
+        </select>
+      </div>
+      <div class="col-12 col-sm-3">
+        <label class="form-label small">Meeting Day</label>
+        <select name="dateId" class="form-select form-select-sm" required data-testid="select-date">
+          <option value="">— Select Day —</option>
+          <% meetingDates.forEach(md => {
+            const dObj = new Date(md.MeetingDate);
+            const dStr = dObj.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+          %>
+            <option value="<%= md.DateID %>" <%= selectedDateId === md.DateID ? 'selected' : '' %>
+              <% if (md.slotCount === 0) { %>disabled<% } %>>
+              <%= md.DayLabel %> (<%= md.prefix %>) — <%= dStr %>
+              <% if (md.slotCount === 0) { %>[No Slots]<% } %>
+            </option>
+          <% }) %>
+        </select>
+      </div>
+      <div class="col-12 col-sm-2">
+        <button type="submit" class="btn btn-primary btn-sm w-100" data-testid="button-load">Load</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<% if (selectedTeacher && selectedDateId && selectedMeetingDate && slots.length > 0) { %>
+<%
+  const dateObj = new Date(selectedMeetingDate.MeetingDate);
+  const dateStr = dateObj.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  const selectedTeacherObj = teachers.find(t => t.TeacherCode === selectedTeacher);
+  const teacherName = selectedTeacherObj ? selectedTeacherObj.TeacherName : selectedTeacher;
+  const availableCount = slots.filter(s => s.effectiveStatus === 'available').length;
+  const teacherBlockedCount = slots.filter(s => s.effectiveStatus === 'teacher-blocked').length;
+  const globalBlockedCount = slots.filter(s => s.effectiveStatus === 'global-blocked').length;
+%>
+
+<div class="card shadow-sm mb-3">
+  <div class="card-body py-2">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <div>
+        <strong data-testid="text-teacher-name"><%= teacherName %></strong>
+        <span class="text-muted">—</span>
+        <span data-testid="text-day-info"><%= dateStr %> (<%= selectedMeetingDate.DayLabel %>, Prefix: <%= selectedMeetingDate.prefix %>)</span>
+      </div>
+      <div class="d-flex gap-2 small">
+        <span class="badge bg-success" data-testid="badge-available-count"><%= availableCount %> Available</span>
+        <span class="badge bg-danger" data-testid="badge-teacher-blocked-count"><%= teacherBlockedCount %> Teacher Blocked</span>
+        <span class="badge bg-secondary" data-testid="badge-global-blocked-count"><%= globalBlockedCount %> Global Blocked</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mb-3">
+  <% if (copyTeachers.length > 0) { %>
+  <div class="col-12 col-md-6">
+    <div class="card shadow-sm h-100">
+      <div class="card-header py-2"><h6 class="mb-0 small">Copy from Another Teacher</h6></div>
+      <div class="card-body py-2">
+        <form method="POST" action="/admin/config/teacher-availability/copy-from-teacher" class="row g-2 align-items-end" data-testid="form-copy-teacher" data-confirm="This will overwrite current availability with the selected teacher's settings. Continue?" data-confirm-btn="Copy">
+          <input type="hidden" name="teacherCode" value="<%= selectedTeacher %>">
+          <input type="hidden" name="dateId" value="<%= selectedDateId %>">
+          <input type="hidden" name="termId" value="<%= selectedTermId %>">
+          <div class="col-8">
+            <select name="sourceTeacherCode" class="form-select form-select-sm" required data-testid="select-copy-teacher">
+              <option value="">— Select —</option>
+              <% copyTeachers.forEach(t => { %>
+                <option value="<%= t.TeacherCode %>"><%= t.TeacherName %> (<%= t.TeacherCode %>)</option>
+              <% }) %>
+            </select>
+          </div>
+          <div class="col-4">
+            <button type="submit" class="btn btn-outline-info btn-sm w-100" data-testid="button-copy-teacher">Copy</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <% } %>
+
+  <% if (copyDates.length > 0) { %>
+  <div class="col-12 col-md-6">
+    <div class="card shadow-sm h-100">
+      <div class="card-header py-2"><h6 class="mb-0 small">Copy from Another Day</h6></div>
+      <div class="card-body py-2">
+        <form method="POST" action="/admin/config/teacher-availability/copy-from-day" class="row g-2 align-items-end" data-testid="form-copy-day" data-confirm="This will overwrite current availability with data from the selected day (matching time slots). Continue?" data-confirm-btn="Copy">
+          <input type="hidden" name="teacherCode" value="<%= selectedTeacher %>">
+          <input type="hidden" name="dateId" value="<%= selectedDateId %>">
+          <input type="hidden" name="termId" value="<%= selectedTermId %>">
+          <div class="col-8">
+            <select name="sourceDateId" class="form-select form-select-sm" required data-testid="select-copy-day">
+              <option value="">— Select —</option>
+              <% copyDates.forEach(d => {
+                const cdObj = new Date(d.MeetingDate);
+                const cdStr = cdObj.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+              %>
+                <option value="<%= d.DateID %>"><%= d.DayLabel %> (<%= d.prefix %>) — <%= cdStr %></option>
+              <% }) %>
+            </select>
+          </div>
+          <div class="col-4">
+            <button type="submit" class="btn btn-outline-info btn-sm w-100" data-testid="button-copy-day">Copy</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <% } %>
+</div>
+
+<form method="POST" action="/admin/config/teacher-availability/save" id="availabilityForm" data-testid="form-availability">
+  <input type="hidden" name="teacherCode" value="<%= selectedTeacher %>">
+  <input type="hidden" name="dateId" value="<%= selectedDateId %>">
+  <input type="hidden" name="termId" value="<%= selectedTermId %>">
+
+  <div class="mb-2 d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <div class="d-flex gap-2">
+      <button type="button" class="btn btn-outline-danger btn-sm" id="btnBulkBlock" data-testid="button-bulk-block" disabled>Block Selected</button>
+      <button type="button" class="btn btn-outline-success btn-sm" id="btnBulkUnblock" data-testid="button-bulk-unblock" disabled>Unblock Selected</button>
+      <label class="btn btn-outline-secondary btn-sm mb-0">
+        <input type="checkbox" id="selectAll" class="form-check-input me-1" data-testid="checkbox-select-all"> All
+      </label>
+    </div>
+    <div class="text-muted small"><%= slots.length %> total slots</div>
+  </div>
+
+  <div class="d-none d-md-block">
+    <div class="table-responsive" style="max-height:500px;overflow-y:auto">
+      <table class="table table-hover table-sm align-middle mb-0" data-testid="table-availability">
+        <thead class="table-light sticky-top">
+          <tr>
+            <th style="width:30px"><input type="checkbox" class="form-check-input" id="selectAllDesktop" data-testid="checkbox-select-all-desktop"></th>
+            <th>Code</th>
+            <th>Time</th>
+            <th>Status</th>
+            <th>Reason</th>
+            <th style="width:180px">Teacher Block</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% slots.forEach(s => { %>
+          <tr class="<%= s.effectiveStatus === 'global-blocked' ? 'table-secondary' : (s.effectiveStatus === 'teacher-blocked' ? 'table-danger bg-opacity-25' : '') %>" data-testid="row-slot-<%= s.SlotID %>">
+            <td>
+              <% if (!s.globalBlocked) { %>
+                <input type="checkbox" class="form-check-input slot-checkbox" name="selectedSlots" value="<%= s.SlotID %>" data-testid="checkbox-slot-<%= s.SlotID %>">
+              <% } %>
+            </td>
+            <td><code class="fs-6"><%= s.ScheduleCode %></code></td>
+            <td><%= s.StartTime.substring(0,5) %> — <%= s.EndTime.substring(0,5) %></td>
+            <td>
+              <% if (s.effectiveStatus === 'global-blocked') { %>
+                <span class="badge bg-secondary" data-testid="badge-status-<%= s.SlotID %>">Global Blocked</span>
+              <% } else if (s.effectiveStatus === 'teacher-blocked') { %>
+                <span class="badge bg-danger" data-testid="badge-status-<%= s.SlotID %>">Teacher Blocked</span>
+              <% } else { %>
+                <span class="badge bg-success" data-testid="badge-status-<%= s.SlotID %>">Available</span>
+              <% } %>
+            </td>
+            <td class="small text-muted">
+              <% if (s.globalBlocked && s.globalBlockReason) { %>
+                <%= s.globalBlockReason %>
+              <% } else if (s.teacherBlocked && s.teacherBlockReason) { %>
+                <%= s.teacherBlockReason %>
+              <% } else { %>
+                -
+              <% } %>
+            </td>
+            <td>
+              <% if (!s.globalBlocked) { %>
+                <div class="d-flex align-items-center gap-1">
+                  <label class="form-check form-switch mb-0">
+                    <input type="checkbox" class="form-check-input" name="blockedSlots" value="<%= s.SlotID %>"
+                      <%= s.teacherBlocked ? 'checked' : '' %> data-testid="switch-block-<%= s.SlotID %>">
+                  </label>
+                  <input type="text" name="blockedReasons[<%= s.SlotID %>]" class="form-control form-control-sm"
+                    style="width:120px" placeholder="Reason" value="<%= s.teacherBlockReason || '' %>" data-testid="input-reason-<%= s.SlotID %>">
+                </div>
+              <% } else { %>
+                <span class="text-muted small">Global block (read-only)</span>
+              <% } %>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="d-md-none">
+    <% slots.forEach(s => { %>
+    <div class="card mb-1 <%= s.effectiveStatus === 'global-blocked' ? 'border-secondary' : (s.effectiveStatus === 'teacher-blocked' ? 'border-danger' : '') %>" data-testid="card-slot-<%= s.SlotID %>">
+      <div class="card-body py-1 px-2">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <% if (!s.globalBlocked) { %>
+              <input type="checkbox" class="form-check-input slot-checkbox me-1" name="selectedSlots" value="<%= s.SlotID %>">
+            <% } %>
+            <code><%= s.ScheduleCode %></code>
+            <span class="small ms-1"><%= s.StartTime.substring(0,5) %>—<%= s.EndTime.substring(0,5) %></span>
+          </div>
+          <div>
+            <% if (s.effectiveStatus === 'global-blocked') { %>
+              <span class="badge bg-secondary" style="font-size:0.65rem">Global</span>
+            <% } else if (s.effectiveStatus === 'teacher-blocked') { %>
+              <span class="badge bg-danger" style="font-size:0.65rem">Blocked</span>
+            <% } else { %>
+              <span class="badge bg-success" style="font-size:0.65rem">OK</span>
+            <% } %>
+          </div>
+        </div>
+        <% if (!s.globalBlocked) { %>
+        <div class="d-flex align-items-center gap-1 mt-1">
+          <label class="form-check form-switch mb-0">
+            <input type="checkbox" class="form-check-input" name="blockedSlots" value="<%= s.SlotID %>" <%= s.teacherBlocked ? 'checked' : '' %>>
+          </label>
+          <input type="text" name="blockedReasons[<%= s.SlotID %>]" class="form-control form-control-sm" style="font-size:0.75rem"
+            placeholder="Reason" value="<%= s.teacherBlockReason || '' %>">
+        </div>
+        <% } %>
+      </div>
+    </div>
+    <% }) %>
+  </div>
+
+  <div class="position-sticky bottom-0 bg-white border-top p-2 mt-3 shadow-sm" style="z-index:10">
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="small text-muted">Toggle switches to block/unblock, then save</div>
+      <button type="submit" class="btn btn-primary btn-sm px-4" data-testid="button-save-availability" data-confirm="Save availability changes?" data-confirm-btn="Save Changes">Save Changes</button>
+    </div>
+  </div>
+</form>
+
+<% } else if (selectedTeacher && selectedDateId) { %>
+  <div class="text-center py-5" data-testid="text-empty-state">
+    <p class="text-muted">No time slots found for this meeting day.</p>
+    <p class="text-muted small">Please <a href="/admin/config/meeting-dates">generate time slots</a> first.</p>
+  </div>
+<% } else { %>
+  <div class="text-center py-5" data-testid="text-select-prompt">
+    <p class="text-muted">Select a teacher and meeting day above to manage availability.</p>
+  </div>
+<% } %>
+
+<% } %>
+
+<div id="bulkBlockModal" class="modal fade" tabindex="-1">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <form method="POST" action="/admin/config/teacher-availability/bulk-block" id="bulkBlockForm">
+        <input type="hidden" name="teacherCode" value="<%= selectedTeacher || '' %>">
+        <input type="hidden" name="dateId" value="<%= selectedDateId || '' %>">
+        <input type="hidden" name="termId" value="<%= selectedTermId || '' %>">
+        <div id="bulkBlockSlotInputs"></div>
+        <div class="modal-header"><h6 class="modal-title">Block Selected Slots</h6><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">
+          <label class="form-label small">Block Reason (applied to all)</label>
+          <input type="text" name="blockReason" class="form-control form-control-sm" placeholder="e.g. Teacher meeting" data-testid="input-bulk-reason">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-danger btn-sm" data-testid="button-confirm-bulk-block">Block</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="bulkUnblockModal" class="modal fade" tabindex="-1">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <form method="POST" action="/admin/config/teacher-availability/bulk-unblock" id="bulkUnblockForm">
+        <input type="hidden" name="teacherCode" value="<%= selectedTeacher || '' %>">
+        <input type="hidden" name="dateId" value="<%= selectedDateId || '' %>">
+        <input type="hidden" name="termId" value="<%= selectedTermId || '' %>">
+        <div id="bulkUnblockSlotInputs"></div>
+        <div class="modal-header"><h6 class="modal-title">Unblock Selected Slots</h6><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">
+          <p class="small text-muted">This will mark the selected slots as available for this teacher.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-success btn-sm" data-testid="button-confirm-bulk-unblock">Unblock</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var teacherMeetingDays = {};
+  <% teachers.forEach(t => { %>
+    teacherMeetingDays['<%- t.TeacherCode %>'] = <%- t.MeetingDays ? JSON.stringify(t.MeetingDays.split(',').map(d => d.trim())) : 'null' %>;
+  <% }) %>
+
+  var allDates = [];
+  <% (typeof allMeetingDates !== 'undefined' ? allMeetingDates : meetingDates).forEach(md => {
+    const dObj = new Date(md.MeetingDate);
+    const dStr = dObj.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+  %>
+    allDates.push({ dateId: <%- md.DateID %>, dayNumber: <%- md.DayNumber %>, label: '<%- md.DayLabel %>', prefix: '<%- md.prefix %>', dateStr: '<%- dStr %>', slotCount: <%- md.slotCount %> });
+  <% }) %>
+
+  var teacherSelect = document.querySelector('[data-testid="select-teacher"]');
+  var dateSelect = document.querySelector('[data-testid="select-date"]');
+
+  if (teacherSelect && dateSelect) {
+    teacherSelect.addEventListener('change', function() {
+      var code = this.value;
+      var days = code ? teacherMeetingDays[code] : null;
+      var currentVal = dateSelect.value;
+
+      dateSelect.innerHTML = '<option value="">— Select Day —</option>';
+      allDates.forEach(function(md) {
+        var show = !days || days.indexOf(String(md.dayNumber)) !== -1;
+        if (show) {
+          var opt = document.createElement('option');
+          opt.value = md.dateId;
+          opt.textContent = md.label + ' (' + md.prefix + ') — ' + md.dateStr;
+          if (md.slotCount === 0) {
+            opt.disabled = true;
+            opt.textContent += ' [No Slots]';
+          }
+          if (String(md.dateId) === String(currentVal)) opt.selected = true;
+          dateSelect.appendChild(opt);
+        }
+      });
+    });
+  }
+})();
+
+(function() {
+  var checkboxes = document.querySelectorAll('.slot-checkbox');
+  var selectAll = document.getElementById('selectAll');
+  var selectAllDesktop = document.getElementById('selectAllDesktop');
+  var btnBlock = document.getElementById('btnBulkBlock');
+  var btnUnblock = document.getElementById('btnBulkUnblock');
+
+  function getSelected() {
+    return Array.from(checkboxes).filter(function(cb) { return cb.checked; });
+  }
+
+  function updateButtons() {
+    var selected = getSelected();
+    if (btnBlock) btnBlock.disabled = selected.length === 0;
+    if (btnUnblock) btnUnblock.disabled = selected.length === 0;
+  }
+
+  checkboxes.forEach(function(cb) {
+    cb.addEventListener('change', updateButtons);
+  });
+
+  function toggleAll(checked) {
+    checkboxes.forEach(function(cb) { cb.checked = checked; });
+    updateButtons();
+  }
+
+  if (selectAll) selectAll.addEventListener('change', function() { toggleAll(this.checked); if (selectAllDesktop) selectAllDesktop.checked = this.checked; });
+  if (selectAllDesktop) selectAllDesktop.addEventListener('change', function() { toggleAll(this.checked); if (selectAll) selectAll.checked = this.checked; });
+
+  if (btnBlock) {
+    btnBlock.addEventListener('click', function() {
+      var selected = getSelected();
+      if (selected.length === 0) return;
+      var container = document.getElementById('bulkBlockSlotInputs');
+      container.innerHTML = '';
+      selected.forEach(function(cb) {
+        var inp = document.createElement('input');
+        inp.type = 'hidden'; inp.name = 'slotIds'; inp.value = cb.value;
+        container.appendChild(inp);
+      });
+      var modal = new bootstrap.Modal(document.getElementById('bulkBlockModal'));
+      modal.show();
+    });
+  }
+
+  if (btnUnblock) {
+    btnUnblock.addEventListener('click', function() {
+      var selected = getSelected();
+      if (selected.length === 0) return;
+      var container = document.getElementById('bulkUnblockSlotInputs');
+      container.innerHTML = '';
+      selected.forEach(function(cb) {
+        var inp = document.createElement('input');
+        inp.type = 'hidden'; inp.name = 'slotIds'; inp.value = cb.value;
+        container.appendChild(inp);
+      });
+      var modal = new bootstrap.Modal(document.getElementById('bulkUnblockModal'));
+      modal.show();
+    });
+  }
+})();
+</script>

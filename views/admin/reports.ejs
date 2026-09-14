@@ -1,0 +1,406 @@
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+
+<div class="d-flex justify-content-between align-items-start mb-2 flex-wrap gap-2">
+  <div>
+    <a href="/admin/dashboard" class="text-decoration-none text-muted small">&larr; Back to Dashboard</a>
+    <h1 class="h3 mt-1 mb-0" data-testid="text-page-title">Reports</h1>
+  </div>
+  <% if (typeof adminRole !== 'undefined' && adminRole === 'SUPER_ADMIN') { %>
+    <a href="/admin/reports/advanced-export" class="btn btn-outline-primary btn-sm" data-testid="link-advanced-export">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="me-1" viewBox="0 0 16 16"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/><path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z"/></svg>
+      Advanced Booking Export
+    </a>
+  <% } %>
+</div>
+
+
+
+<div class="row g-3 mb-4">
+  <div class="col-6 col-lg-3">
+    <div class="card shadow-sm h-100">
+      <div class="card-body text-center py-3">
+        <div class="mb-1">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-primary" viewBox="0 0 16 16"><path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1zm-7.978-1L7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002-.014.002zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4m3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0M6.936 9.28a6 6 0 0 0-1.23-.247A7 7 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216A2.24 2.24 0 0 1 5 13c0-.25.006-.868.44-1.72A6.3 6.3 0 0 1 6.936 9.28M4.92 10A5.5 5.5 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275ZM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0m3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4"/></svg>
+        </div>
+        <h6 class="card-title mb-0" data-testid="text-total-students">Total Students</h6>
+        <h3 class="mb-0 text-primary" data-testid="value-total-students"><%= typeof totalStudents !== 'undefined' ? totalStudents : 0 %></h3>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card shadow-sm h-100">
+      <div class="card-body text-center py-3">
+        <div class="mb-1">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-success" viewBox="0 0 16 16"><path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/></svg>
+        </div>
+        <h6 class="card-title mb-0" data-testid="text-total-teachers">Total Teachers</h6>
+        <h3 class="mb-0 text-success" data-testid="value-total-teachers"><%= typeof totalTeachers !== 'undefined' ? totalTeachers : 0 %></h3>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card shadow-sm h-100">
+      <div class="card-body text-center py-3">
+        <div class="mb-1">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-info" viewBox="0 0 16 16"><path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/></svg>
+        </div>
+        <h6 class="card-title mb-0" data-testid="text-total-meeting-dates">Meeting Dates</h6>
+        <h3 class="mb-0 text-info" data-testid="value-total-meeting-dates"><%= typeof totalMeetingDates !== 'undefined' ? totalMeetingDates : 0 %></h3>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card shadow-sm h-100">
+      <div class="card-body text-center py-3">
+        <div class="mb-1">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-secondary" viewBox="0 0 16 16"><path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71z"/><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0"/></svg>
+        </div>
+        <h6 class="card-title mb-0" data-testid="text-total-time-slots">Time Slots</h6>
+        <h3 class="mb-0 text-secondary" data-testid="value-total-time-slots"><%= typeof totalTimeSlots !== 'undefined' ? totalTimeSlots : 0 %></h3>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card shadow-sm h-100">
+      <div class="card-body text-center py-3">
+        <div class="mb-1">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-primary" viewBox="0 0 16 16"><path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/><path d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/></svg>
+        </div>
+        <h6 class="card-title mb-0" data-testid="text-total-bookings">Total Bookings</h6>
+        <h3 class="mb-0 text-primary" data-testid="value-total-bookings"><%= typeof totalBookings !== 'undefined' ? totalBookings : 0 %></h3>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card shadow-sm h-100">
+      <div class="card-body text-center py-3">
+        <div class="mb-1">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-success" viewBox="0 0 16 16"><path d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414zM0 4.697v7.104l5.803-3.558zM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586zm3.436-.586L16 4.697v7.104z"/></svg>
+        </div>
+        <h6 class="card-title mb-0" data-testid="text-emails-sent">Emails Sent</h6>
+        <h3 class="mb-0 text-success" data-testid="value-emails-sent"><%= typeof emailsSent !== 'undefined' ? emailsSent : 0 %></h3>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card shadow-sm h-100">
+      <div class="card-body text-center py-3">
+        <div class="mb-1">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-danger" viewBox="0 0 16 16"><path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"/><path d="M4.603 14.087a.8.8 0 0 1-.438-.42c-.195-.388-.13-.776.08-1.102.198-.307.526-.568.897-.787a7.7 7.7 0 0 1 1.482-.645 20 20 0 0 0 1.062-2.227 7.3 7.3 0 0 1-.43-1.295c-.086-.4-.119-.796-.046-1.136.075-.354.274-.672.65-.823.192-.077.4-.12.602-.077a.7.7 0 0 1 .477.365c.088.164.12.356.127.538.007.188-.012.396-.047.614-.084.51-.27 1.134-.52 1.794a11 11 0 0 0 .98 1.686 5.8 5.8 0 0 1 1.334.05c.364.066.734.195.96.465.12.144.193.32.2.518.007.192-.047.382-.138.563a1.04 1.04 0 0 1-.354.416.86.86 0 0 1-.51.138c-.331-.014-.654-.196-.933-.417a6.1 6.1 0 0 1-.911-.95 11.7 11.7 0 0 0-1.997.406 11.3 11.3 0 0 1-1.02 1.51c-.292.35-.609.656-.927.787a.8.8 0 0 1-.58.029z"/></svg>
+        </div>
+        <h6 class="card-title mb-0" data-testid="text-pdfs-downloaded">PDFs Downloaded</h6>
+        <h3 class="mb-0 text-danger" data-testid="value-pdfs-downloaded"><%= typeof pdfDownloaded !== 'undefined' ? pdfDownloaded : 0 %></h3>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card shadow-sm h-100">
+      <div class="card-body text-center py-3">
+        <div class="mb-1">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-warning" viewBox="0 0 16 16"><path d="M10.854 7.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 9.793l2.646-2.647a.5.5 0 0 1 .708 0"/><path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/></svg>
+        </div>
+        <h6 class="card-title mb-0" data-testid="text-available-slots">Available Slots</h6>
+        <h3 class="mb-0 text-warning" data-testid="value-available-slots"><%= typeof availableSlots !== 'undefined' ? availableSlots : 0 %></h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="bg-white border-bottom py-3 mb-3" style="position: sticky; top: 56px; z-index: 10;">
+  <form method="GET" action="/admin/reports" data-testid="form-report-filters">
+    <div class="row g-2 align-items-end">
+      <div class="col-6 col-md">
+        <label class="form-label small mb-1">School Year</label>
+        <select name="schoolYearId" class="form-select form-select-sm" data-testid="select-school-year">
+          <option value="">All Years</option>
+          <% if (typeof schoolYears !== 'undefined') { schoolYears.forEach(function(sy) { %>
+            <option value="<%= sy.SchoolYearID %>" <%= (typeof filters !== 'undefined' && filters.schoolYearId == sy.SchoolYearID) ? 'selected' : '' %>><%= sy.YearLabel %></option>
+          <% }); } %>
+        </select>
+      </div>
+      <div class="col-6 col-md">
+        <label class="form-label small mb-1">Term</label>
+        <select name="termId" class="form-select form-select-sm" data-testid="select-term">
+          <option value="">All Terms</option>
+          <% if (typeof terms !== 'undefined') { terms.forEach(function(t) { %>
+            <option value="<%= t.TermID %>" <%= (typeof filters !== 'undefined' && filters.termId == t.TermID) ? 'selected' : '' %>><%= t.TermLabel %></option>
+          <% }); } %>
+        </select>
+      </div>
+      <div class="col-6 col-md">
+        <label class="form-label small mb-1">Meeting Date</label>
+        <select name="meetingDateId" class="form-select form-select-sm" data-testid="select-meeting-date">
+          <option value="">All Dates</option>
+          <% if (typeof meetingDates !== 'undefined') { meetingDates.forEach(function(d) { %>
+            <option value="<%= d.DateID %>" <%= (typeof filters !== 'undefined' && filters.meetingDateId == d.DateID) ? 'selected' : '' %>><%= d.DayLabel %> — <%= new Date(d.MeetingDate).toLocaleDateString() %></option>
+          <% }); } %>
+        </select>
+      </div>
+      <div class="col-6 col-md">
+        <label class="form-label small mb-1">Teacher</label>
+        <select name="teacherCode" class="form-select form-select-sm" data-testid="select-teacher">
+          <option value="">All Teachers</option>
+          <% if (typeof teachers !== 'undefined') { teachers.forEach(function(t) { %>
+            <option value="<%= t.TeacherCode %>" <%= (typeof filters !== 'undefined' && filters.teacherCode == t.TeacherCode) ? 'selected' : '' %>><%= t.TeacherName %></option>
+          <% }); } %>
+        </select>
+      </div>
+      <div class="col-6 col-md">
+        <label class="form-label small mb-1">Status</label>
+        <select name="status" class="form-select form-select-sm" data-testid="select-status">
+          <option value="">All</option>
+          <option value="CONFIRMED" <%= (typeof filters !== 'undefined' && filters.status === 'CONFIRMED') ? 'selected' : '' %>>Confirmed</option>
+          <option value="CANCELLED" <%= (typeof filters !== 'undefined' && filters.status === 'CANCELLED') ? 'selected' : '' %>>Cancelled</option>
+          <option value="UNLOCKED" <%= (typeof filters !== 'undefined' && filters.status === 'UNLOCKED') ? 'selected' : '' %>>Unlocked</option>
+        </select>
+      </div>
+      <div class="col-6 col-md">
+        <label class="form-label small mb-1">Translator</label>
+        <select name="translatorRequired" class="form-select form-select-sm" data-testid="select-translator">
+          <option value="">All</option>
+          <option value="1" <%= (typeof filters !== 'undefined' && filters.translatorRequired === '1') ? 'selected' : '' %>>Yes</option>
+          <option value="0" <%= (typeof filters !== 'undefined' && filters.translatorRequired === '0') ? 'selected' : '' %>>No</option>
+        </select>
+      </div>
+      <div class="col-6 col-md">
+        <label class="form-label small mb-1">Email Sent</label>
+        <select name="emailSent" class="form-select form-select-sm" data-testid="select-email-sent">
+          <option value="">All</option>
+          <option value="1" <%= (typeof filters !== 'undefined' && filters.emailSent === '1') ? 'selected' : '' %>>Yes</option>
+          <option value="0" <%= (typeof filters !== 'undefined' && filters.emailSent === '0') ? 'selected' : '' %>>No</option>
+        </select>
+      </div>
+      <div class="col-12 col-md-auto d-flex gap-1">
+        <button type="submit" class="btn btn-sm btn-primary" data-testid="button-apply-filters">Apply Filters</button>
+        <a href="/admin/reports" class="btn btn-sm btn-outline-secondary" data-testid="link-clear-filters">Clear</a>
+      </div>
+    </div>
+  </form>
+  <div class="mt-2 d-flex gap-2 flex-wrap">
+    <a href="/admin/reports/export/csv?<%= typeof queryString !== 'undefined' ? queryString : '' %>" class="btn btn-sm btn-outline-success" data-testid="button-export-csv">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="me-1" viewBox="0 0 16 16"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/><path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z"/></svg>
+      Export CSV
+    </a>
+    <% if (typeof adminRole !== 'undefined' && adminRole === 'SUPER_ADMIN') { %>
+      <a href="/admin/reports/export/excel?<%= typeof queryString !== 'undefined' ? queryString : '' %>" class="btn btn-sm btn-outline-primary" data-testid="button-export-excel">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="me-1" viewBox="0 0 16 16"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/><path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z"/></svg>
+        Export Excel
+      </a>
+      <a href="/admin/reports/export/pdf?<%= typeof queryString !== 'undefined' ? queryString : '' %>" class="btn btn-sm btn-outline-danger" data-testid="button-export-pdf">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="me-1" viewBox="0 0 16 16"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/><path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z"/></svg>
+        Export PDF Summary
+      </a>
+    <% } %>
+  </div>
+</div>
+
+<div class="card shadow-sm mb-4">
+  <div class="card-body p-0">
+    <% if (typeof bookings === 'undefined' || bookings.length === 0) { %>
+      <div class="text-center text-muted py-4" data-testid="text-no-bookings">
+        No bookings found. Try adjusting the filters.
+      </div>
+    <% } else { %>
+      <div class="table-responsive">
+        <table id="reportsTable" class="table table-hover table-sm mb-0 align-middle small w-100" data-testid="table-bookings-report">
+          <thead class="table-light">
+            <tr>
+              <th>Student ID</th>
+              <th>Student Name</th>
+              <th>PC Class</th>
+              <th>Teacher Name</th>
+              <th>Meeting Date</th>
+              <th>Day No.</th>
+              <th>Schedule Code</th>
+              <th>Time Range</th>
+              <th>Translator</th>
+              <th>Language</th>
+              <th>Status</th>
+              <th>Email Sent</th>
+              <th>Email Address</th>
+              <th>PDF Generated</th>
+              <th>Booking Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% bookings.forEach(function(b) { %>
+              <tr data-testid="row-booking-<%= b.BookingID %>">
+                <td><%= b.StudentID %></td>
+                <td><%= b.StudentName || '—' %></td>
+                <td><%= b.PCClass || '—' %></td>
+                <td><%= b.TeacherName || b.TeacherCode || '—' %></td>
+                <td><%= b.MeetingDate ? new Date(b.MeetingDate).toLocaleDateString() : '—' %></td>
+                <td><%= b.DayNumber || '—' %></td>
+                <td><strong><%= b.ScheduleCode || '—' %></strong></td>
+                <td class="text-nowrap"><%= b.StartTime ? b.StartTime.substring(0,5) : '' %> – <%= b.EndTime ? b.EndTime.substring(0,5) : '' %></td>
+                <td>
+                  <% if (b.TranslatorRequired) { %>
+                    <span class="badge bg-info">Yes</span>
+                  <% } else { %>
+                    <span class="text-muted">No</span>
+                  <% } %>
+                </td>
+                <td><%= b.TranslatorLanguage || '—' %></td>
+                <td>
+                  <% if (b.Status === 'CONFIRMED') { %>
+                    <span class="badge bg-success" data-testid="badge-status-<%= b.BookingID %>">Confirmed</span>
+                  <% } else if (b.Status === 'CANCELLED') { %>
+                    <span class="badge bg-danger" data-testid="badge-status-<%= b.BookingID %>">Cancelled</span>
+                  <% } else if (b.Status === 'UNLOCKED') { %>
+                    <span class="badge bg-warning text-dark" data-testid="badge-status-<%= b.BookingID %>">Unlocked</span>
+                  <% } else { %>
+                    <span class="badge bg-secondary"><%= b.Status %></span>
+                  <% } %>
+                </td>
+                <td>
+                  <% if (b.EmailSentCount && b.EmailSentCount > 0) { %>
+                    <span class="badge bg-success">Yes</span>
+                  <% } else { %>
+                    <span class="text-muted">No</span>
+                  <% } %>
+                </td>
+                <td><%= b.LastEmailAddress || '—' %></td>
+                <td>
+                  <% if (b.PdfCount && b.PdfCount > 0) { %>
+                    <span class="badge bg-success">Yes</span>
+                  <% } else { %>
+                    <span class="text-muted">No</span>
+                  <% } %>
+                </td>
+                <td class="text-nowrap"><small><%= b.CreatedAt ? new Date(b.CreatedAt).toLocaleString() : '—' %></small></td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+
+    <% } %>
+  </div>
+</div>
+
+<div class="card shadow-sm mb-4" data-testid="card-student-coverage">
+  <div class="card-header">
+    <h5 class="card-title mb-0">Student Booking Coverage</h5>
+  </div>
+  <div class="card-body">
+    <div class="row g-3 mb-3">
+      <div class="col-4 text-center">
+        <div class="text-muted small">Total Students</div>
+        <h4 class="mb-0" data-testid="value-coverage-total"><%= typeof totalStudents !== 'undefined' ? totalStudents : 0 %></h4>
+      </div>
+      <div class="col-4 text-center">
+        <div class="text-muted small">With Booking</div>
+        <h4 class="mb-0 text-success" data-testid="value-coverage-with"><%= typeof studentsWithBooking !== 'undefined' ? studentsWithBooking : 0 %></h4>
+      </div>
+      <div class="col-4 text-center">
+        <div class="text-muted small">Without Booking</div>
+        <h4 class="mb-0 text-danger" data-testid="value-coverage-without"><%= typeof studentsWithoutBooking !== 'undefined' ? studentsWithoutBooking : 0 %></h4>
+      </div>
+    </div>
+    <% var pct = (typeof bookingPercentage !== 'undefined') ? bookingPercentage : 0; %>
+    <div class="mb-2">
+      <div class="d-flex justify-content-between gap-2 small mb-1">
+        <span>Booking Percentage</span>
+        <span data-testid="value-coverage-percentage"><%= pct %>%</span>
+      </div>
+      <div class="progress" style="height: 20px;" data-testid="progress-coverage">
+        <div class="progress-bar bg-success" role="progressbar" style="width: <%= pct %>%;" aria-valuenow="<%= pct %>" aria-valuemin="0" aria-valuemax="100"><%= pct %>%</div>
+      </div>
+    </div>
+    <button class="btn btn-sm btn-outline-primary mt-2" type="button" data-testid="button-view-without-booking" onclick="loadStudentsWithoutBooking()">
+      View Students Without Booking
+    </button>
+    <div id="students-without-booking" class="mt-3" style="display:none;">
+      <div class="table-responsive">
+        <table class="table table-sm table-bordered mb-0 small" data-testid="table-students-without-booking">
+          <thead class="table-light">
+            <tr>
+              <th>Student ID</th>
+              <th>Student Name</th>
+              <th>PC Class</th>
+              <th>Teacher</th>
+            </tr>
+          </thead>
+          <tbody id="students-without-booking-body">
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function loadStudentsWithoutBooking() {
+  var container = document.getElementById('students-without-booking');
+  var tbody = document.getElementById('students-without-booking-body');
+  if (container.style.display !== 'none') {
+    container.style.display = 'none';
+    return;
+  }
+  container.style.display = 'block';
+  tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">Loading...</td></tr>';
+  var termParam = '';
+  <% if (typeof filters !== 'undefined' && filters.termId) { %>
+    termParam = '?termId=<%= filters.termId %>';
+  <% } %>
+  fetch('/admin/reports/students-without-booking' + termParam)
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      var students = data.students || data || [];
+      if (students.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">All students have bookings.</td></tr>';
+        return;
+      }
+      var html = '';
+      students.forEach(function(s) {
+        html += '<tr data-testid="row-student-no-booking-' + s.StudentID + '">';
+        html += '<td>' + s.StudentID + '</td>';
+        html += '<td>' + (s.StudentName || '—') + '</td>';
+        html += '<td>' + (s.PCClass || '—') + '</td>';
+        html += '<td>' + (s.TeacherName || '—') + '</td>';
+        html += '</tr>';
+      });
+      tbody.innerHTML = html;
+    })
+    .catch(function(err) {
+      tbody.innerHTML = '<tr><td colspan="4" class="text-center text-danger">Failed to load students.</td></tr>';
+    });
+}
+</script>
+
+<!-- DataTables JS -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+  $(document).ready(function() {
+    if ($('#reportsTable').length) {
+      $('#reportsTable').DataTable({
+        pageLength: 20,
+        lengthMenu: [10, 20, 50, 100],
+        pagingType: 'full',
+        order: [],
+        language: {
+          search: "",
+          searchPlaceholder: "Search bookings...",
+          lengthMenu: "Rows per page: _MENU_",
+          info: "_START_-_END_ of _TOTAL_",
+          paginate: {
+            first: '<i class="bi bi-chevron-bar-left"></i>',
+            previous: '<i class="bi bi-chevron-left"></i>',
+            next: '<i class="bi bi-chevron-right"></i>',
+            last: '<i class="bi bi-chevron-bar-right"></i>'
+          }
+        },
+        dom: "<'row mb-3'<'col-sm-12 col-md-6'><'col-sm-12 col-md-6'f>>" +
+             "<'row'<'col-sm-12'tr>>" +
+             "<'row mt-3 align-items-center'<'col-sm-12 col-md-4'l><'col-sm-12 col-md-4 text-center'i><'col-sm-12 col-md-4 d-flex justify-content-end'p>>",
+        columnDefs: [
+          { orderable: false, targets: [8, 9, 11, 13] }
+        ]
+      });
+    }
+  });
+</script>

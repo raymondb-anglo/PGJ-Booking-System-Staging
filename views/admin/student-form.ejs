@@ -1,0 +1,71 @@
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0" data-testid="text-page-title"><%= title %></h1>
+  <a href="/admin/students" class="btn btn-outline-secondary btn-sm" data-testid="link-back">Back to Students</a>
+</div>
+
+
+
+<div class="card shadow-sm">
+  <div class="card-body">
+    <form method="POST" action="<%= student && student.StudentID ? '/admin/students/edit/' + student.StudentID : '/admin/students/create' %>" data-testid="form-student">
+
+      <% if (!student || !student.StudentID) { %>
+      <div class="mb-3">
+        <label for="studentId" class="form-label">Student ID <span class="text-danger">*</span></label>
+        <input type="text" id="studentId" name="studentId" class="form-control" value="<%= student ? (student.studentId || student.StudentID || '') : '' %>" required data-testid="input-student-id" placeholder="e.g. 21400001">
+        <div class="form-text">This is the parent login credential. Cannot be changed after creation.</div>
+      </div>
+      <% } else { %>
+      <div class="mb-3">
+        <label class="form-label">Student ID</label>
+        <input type="text" class="form-control" value="<%= student.StudentID %>" disabled>
+      </div>
+      <% } %>
+
+      <div class="mb-3">
+        <label for="studentName" class="form-label">Student Name <span class="text-danger">*</span></label>
+        <input type="text" id="studentName" name="studentName" class="form-control" value="<%= student ? (student.studentName || student.StudentName || '') : '' %>" required data-testid="input-student-name">
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="sNickname" class="form-label">Nickname</label>
+          <input type="text" id="sNickname" name="sNickname" class="form-control" value="<%= student ? (student.sNickname || student.SNickname || '') : '' %>" data-testid="input-nickname">
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="email" class="form-label">Email</label>
+          <input type="email" id="email" name="email" class="form-control" value="<%= student ? (student.email || student.Email || '') : '' %>" data-testid="input-email" placeholder="Optional">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="pcClass" class="form-label">PC Class</label>
+          <input type="text" id="pcClass" name="pcClass" class="form-control" value="<%= student ? (student.pcClass || student.PCClass || '') : '' %>" data-testid="input-pc-class">
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="magClass" class="form-label">MAG Class</label>
+          <input type="text" id="magClass" name="magClass" class="form-control" value="<%= student ? (student.magClass || student.MAGClass || '') : '' %>" data-testid="input-mag-class">
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="teacherCode" class="form-label">PC Teacher</label>
+        <select id="teacherCode" name="teacherCode" class="form-select" data-testid="select-teacher">
+          <option value="">— No Teacher —</option>
+          <% if (typeof teachers !== 'undefined') { teachers.forEach(t => { %>
+            <option value="<%= t.TeacherCode %>" <%= (student && (student.teacherCode || student.TeacherID) === t.TeacherCode) ? 'selected' : '' %>>
+              <%= t.TeacherName %> (<%= t.TeacherCode %>)
+              <% if (t.TeacherNickname) { %> - <%= t.TeacherNickname %><% } %>
+            </option>
+          <% }) } %>
+        </select>
+      </div>
+
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary" data-testid="button-save"><%= student && student.StudentID ? 'Update Student' : 'Create Student' %></button>
+        <a href="/admin/students" class="btn btn-outline-secondary" data-testid="button-cancel">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>

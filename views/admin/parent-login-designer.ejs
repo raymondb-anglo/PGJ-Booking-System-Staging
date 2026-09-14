@@ -1,0 +1,232 @@
+<a href="/admin/dashboard" class="text-decoration-none text-muted small">&larr; Back to Dashboard</a>
+<h1 class="h3 mt-1 mb-4" data-testid="text-page-title">Parent Login Page Designer</h1>
+
+
+
+
+<form method="POST" action="/admin/parent-login-designer/save" enctype="multipart/form-data" id="designerForm" data-testid="form-designer">
+
+  <div class="card shadow-sm mb-4">
+    <div class="card-header bg-white"><h6 class="mb-0">1. Header Section</h6></div>
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-12 col-md-6">
+          <label class="form-label fw-semibold">Logo Image</label>
+          <% if (config.HeaderLogo) { %>
+            <div class="mb-2">
+              <img src="<%= config.HeaderLogo %>" alt="Current Logo" style="max-height:60px;" class="border rounded p-1" data-testid="img-current-logo">
+              <div class="form-check mt-1">
+                <input class="form-check-input" type="checkbox" name="removeLogo" value="1" id="removeLogo" data-testid="checkbox-remove-logo">
+                <label class="form-check-label small" for="removeLogo">Remove current logo</label>
+              </div>
+            </div>
+          <% } %>
+          <input type="file" name="headerLogo" class="form-control form-control-sm" accept="image/*" data-testid="input-logo">
+          <div class="form-text">Max 2MB. PNG, JPG, SVG, or WebP.</div>
+        </div>
+        <div class="col-12 col-md-6">
+          <label class="form-label fw-semibold">Banner Background Color</label>
+          <div class="form-check mb-2">
+            <input class="form-check-input" type="checkbox" name="noBgColor" value="1" id="noBgColor" <%= (!config.HeaderBgColor || config.HeaderBgColor === 'transparent') ? 'checked' : '' %> data-testid="checkbox-no-bg-color">
+            <label class="form-check-label small" for="noBgColor">No Background / Transparent</label>
+          </div>
+          <div class="d-flex gap-2 align-items-center" id="bgColorControls" style="<%= (!config.HeaderBgColor || config.HeaderBgColor === 'transparent') ? 'display:none;' : '' %>">
+            <input type="color" name="headerBgColor" class="form-control form-control-color" value="<%= (config.HeaderBgColor && config.HeaderBgColor !== 'transparent') ? config.HeaderBgColor : '#0d6efd' %>" data-testid="input-header-bg-color">
+            <input type="text" class="form-control form-control-sm" value="<%= (config.HeaderBgColor && config.HeaderBgColor !== 'transparent') ? config.HeaderBgColor : '#0d6efd' %>" id="headerBgColorText" style="width:100px" data-testid="input-header-bg-color-text">
+          </div>
+        </div>
+        <div class="col-12 col-md-6">
+          <label class="form-label fw-semibold">Title Text</label>
+          <input type="text" name="headerTitle" class="form-control" value="<%= config.HeaderTitle || '' %>" maxlength="500" data-testid="input-header-title">
+        </div>
+        <div class="col-12 col-md-6">
+          <label class="form-label fw-semibold">Subtitle Text</label>
+          <input type="text" name="headerSubtitle" class="form-control" value="<%= config.HeaderSubtitle || '' %>" maxlength="500" placeholder="e.g. Campus Name" data-testid="input-header-subtitle">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card shadow-sm mb-4">
+    <div class="card-header bg-white"><h6 class="mb-0">2. Welcome Content</h6></div>
+    <div class="card-body">
+      <ul class="nav nav-tabs mb-3" role="tablist">
+        <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#welcomeEN" data-testid="tab-welcome-en">English</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#welcomeTH" data-testid="tab-welcome-th">Thai</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#welcomeCN" data-testid="tab-welcome-cn">Chinese</a></li>
+      </ul>
+      <div class="tab-content">
+        <div class="tab-pane fade show active" id="welcomeEN">
+          <textarea name="welcomeEN" class="form-control" rows="6" data-testid="textarea-welcome-en"><%= config.WelcomeEN || '' %></textarea>
+          <div class="form-text">Supports basic HTML: &lt;b&gt;, &lt;i&gt;, &lt;br&gt;, &lt;p&gt;, &lt;ul&gt;, &lt;li&gt;, &lt;h1&gt;-&lt;h6&gt;</div>
+        </div>
+        <div class="tab-pane fade" id="welcomeTH">
+          <textarea name="welcomeTH" class="form-control" rows="6" data-testid="textarea-welcome-th"><%= config.WelcomeTH || '' %></textarea>
+        </div>
+        <div class="tab-pane fade" id="welcomeCN">
+          <textarea name="welcomeCN" class="form-control" rows="6" data-testid="textarea-welcome-cn"><%= config.WelcomeCN || '' %></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card shadow-sm mb-4">
+    <div class="card-header bg-white"><h6 class="mb-0">3. Terms & Conditions Section</h6></div>
+    <div class="card-body">
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Terms Background Color</label>
+        <div class="d-flex gap-2 align-items-center">
+          <input type="color" name="termsBgColor" class="form-control form-control-color" value="<%= config.TermsBgColor || '#f8f9fa' %>" data-testid="input-terms-bg-color">
+          <input type="text" class="form-control form-control-sm" value="<%= config.TermsBgColor || '#f8f9fa' %>" id="termsBgColorText" style="width:100px" data-testid="input-terms-bg-color-text">
+        </div>
+      </div>
+      <div class="alert alert-info small">The Terms & Conditions content is managed through the <a href="/admin/tc-template">T&C Templates</a> page. The background color setting above controls the styling of the terms section on the parent page.</div>
+    </div>
+  </div>
+
+  <div class="card shadow-sm mb-4">
+    <div class="card-header bg-white"><h6 class="mb-0">4. Footer</h6></div>
+    <div class="card-body">
+      <label class="form-label fw-semibold">Footer Text</label>
+      <input type="text" name="footerText" class="form-control" value="<%= config.FooterText || '' %>" maxlength="1000" placeholder="e.g. School Name &copy; 2026" data-testid="input-footer-text">
+    </div>
+  </div>
+
+  <div class="card shadow-sm mb-4">
+    <div class="card-header bg-white d-flex align-items-center justify-content-between">
+      <h6 class="mb-0">Preview</h6>
+      <div class="btn-group btn-group-sm" role="group" data-testid="preview-toggle">
+        <button type="button" class="btn btn-primary active" id="btnPreviewDesktop" data-testid="button-preview-desktop">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="me-1" viewBox="0 0 16 16"><path d="M0 4s0-2 2-2h12s2 0 2 2v6s0 2-2 2h-4l.5 2H11a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1h.5l.5-2H2s-2 0-2-2zm1.398-.855a.758.758 0 0 0-.254.302A1.46 1.46 0 0 0 1 4.01V10c0 .325.078.502.145.602.07.105.17.188.302.254a1.464 1.464 0 0 0 .538.143L2.01 11H14c.325 0 .502-.078.602-.145a.758.758 0 0 0 .254-.302 1.464 1.464 0 0 0 .143-.538L15 9.99V4c0-.325-.078-.502-.145-.602a.757.757 0 0 0-.302-.254A1.46 1.46 0 0 0 13.99 3H2c-.325 0-.502.078-.602.145"/></svg>
+          Desktop
+        </button>
+        <button type="button" class="btn btn-outline-primary" id="btnPreviewMobile" data-testid="button-preview-mobile">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="me-1" viewBox="0 0 16 16"><path d="M11 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM5 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/><path d="M8 14a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/></svg>
+          Mobile
+        </button>
+      </div>
+    </div>
+    <div class="card-body p-3" style="background:#e9ecef; overflow-x:auto;">
+      <div id="previewFrame" style="margin:0 auto; transition: width 0.3s ease; width:100%; max-width:1200px;">
+        <div style="background:#f8f9fa; min-height:400px; border-radius:8px; border:1px solid #dee2e6; padding:30px 0; display:flex; flex-direction:column; align-items:center;">
+
+          <div id="previewWelcome" style="width:100%; max-width:460px; padding:0 16px; margin-bottom:12px;">
+            <div class="small"><%- config.WelcomeEN || '' %></div>
+          </div>
+
+          <div id="previewCardWrapper" style="width:100%; max-width:460px; padding:0 16px;">
+            <div class="card shadow-sm overflow-hidden" id="previewCard">
+              <div id="previewLogoBanner" style="width:100%; height:110px; overflow:hidden; display:<%= config.HeaderLogo ? 'flex' : 'none' %>; align-items:center; justify-content:center; padding:12px 24px; background-color:<%= (config.HeaderBgColor && config.HeaderBgColor !== 'transparent') ? config.HeaderBgColor : 'transparent' %>;">
+                <img src="<%= config.HeaderLogo || '' %>" alt="Logo" id="previewLogo" style="max-width:100%; max-height:100%; object-fit:contain; display:block;">
+              </div>
+              <div class="card-body p-4 text-center">
+                <div class="mb-4">
+                  <h1 class="h4 fw-bold" id="previewTitle"><%= config.HeaderTitle || 'Parent Login' %></h1>
+                  <p class="text-muted small mb-0" id="previewSubtitle"><%= config.HeaderSubtitle || 'Enter your child\'s Student ID to continue' %></p>
+                </div>
+                <div class="mb-3 text-start">
+                  <label class="form-label fw-semibold">Student ID <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control form-control-lg text-center" placeholder="e.g. 21400001" disabled>
+                </div>
+                <button class="btn btn-primary w-100 btn-lg disabled">Log In</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="previewFooter" class="text-center text-muted small mt-3" style="display:<%= config.FooterText ? 'block' : 'none' %>;"><%= config.FooterText || '' %></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-grid gap-2 mb-4">
+    <button type="submit" class="btn btn-primary btn-lg" data-testid="button-save">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-1" viewBox="0 0 16 16"><path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1z"/></svg>
+      Save Design
+    </button>
+  </div>
+</form>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var bgColorInput = document.querySelector('[name="headerBgColor"]');
+  var bgColorText = document.getElementById('headerBgColorText');
+  var titleInput = document.querySelector('[name="headerTitle"]');
+  var subtitleInput = document.querySelector('[name="headerSubtitle"]');
+  var footerInput = document.querySelector('[name="footerText"]');
+  var previewTitle = document.getElementById('previewTitle');
+  var previewSubtitle = document.getElementById('previewSubtitle');
+  var previewFooter = document.getElementById('previewFooter');
+  var termsBgInput = document.querySelector('[name="termsBgColor"]');
+  var termsBgText = document.getElementById('termsBgColorText');
+  var previewLogoBanner = document.getElementById('previewLogoBanner');
+  var noBgCheck = document.getElementById('noBgColor');
+  var bgColorControls = document.getElementById('bgColorControls');
+  var previewFrame = document.getElementById('previewFrame');
+  var btnDesktop = document.getElementById('btnPreviewDesktop');
+  var btnMobile = document.getElementById('btnPreviewMobile');
+
+  btnDesktop.addEventListener('click', function() {
+    previewFrame.style.maxWidth = '1200px';
+    previewFrame.style.width = '100%';
+    previewLogoBanner.style.height = '110px';
+    previewLogoBanner.style.padding = '12px 24px';
+    btnDesktop.className = 'btn btn-primary active';
+    btnMobile.className = 'btn btn-outline-primary';
+  });
+
+  btnMobile.addEventListener('click', function() {
+    previewFrame.style.maxWidth = '375px';
+    previewFrame.style.width = '375px';
+    previewLogoBanner.style.height = '90px';
+    previewLogoBanner.style.padding = '10px 16px';
+    btnMobile.className = 'btn btn-primary active';
+    btnDesktop.className = 'btn btn-outline-primary';
+  });
+
+  function updateBannerBg() {
+    if (!previewLogoBanner) return;
+    if (noBgCheck && noBgCheck.checked) {
+      previewLogoBanner.style.backgroundColor = 'transparent';
+    } else if (bgColorInput) {
+      previewLogoBanner.style.backgroundColor = bgColorInput.value;
+    }
+  }
+
+  if (noBgCheck) {
+    noBgCheck.addEventListener('change', function() {
+      if (bgColorControls) bgColorControls.style.display = this.checked ? 'none' : '';
+      updateBannerBg();
+    });
+  }
+
+  if (bgColorInput && bgColorText) {
+    bgColorInput.addEventListener('input', function() {
+      bgColorText.value = this.value;
+      updateBannerBg();
+    });
+    bgColorText.addEventListener('input', function() {
+      bgColorInput.value = this.value;
+      updateBannerBg();
+    });
+  }
+
+  if (termsBgInput && termsBgText) {
+    termsBgInput.addEventListener('input', function() { termsBgText.value = this.value; });
+    termsBgText.addEventListener('input', function() { termsBgInput.value = this.value; });
+  }
+
+  if (titleInput && previewTitle) {
+    titleInput.addEventListener('input', function() { previewTitle.textContent = this.value || 'Parent Login'; });
+  }
+  if (subtitleInput && previewSubtitle) {
+    subtitleInput.addEventListener('input', function() { previewSubtitle.textContent = this.value || 'Enter your child\'s Student ID to continue'; });
+  }
+  if (footerInput && previewFooter) {
+    footerInput.addEventListener('input', function() {
+      previewFooter.textContent = this.value;
+      previewFooter.style.display = this.value ? 'block' : 'none';
+    });
+  }
+});
+</script>

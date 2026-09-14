@@ -1,0 +1,157 @@
+<%
+  var c = (typeof config !== 'undefined' && config) ? config : {};
+  var headerLogo = c.HeaderLogo || '';
+  var headerBgColor = (c.HeaderBgColor && c.HeaderBgColor !== 'transparent') ? c.HeaderBgColor : '';
+  var headerTitle = c.HeaderTitle || 'Parent Booking';
+  var headerSubtitle = c.HeaderSubtitle || '';
+  var welcomeEN = c.WelcomeEN || '';
+  var welcomeTH = c.WelcomeTH || '';
+  var welcomeCN = c.WelcomeCN || '';
+  var termsBgColor = c.TermsBgColor || '#f8f9fa';
+  var footerText = c.FooterText || '';
+  var tc = (typeof tcContent !== 'undefined') ? tcContent : '';
+  
+  function formatText(txt) {
+    if (!txt) return '';
+    // Replace both literal backslash-n strings and actual newlines
+    return txt.replace(/\\r\\n/g, '<br>').replace(/\\n/g, '<br>').replace(/\r\n/g, '<br>').replace(/\n/g, '<br>');
+  }
+  
+  var hasWelcome = !!(welcomeEN || welcomeTH || welcomeCN);
+%>
+
+<div class="parent-login-page">
+  <% if (hasWelcome) { %>
+    <div class="row justify-content-center mb-3">
+      <div class="col-md-8 col-lg-6">
+        <div class="welcome-content" data-testid="text-welcome">
+          <% if (welcomeEN) { %>
+            <div class="mb-2" data-testid="text-welcome-en"><%- formatText(welcomeEN) %></div>
+          <% } %>
+          <% if (welcomeTH) { %>
+            <div class="mb-2" data-testid="text-welcome-th"><%- formatText(welcomeTH) %></div>
+          <% } %>
+          <% if (welcomeCN) { %>
+            <div class="mb-2" data-testid="text-welcome-cn"><%- formatText(welcomeCN) %></div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  <% } %>
+
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card shadow-sm overflow-hidden">
+        <% if (headerLogo) { %>
+          <div class="login-logo-banner" style="<%= headerBgColor ? 'background-color:' + headerBgColor + ';' : '' %>" data-testid="div-logo-banner">
+            <img src="<%= headerLogo %>" alt="Logo" class="login-logo-img" data-testid="img-login-logo">
+          </div>
+        <% } %>
+
+        <div class="card-body p-4">
+          <div class="text-center mb-4">
+            <h4 class="fw-bold mb-1" data-testid="text-page-title"><%= headerTitle %></h4>
+            <% if (headerSubtitle) { %>
+              <p class="text-muted small mb-0" data-testid="text-subtitle"><%= headerSubtitle %></p>
+            <% } else { %>
+              <p class="text-muted small mb-0">Enter your child's Student ID to book a parent-teacher meeting.</p>
+            <% } %>
+          </div>
+
+          
+
+          <% 
+            var hasTc = !!(tc || (typeof tcContentTH !== 'undefined' && tcContentTH) || (typeof tcContentCN !== 'undefined' && tcContentCN));
+          %>
+          <% if (hasTc) { %>
+            <div class="tc-section p-3 rounded mb-3" style="background-color:<%= termsBgColor %>;" data-testid="div-terms">
+              <ul class="nav nav-tabs nav-sm mb-2" role="tablist">
+                <li class="nav-item"><a class="nav-link active py-1 px-2 small" data-bs-toggle="tab" href="#tcTabEN">English</a></li>
+                <% if (typeof tcContentTH !== 'undefined' && tcContentTH) { %>
+                  <li class="nav-item"><a class="nav-link py-1 px-2 small" data-bs-toggle="tab" href="#tcTabTH">Thai</a></li>
+                <% } %>
+                <% if (typeof tcContentCN !== 'undefined' && tcContentCN) { %>
+                  <li class="nav-item"><a class="nav-link py-1 px-2 small" data-bs-toggle="tab" href="#tcTabCN">Chinese</a></li>
+                <% } %>
+              </ul>
+              <div class="tab-content">
+                <div class="tab-pane fade show active small" id="tcTabEN"><%- formatText(tc) %></div>
+                <% if (typeof tcContentTH !== 'undefined' && tcContentTH) { %>
+                  <div class="tab-pane fade small" id="tcTabTH"><%- formatText(tcContentTH) %></div>
+                <% } %>
+                <% if (typeof tcContentCN !== 'undefined' && tcContentCN) { %>
+                  <div class="tab-pane fade small" id="tcTabCN"><%- formatText(tcContentCN) %></div>
+                <% } %>
+              </div>
+            </div>
+          <% } %>
+
+          <form method="POST" action="/booking/login" data-testid="form-student-login">
+            <% if (tc) { %>
+              <div class="mb-3">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="agreeTerms" required data-testid="checkbox-agree-terms">
+                  <label class="form-check-label small" for="agreeTerms">
+                    I have read and agreed to the terms and conditions <span class="text-danger">*</span>
+                  </label>
+                </div>
+              </div>
+            <% } %>
+
+            <div class="mb-3">
+              <label for="studentId" class="form-label fw-semibold">Student ID <span class="text-danger">*</span></label>
+              <input type="text" class="form-control form-control-lg text-center" id="studentId"
+                     name="studentId" placeholder="e.g. 21400001" required autofocus
+                     data-testid="input-student-id">
+            </div>
+            <button type="submit" class="btn btn-primary w-100 btn-lg" data-testid="button-login">
+              Log In
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <% if (footerText) { %>
+    <div class="text-center text-muted small mt-3" data-testid="text-footer"><%- footerText %></div>
+  <% } %>
+</div>
+
+<style>
+  .parent-login-page {
+    padding-top: 2rem;
+  }
+  .login-logo-banner {
+    width: 100%;
+    height: 110px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+  }
+  .login-logo-img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+  .welcome-content {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+  .tc-section {
+    max-height: 200px;
+    overflow-y: auto;
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+  @media (max-width: 767px) {
+    .parent-login-page { padding-top: 1rem; }
+    .login-logo-banner {
+      height: 90px;
+      padding: 10px 16px;
+    }
+  }
+</style>

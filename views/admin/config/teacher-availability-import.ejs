@@ -1,0 +1,149 @@
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+  <div>
+    <a href="/admin/config/teacher-availability" class="text-decoration-none text-muted small">&larr; Back to Availability Configuration</a>
+    <h3 class="mb-0 mt-1" data-testid="text-page-title">Import Teacher Availability</h3>
+  </div>
+  <a href="/admin/config/teacher-availability/import/template" class="btn btn-outline-primary btn-sm" data-testid="link-download-template">
+    <i class="bi bi-download me-1"></i> Download Template
+  </a>
+</div>
+
+
+
+<% if (summary) { %>
+  <div class="alert alert-<%= summary.failed.length > 0 ? 'warning' : 'success' %>" data-testid="alert-summary">
+    <strong>Import Complete</strong><br>
+    Total: <%= summary.total %> | Success: <%= summary.successCount %> | Skipped (global-blocked): <%= summary.skippedGlobal %> | Failed: <%= summary.failed.length %>
+  </div>
+  <% if (summary.failed.length > 0) { %>
+    <div class="card mb-3">
+      <div class="card-header bg-danger text-white">Failed Rows</div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-sm mb-0" data-testid="table-failed-rows">
+            <thead><tr><th>Row</th><th>Teacher</th><th>Schedule Code</th><th>Reason</th></tr></thead>
+            <tbody>
+              <% summary.failed.forEach(f => { %>
+              <tr>
+                <td><%= f.row %></td>
+                <td><%= f.teacherCode || '-' %></td>
+                <td><%= f.scheduleCode || '-' %></td>
+                <td class="text-danger"><%= f.reason %></td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  <% } %>
+  <a href="/admin/config/teacher-availability/import" class="btn btn-primary btn-sm" data-testid="link-import-again">Import More</a>
+  <a href="/admin/config/teacher-availability" class="btn btn-outline-secondary btn-sm" data-testid="link-back-to-availability">Back to Availability</a>
+
+<% } else if (!preview) { %>
+
+  <div class="card shadow-sm mb-3">
+    <div class="card-body">
+      <p class="text-muted small">Upload a CSV file with the following columns:</p>
+      <div class="mb-3">
+        <code>TeacherCode, DayNumber, ScheduleCode, IsAvailable, BlockReason</code>
+      </div>
+      <div class="mb-3">
+        <table class="table table-sm table-bordered small" style="max-width:600px">
+          <thead class="table-light">
+            <tr><th>Column</th><th>Required</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>TeacherCode</code></td><td>Yes</td><td>Teacher's code (must exist in system)</td></tr>
+            <tr><td><code>DayNumber</code></td><td>Yes</td><td>Meeting day number (e.g. 1, 2, 3)</td></tr>
+            <tr><td><code>ScheduleCode</code></td><td>Yes</td><td>Slot code (e.g. A01, B03)</td></tr>
+            <tr><td><code>IsAvailable</code></td><td>Yes</td><td>1 = Available, 0 = Blocked</td></tr>
+            <tr><td><code>BlockReason</code></td><td>No</td><td>Reason for blocking (optional)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="alert alert-info small mb-3" data-testid="alert-info">
+        <strong>Notes:</strong>
+        <ul class="mb-0">
+          <li>Only active teachers and active meeting dates with existing time slots are accepted.</li>
+          <li>Global-blocked slots will be skipped (cannot override).</li>
+          <li>Existing availability records will be overwritten by the import.</li>
+        </ul>
+      </div>
+      <form method="POST" action="/admin/config/teacher-availability/import/preview" enctype="multipart/form-data" data-testid="form-upload">
+        <div class="mb-3">
+          <label for="csvFile" class="form-label">CSV File</label>
+          <input type="file" id="csvFile" name="csvFile" class="form-control" accept=".csv" required data-testid="input-csv-file">
+        </div>
+        <button type="submit" class="btn btn-primary" data-testid="button-preview">Preview Import</button>
+      </form>
+    </div>
+  </div>
+
+<% } else { %>
+
+  <div class="alert alert-info" data-testid="alert-preview-info">
+    Preview: <%= preview.filter(r => r.valid).length %> valid, <%= preview.filter(r => !r.valid).length %> invalid out of <%= preview.length %> rows
+    <% if (preview.some(r => r.globalBlocked)) { %>
+      | <%= preview.filter(r => r.globalBlocked).length %> global-blocked (will be skipped)
+    <% } %>
+  </div>
+
+  <div class="table-responsive mb-3">
+    <table class="table table-sm" data-testid="table-preview">
+      <thead class="table-light">
+        <tr>
+          <th>Status</th>
+          <th>Teacher Code</th>
+          <th>Day No.</th>
+          <th>Schedule Code</th>
+          <th>Time</th>
+          <th>Available</th>
+          <th>Block Reason</th>
+          <th>Issues</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% preview.forEach((row, i) => { %>
+        <tr class="<%= !row.valid ? 'table-danger' : (row.globalBlocked ? 'table-secondary' : (row.isAvailable === 0 ? 'table-warning' : '')) %>" data-testid="row-preview-<%= i %>">
+          <td>
+            <% if (row.globalBlocked) { %>
+              <span class="badge bg-secondary">Skip</span>
+            <% } else if (row.valid) { %>
+              <span class="text-success">✓</span>
+            <% } else { %>
+              <span class="text-danger">✗</span>
+            <% } %>
+          </td>
+          <td><%= row.teacherCode %></td>
+          <td><%= row.dayNumber || '-' %></td>
+          <td><code><%= row.scheduleCode || '-' %></code></td>
+          <td class="text-nowrap small"><%= row.startTime || '' %><%= row.startTime ? ' – ' : '' %><%= row.endTime || '' %></td>
+          <td>
+            <% if (row.isAvailable === 1) { %>
+              <span class="badge bg-success">Yes</span>
+            <% } else if (row.isAvailable === 0) { %>
+              <span class="badge bg-danger">No</span>
+            <% } else { %>
+              -
+            <% } %>
+          </td>
+          <td class="small"><%= row.blockReason || '-' %></td>
+          <td class="text-danger small"><%= row.errors.join(', ') %></td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <% if (preview.some(r => r.valid && !r.globalBlocked)) { %>
+    <form method="POST" action="/admin/config/teacher-availability/import/confirm" class="d-inline" data-testid="form-confirm"
+          data-confirm="Import <%= preview.filter(r => r.valid && !r.globalBlocked).length %> availability records? Existing records will be overwritten." data-confirm-btn="Confirm Import">
+      <button type="submit" class="btn btn-success" data-testid="button-confirm-import">
+        Confirm Import (<%= preview.filter(r => r.valid && !r.globalBlocked).length %> records)
+      </button>
+    </form>
+  <% } %>
+  <a href="/admin/config/teacher-availability/import" class="btn btn-outline-secondary" data-testid="link-cancel-import">Cancel</a>
+
+<% } %>

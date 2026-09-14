@@ -1,0 +1,219 @@
+📌 REPLIT PROMPT — MEETING DATES & TIME SLOT ENGINE
+
+Build the Meeting Dates & Time Slot Engine for the admin side.
+
+This module is admin-only and must work before teachers or bookings exist.
+
+The database already exists.
+⚠️ Do NOT recreate the database.
+
+🗓️ PART 1 — MEETING DATES (ADMIN CONFIG)
+🔹 Admin Page: “Meeting Dates”
+
+Admin must be able to:
+
+Create meeting dates
+
+Assign:
+
+Meeting Date (calendar)
+
+Meeting Day Number (Day 1, Day 2, Day 3…)
+
+Display:
+
+25 March 2026 — Day 1 (Prefix A)
+
+Duplicate an existing meeting day
+
+Copies all time slot rules
+
+Allows changing ONLY the date & day number
+
+🔒 Rules
+
+Day Number must be unique per School Year / Term
+
+Meeting Date must be unique
+
+Prefix is auto-derived from Day Number (A, B, C…)
+
+⏱️ PART 2 — TIME SLOT CONFIGURATION (PER DAY)
+🔹 Admin Page: “Configure Time Slots”
+
+For EACH meeting day, admin can configure multiple time ranges.
+
+Each time range includes:
+
+Start Time (e.g. 07:30)
+
+End Time (e.g. 16:00)
+
+Interval: 10 minutes (fixed)
+
+🔹 Slot Generation Rules
+
+Slots are auto-generated every 10 minutes
+
+Example:
+
+07:30–07:40
+
+07:40–07:50
+
+…
+
+Slots stop exactly at End Time
+
+Admin can preview slots before saving
+
+🏷️ PART 3 — TIME SLOT SCHEDULE NAMING
+
+Each generated slot must have:
+
+Day Number
+
+Prefix:
+
+Day 1 → A
+
+Day 2 → B
+
+Day 3 → C
+
+Sequential numbering per day
+
+🔢 Example
+
+25 March 2026 – Day 1
+
+A01
+
+A02
+
+A03
+
+…
+
+26 March 2026 – Day 2
+
+B01
+
+B02
+
+B03
+
+…
+
+⚠️ Number resets per day
+⚠️ Schedule codes must be unique per day
+
+🚫 PART 4 — BLOCKED TIME RANGES
+
+Admin must be able to define blocked ranges per meeting day:
+
+Examples:
+
+Snack Time: 10:00 – 10:30
+
+Lunch Time: 12:00 – 13:00
+
+Custom: “Assembly”, “School Event”
+
+🔹 Block Behavior
+
+Any slot overlapping a blocked range:
+
+Is marked is_blocked = true
+
+Has a block_reason
+
+Blocked slots:
+
+Still exist in DB
+
+Are not bookable later
+
+🔁 PART 5 — DUPLICATION FEATURE (CRITICAL)
+
+Admin can:
+
+Duplicate a meeting day configuration:
+
+Copies:
+
+Time ranges
+
+Blocked times
+
+Slot structure
+
+Does NOT copy bookings (none exist yet)
+
+Change:
+
+Meeting date
+
+Day number
+
+This is used to quickly setup Day 2 / Day 3.
+
+🧠 PART 6 — DATA INTEGRITY & SAFETY
+
+All operations wrapped in DB transactions
+
+No partial saves
+
+Rollback on failure
+
+Prevent:
+
+Duplicate schedule codes
+
+Overlapping time ranges
+
+Global loader must appear on all CRUD actions
+
+🖥️ UI REQUIREMENTS
+
+Mobile-friendly admin pages
+
+Slot preview table:
+
+Schedule Code
+
+Time Range
+
+Blocked status
+
+Clear labels:
+
+“Blocked — Lunch”
+
+Empty state messages
+
+Confirmation before regeneration
+
+🔒 ACCESS CONTROL
+
+Only ADMIN and SUPER_ADMIN
+
+Parents and teachers have no access
+
+Routes must be protected server-side
+
+✅ ACCEPTANCE CRITERIA
+
+Admin can setup meeting dates without teachers
+
+Multiple time ranges per day work
+
+10-minute slots generated correctly
+
+Schedule codes follow A01/B01 logic
+
+Blocked slots are respected
+
+Duplication works
+
+No booking logic exists yet

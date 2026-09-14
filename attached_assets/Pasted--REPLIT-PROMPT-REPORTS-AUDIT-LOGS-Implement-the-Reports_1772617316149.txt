@@ -1,0 +1,261 @@
+📌 REPLIT PROMPT — REPORTS & AUDIT LOGS
+
+Implement the Reports & Audit Logs module for the booking system.
+
+This module must provide:
+
+Operational visibility
+
+Exportable reports
+
+Full audit trace for critical actions
+
+⚠️ This is read-heavy and must NOT affect booking performance.
+
+📊 PART 1 — REPORTS DASHBOARD (ADMIN)
+
+Create Admin → Reports with the following sections.
+
+📈 SUMMARY CARDS (TOP)
+
+Show real-time counts:
+
+Total Students
+
+Total Teachers
+
+Total Meeting Dates
+
+Total Time Slots
+
+Total Bookings
+
+Bookings Sent via Email
+
+Bookings with PDF Downloaded
+
+Available Slots Remaining
+
+Cards update dynamically based on filters.
+
+📋 PART 2 — BOOKINGS REPORT (CORE)
+Table Columns
+
+Student ID
+
+Student Name
+
+PC Class
+
+Teacher Name
+
+Meeting Date
+
+Day Number
+
+Schedule Code
+
+Time Range
+
+Translator Required (Yes/No)
+
+Language
+
+Booking Status
+
+Email Sent (Yes/No)
+
+Email Address Used
+
+PDF Generated (Yes/No)
+
+Booking Timestamp
+
+Filters (MANDATORY)
+
+School Year
+
+Term
+
+Meeting Date
+
+Teacher
+
+Booking Status
+
+Translator Required
+
+Email Sent
+
+Filters must be combinable.
+
+Export Options
+
+CSV
+
+Excel
+
+PDF (summary-style)
+
+Exports must respect active filters.
+
+📁 PART 3 — STUDENT BOOKING COVERAGE
+
+Create a sub-report:
+
+Total students
+
+Students with booking
+
+Students without booking
+
+Booking percentage
+
+Optional:
+
+List of students without bookings
+
+🧾 PART 4 — AUDIT LOGS (CRITICAL)
+🔹 AuditLogs Table (CREATE)
+
+Fields:
+
+id
+
+actor_type (SUPER_ADMIN, ADMIN, SYSTEM)
+
+actor_username
+
+action
+
+entity_type
+
+entity_id
+
+old_value (JSON, nullable)
+
+new_value (JSON, nullable)
+
+ip_address
+
+created_at
+
+🔍 LOG THESE ACTIONS (MANDATORY)
+System Configuration
+
+School Year created/edited
+
+Term created/edited
+
+Meeting Dates created/duplicated
+
+Time Slots generated/regenerated
+
+Blocked times added/removed
+
+Data Management
+
+Student create/update/delete
+
+Teacher create/update/delete
+
+Teacher availability changes
+
+Bulk imports
+
+Bookings
+
+Booking created
+
+Booking unlocked
+
+Booking cancelled
+
+Admin booking override
+
+Communication
+
+Email sent (success/failure)
+
+PDF generated
+
+🖥️ PART 5 — AUDIT LOG VIEWER (ADMIN)
+
+Create Admin → Audit Logs page:
+
+Features
+
+Filter by:
+
+Date range
+
+Actor
+
+Action
+
+Entity type
+
+View:
+
+Before / After values
+
+Read-only (no delete/edit)
+
+Pagination required
+
+⚠️ SUPER_ADMIN sees all
+⚠️ ADMIN sees logs but cannot export
+
+🔒 ACCESS CONTROL
+
+SUPER_ADMIN:
+
+Full access
+
+Export allowed
+
+ADMIN:
+
+View reports
+
+Limited exports (CSV only)
+
+View audit logs (read-only)
+
+Parents & teachers:
+
+No access
+
+🧪 PERFORMANCE & SAFETY
+
+Use indexed columns for filters
+
+Audit logging must be async-safe
+
+Logging failures must NOT block main action
+
+No sensitive data exposure (mask emails if needed)
+
+🖥️ UI REQUIREMENTS
+
+Mobile-friendly tables
+
+Sticky filters on desktop
+
+Empty states with guidance
+
+Global loader on data fetch
+
+✅ ACCEPTANCE CRITERIA
+
+Accurate real-time reports
+
+Filters work correctly
+
+Exports match filtered data
+
+All critical actions logged
+
+Audit logs immutable
+
+No performance regression

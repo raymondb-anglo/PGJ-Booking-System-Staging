@@ -1,0 +1,140 @@
+Prepare this project for production deployment on a Linux server using PM2.
+
+The deployment flow will be:
+
+Replit Project → Push to GitHub → Pull from Local Linux Git Server → Run with PM2.
+
+Make the following changes:
+
+------------------------------------------------
+1. CREATE ENVIRONMENT FILE SUPPORT
+------------------------------------------------
+
+Add support for environment variables using dotenv.
+
+Create a file called:
+
+.env.example
+
+Include the following variables:
+
+APP_NAME=PGJ_BOOKING_SYSTEM
+NODE_ENV=production
+PORT=5040
+
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=pgj_booking
+DB_USER=pgj_user
+DB_PASSWORD=your_password_here
+
+EMAIL_PROVIDER=smtp
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your_email
+SMTP_PASSWORD=your_email_password
+
+BASE_URL=http://localhost:5040
+
+------------------------------------------------
+2. UPDATE SERVER CONFIGURATION
+------------------------------------------------
+
+Update the server startup code to use:
+
+process.env.PORT || 5040
+
+Ensure database connection reads from:
+
+process.env.DB_HOST
+process.env.DB_PORT
+process.env.DB_NAME
+process.env.DB_USER
+process.env.DB_PASSWORD
+
+------------------------------------------------
+3. ADD PM2 ECOSYSTEM FILE
+------------------------------------------------
+
+Create a file called:
+
+ecosystem.config.js
+
+Configuration:
+
+module.exports = {
+  apps: [
+    {
+      name: "pgj-booking-system",
+      script: "server.js",
+      instances: 1,
+      exec_mode: "fork",
+      watch: false,
+      env: {
+        NODE_ENV: "production",
+        PORT: 5040
+      }
+    }
+  ]
+}
+
+------------------------------------------------
+4. UPDATE PACKAGE.JSON
+------------------------------------------------
+
+Add scripts:
+
+"scripts": {
+  "start": "node server.js",
+  "dev": "nodemon server.js",
+  "pm2:start": "pm2 start ecosystem.config.js",
+  "pm2:restart": "pm2 restart pgj-booking-system",
+  "pm2:stop": "pm2 stop pgj-booking-system"
+}
+
+------------------------------------------------
+5. CREATE .GITIGNORE
+------------------------------------------------
+
+Ensure the following files are ignored:
+
+node_modules
+.env
+logs
+*.log
+
+------------------------------------------------
+6. CREATE DEPLOYMENT README
+------------------------------------------------
+
+Create a file called:
+
+DEPLOYMENT.md
+
+Include instructions for:
+
+1. Cloning the repo
+2. Installing dependencies
+3. Creating .env file
+4. Starting with PM2
+5. Checking logs
+6. Restarting service
+
+------------------------------------------------
+7. VERIFY PRODUCTION READINESS
+------------------------------------------------
+
+Ensure:
+
+• Database connection retries gracefully
+• Server logs errors clearly
+• App starts correctly using PORT 5040
+• App works with PM2
+
+Do NOT create PostgreSQL configuration.
+Use MySQL only.
+
+Do NOT modify database tables.
+Only update configuration files.
+
+Return the generated files after completion.

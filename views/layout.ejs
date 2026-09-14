@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof title !== 'undefined' ? title + ' | PGJ Booking System' : 'PGJ Booking System' %></title>
+  
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Bootstrap 5 & Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark premium-navbar shadow-sm sticky-top">
+    <div class="container">
+      <%- include('partials/logo') %>
+      <% if (typeof isAdmin !== 'undefined' && isAdmin) { %>
+        <div class="ms-auto d-flex align-items-center gap-3">
+          <a class="nav-link text-white d-flex align-items-center gap-2" href="/admin/dashboard" data-testid="nav-dashboard">
+            <i class="bi bi-grid-1x2-fill"></i> Dashboard
+          </a>
+          <a class="btn btn-outline-light btn-sm rounded-pill px-3 fw-medium" href="/admin/logout" data-testid="nav-logout">
+            Logout <i class="bi bi-box-arrow-right ms-1"></i>
+          </a>
+        </div>
+      <% } %>
+    </div>
+  </nav>
+
+  <main class="container py-4">
+    <%- body %>
+  </main>
+
+  <%- include('partials/loading') %>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="/js/main.js"></script>
+  <script src="/js/loading.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      var needsCleanup = false;
+      <% if (typeof success !== 'undefined' && success) { %>
+        Swal.fire({
+          icon: 'success',
+          title: 'Success',
+          text: <%- JSON.stringify(success) %>,
+          timer: 3000,
+          showConfirmButton: false
+        });
+        needsCleanup = true;
+      <% } %>
+      <% if (typeof error !== 'undefined' && error) { %>
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: <%- JSON.stringify(error) %>
+        });
+        needsCleanup = true;
+      <% } %>
+      // Strip success/error query params from URL to prevent re-trigger on refresh
+      if (needsCleanup && window.history.replaceState) {
+        var url = new URL(window.location);
+        url.searchParams.delete('success');
+        url.searchParams.delete('error');
+        window.history.replaceState({}, '', url);
+      }
+    });
+  </script>
+</body>
+</html>

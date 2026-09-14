@@ -1,0 +1,170 @@
+📌 REPLIT PROMPT — TEACHER AVAILABILITY & BLOCKS
+
+Implement Teacher Availability & Teacher-Specific Blocks.
+
+This module must:
+
+Work on top of existing meeting dates and time slots
+
+Allow different block times per teacher
+
+Not require bookings to exist yet
+
+⚠️ Do NOT rebuild Meeting Dates or Time Slots.
+
+🧱 DATA MODEL (ADD ONLY)
+🔹 TeacherAvailability Table (NEW)
+
+Create a table to map teachers to generated time slots.
+
+Fields:
+
+id
+
+teacher_id (FK → teachers.teacher_id)
+
+meeting_date_id (FK → meeting_dates.id)
+
+time_slot_id (FK → time_slots.id)
+
+is_available (BOOLEAN, default TRUE)
+
+blocked_reason (nullable)
+
+created_at
+
+⚠️ One record per teacher + slot
+
+🧑‍🏫 ADMIN UI — TEACHER AVAILABILITY PAGE
+
+Create Admin → Teacher Availability
+
+Page Flow
+
+Select:
+
+Teacher
+
+Meeting Date (Day 1 / Day 2 / Day 3)
+
+Load all generated time slots for that day
+
+Display table:
+
+Schedule Code (A01, A02…)
+
+Time Range
+
+Status:
+
+Available
+
+Blocked (Teacher-specific)
+
+Blocked (Global — read-only)
+
+🚫 TEACHER-SPECIFIC BLOCKS
+
+Admin can block time slots per teacher.
+
+Examples:
+
+Teacher meeting
+
+Personal break
+
+Late arrival
+
+Early dismissal
+
+Blocked slots:
+
+Do NOT remove slot
+
+Set is_available = false
+
+Save blocked_reason
+
+⚠️ Teacher-blocked slots override global availability.
+
+🔁 BULK ACTIONS (IMPORTANT)
+
+Allow admin to:
+
+Block multiple slots at once
+
+Unblock multiple slots
+
+Copy availability from:
+
+Another teacher
+
+Another meeting day
+
+🔒 AVAILABILITY RULE HIERARCHY
+
+Slot availability priority:
+
+1️⃣ Global blocked slot → NEVER available
+2️⃣ Teacher-blocked slot → unavailable for that teacher
+3️⃣ Otherwise → available
+
+⚠️ Admin cannot override global blocks here.
+
+🖥️ UI REQUIREMENTS
+
+Color indicators:
+
+Green → Available
+
+Red → Teacher blocked
+
+Gray → Global blocked
+
+Mobile-friendly grid/table
+
+Sticky “Save Changes” button
+
+Global loader on all CRUD actions
+
+🔄 DATA SAFETY
+
+All changes wrapped in transactions
+
+Bulk actions rollback on failure
+
+No slot deletions
+
+No meeting date regeneration here
+
+🔒 ACCESS CONTROL
+
+ADMIN and SUPER_ADMIN only
+
+Parents and teachers have no access
+
+Route protection required
+
+🧪 VERIFICATION CHECKLIST
+
+Test:
+
+Different teachers have different blocked times
+
+Blocking one teacher does NOT affect others
+
+Global blocked slots cannot be unblocked here
+
+Copy availability works
+
+No booking logic triggered
+
+✅ ACCEPTANCE CRITERIA
+
+Teacher-specific availability works
+
+Slots stay intact
+
+Clear UI status
+
+Ready for booking engine next

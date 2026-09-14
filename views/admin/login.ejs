@@ -1,0 +1,28 @@
+<div class="row justify-content-center mt-5">
+  <div class="col-11 col-sm-8 col-md-5 col-lg-4">
+    <div class="card shadow-sm">
+      <div class="card-body p-4">
+        <div class="text-center mb-4">
+          <h1 class="h4 fw-bold" data-testid="text-admin-login-title">Admin Login</h1>
+          <p class="text-muted small mb-0">PGJ Booking System</p>
+        </div>
+
+        
+
+        <form method="POST" action="/admin/login">
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Username</label>
+            <input type="text" name="username" class="form-control" required autofocus data-testid="input-admin-username">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Password</label>
+            <input type="password" name="password" class="form-control" required data-testid="input-admin-password">
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100" data-testid="button-admin-login">Log In</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

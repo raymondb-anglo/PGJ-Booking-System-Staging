@@ -1,0 +1,261 @@
+<%
+  const dateObj = new Date(meetingDate.MeetingDate);
+  const dateStr = dateObj.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+%>
+
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+  <div>
+    <h1 class="h3 mb-0" data-testid="text-page-title">Configure Time Slots</h1>
+    <div class="text-muted small" data-testid="text-date-info">
+      <%= dateStr %> — <span class="badge bg-primary"><%= meetingDate.DayLabel %></span>
+      <span class="badge bg-light text-dark border ms-1">Prefix: <%= meetingDate.prefix %></span>
+    </div>
+  </div>
+  <a href="/admin/config/meeting-dates?termId=<%= meetingDate.TermID %>" class="btn btn-outline-secondary btn-sm" data-testid="link-back">Back to Dates</a>
+</div>
+
+
+
+
+<div class="card shadow-sm mb-4">
+  <div class="card-header"><h6 class="mb-0">Session Settings</h6></div>
+  <div class="card-body">
+    <form method="POST" action="/admin/config/meeting-dates/slots/<%= meetingDate.DateID %>/update-session" class="row g-2 align-items-end" data-testid="form-session-settings">
+      <div class="col-6 col-sm-4">
+        <label class="form-label small">Session Duration (minutes)</label>
+        <input type="number" name="sessionDuration" class="form-control form-control-sm" value="<%= meetingDate.SessionDurationMinutes || 10 %>" min="5" max="120" required data-testid="input-session-duration">
+      </div>
+      <div class="col-6 col-sm-4">
+        <label class="form-label small">Interval / Buffer (minutes)</label>
+        <input type="number" name="sessionInterval" class="form-control form-control-sm" value="<%= meetingDate.SessionIntervalMinutes != null ? meetingDate.SessionIntervalMinutes : 5 %>" min="0" max="60" required data-testid="input-session-interval">
+      </div>
+      <div class="col-12 col-sm-4">
+        <button type="submit" class="btn btn-outline-primary btn-sm w-100" data-testid="button-save-session">Save Settings</button>
+      </div>
+    </form>
+    <div class="form-text mt-1">Each slot lasts <strong><%= meetingDate.SessionDurationMinutes || 10 %> min</strong> with <strong><%= meetingDate.SessionIntervalMinutes != null ? meetingDate.SessionIntervalMinutes : 5 %> min</strong> buffer between slots. Change and save before generating.</div>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-12 col-lg-6">
+    <div class="card shadow-sm h-100">
+      <div class="card-header"><h6 class="mb-0">Time Ranges <span class="badge bg-secondary"><%= timeRanges.length %></span></h6></div>
+      <div class="card-body">
+        <p class="text-muted small mb-2">Define time windows. Slots are generated every <strong><%= meetingDate.SessionDurationMinutes || 10 %> minutes</strong> (+ <%= meetingDate.SessionIntervalMinutes != null ? meetingDate.SessionIntervalMinutes : 5 %> min buffer) within each range.</p>
+        <form method="POST" action="/admin/config/meeting-dates/slots/<%= meetingDate.DateID %>/add-range" class="row g-2 align-items-end mb-3" data-testid="form-add-range">
+          <div class="col-5">
+            <label class="form-label small">Start</label>
+            <input type="time" name="startTime" class="form-control form-control-sm" value="07:30" required data-testid="input-range-start">
+          </div>
+          <div class="col-5">
+            <label class="form-label small">End</label>
+            <input type="time" name="endTime" class="form-control form-control-sm" value="16:00" required data-testid="input-range-end">
+          </div>
+          <div class="col-2">
+            <button type="submit" class="btn btn-primary btn-sm w-100" data-testid="button-add-range">Add</button>
+          </div>
+        </form>
+
+        <% if (timeRanges.length === 0) { %>
+          <p class="text-muted small text-center mb-0">No time ranges defined</p>
+        <% } else { %>
+          <% timeRanges.forEach(r => { %>
+            <div class="d-flex justify-content-between align-items-center border rounded px-2 py-1 mb-1" data-testid="range-<%= r.RangeID %>">
+              <span><code><%= r.StartTime.substring(0,5) %></code> — <code><%= r.EndTime.substring(0,5) %></code></span>
+              <form method="POST" action="/admin/config/meeting-dates/slots/<%= meetingDate.DateID %>/delete-range/<%= r.RangeID %>" class="d-inline">
+                <button type="submit" class="btn btn-outline-danger btn-sm py-0 px-1" data-testid="button-delete-range-<%= r.RangeID %>">×</button>
+              </form>
+            </div>
+          <% }) %>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-lg-6">
+    <div class="card shadow-sm h-100">
+      <div class="card-header"><h6 class="mb-0">Blocked Ranges <span class="badge bg-warning text-dark"><%= blockedRanges.length %></span></h6></div>
+      <div class="card-body">
+        <p class="text-muted small mb-2">Slots overlapping blocked ranges are marked as blocked automatically.</p>
+        <form method="POST" action="/admin/config/meeting-dates/slots/<%= meetingDate.DateID %>/add-blocked" class="mb-3" data-testid="form-add-blocked">
+          <div class="row g-2 align-items-end">
+            <div class="col-4">
+              <label class="form-label small">Start</label>
+              <input type="time" name="startTime" class="form-control form-control-sm" required data-testid="input-blocked-start">
+            </div>
+            <div class="col-4">
+              <label class="form-label small">End</label>
+              <input type="time" name="endTime" class="form-control form-control-sm" required data-testid="input-blocked-end">
+            </div>
+            <div class="col-4">
+              <label class="form-label small">Reason</label>
+              <input type="text" name="blockReason" class="form-control form-control-sm" placeholder="e.g. Lunch" required data-testid="input-blocked-reason">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-warning btn-sm mt-2 w-100" data-testid="button-add-blocked">Add Blocked Range</button>
+        </form>
+
+        <% if (blockedRanges.length === 0) { %>
+          <p class="text-muted small text-center mb-0">No blocked ranges</p>
+        <% } else { %>
+          <% blockedRanges.forEach(b => { %>
+            <div class="d-flex justify-content-between align-items-center border border-warning rounded px-2 py-1 mb-1 bg-warning bg-opacity-10" data-testid="blocked-<%= b.BlockID %>">
+              <span>
+                <code><%= b.StartTime.substring(0,5) %></code> — <code><%= b.EndTime.substring(0,5) %></code>
+                <span class="badge bg-warning text-dark ms-1"><%= b.BlockReason %></span>
+              </span>
+              <form method="POST" action="/admin/config/meeting-dates/slots/<%= meetingDate.DateID %>/delete-blocked/<%= b.BlockID %>" class="d-inline">
+                <button type="submit" class="btn btn-outline-danger btn-sm py-0 px-1" data-testid="button-delete-blocked-<%= b.BlockID %>">×</button>
+              </form>
+            </div>
+          <% }) %>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card shadow-sm mb-4">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <div>
+        <% if (timeRanges.length > 0) { %>
+          <a href="/admin/config/meeting-dates/slots/<%= meetingDate.DateID %>?preview=1" class="btn btn-outline-info btn-sm" data-testid="button-preview">Preview Slots</a>
+          <form method="POST" action="/admin/config/meeting-dates/slots/<%= meetingDate.DateID %>/generate" class="d-inline"
+                data-confirm="<%= slots.length > 0 ? 'This will REGENERATE all slots for this day. Existing ' + slots.length + ' slots will be replaced. Continue?' : 'Generate slots from defined ranges?' %>" data-confirm-btn="Generate">
+            <button type="submit" class="btn btn-success btn-sm" data-testid="button-generate">
+              <%= slots.length > 0 ? 'Regenerate Slots' : 'Generate Slots' %>
+            </button>
+          </form>
+        <% } else { %>
+          <span class="text-muted small">Add time ranges above to generate slots</span>
+        <% } %>
+      </div>
+      <% if (slots.length > 0) { %>
+        <form method="POST" action="/admin/config/meeting-dates/slots/<%= meetingDate.DateID %>/clear" class="d-inline" data-confirm="Delete ALL <%= slots.length %> time slots?" data-confirm-danger="true" data-confirm-btn="Delete All">
+          <button type="submit" class="btn btn-outline-danger btn-sm" data-testid="button-clear-all">Clear All Slots</button>
+        </form>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<% if (preview) { %>
+<div class="card shadow-sm mb-4 border-info">
+  <div class="card-header bg-info bg-opacity-10">
+    <h6 class="mb-0">Slot Preview — <%= preview.length %> slots (<%= meetingDate.SessionDurationMinutes || 10 %>-min sessions, <%= meetingDate.SessionIntervalMinutes != null ? meetingDate.SessionIntervalMinutes : 5 %>-min buffer)</h6>
+  </div>
+  <div class="card-body p-0">
+    <div class="table-responsive" style="max-height:400px;overflow-y:auto">
+      <table class="table table-sm table-striped mb-0" data-testid="table-preview">
+        <thead class="table-light sticky-top">
+          <tr><th>Code</th><th>Start</th><th>End</th><th>Status</th><th>Reason</th></tr>
+        </thead>
+        <tbody>
+          <% preview.forEach((s, i) => { %>
+          <tr class="<%= s.isBlocked ? 'table-warning' : '' %>" data-testid="row-preview-<%= i %>">
+            <td><code><%= s.scheduleCode %></code></td>
+            <td><%= s.startTime.substring(0,5) %></td>
+            <td><%= s.endTime.substring(0,5) %></td>
+            <td><span class="badge <%= s.isBlocked ? 'bg-warning text-dark' : 'bg-success' %>"><%= s.isBlocked ? 'Blocked' : 'Available' %></span></td>
+            <td><%= s.isBlocked ? (s.blockReason || '-') : '-' %></td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card-footer">
+    <form method="POST" action="/admin/config/meeting-dates/slots/<%= meetingDate.DateID %>/generate" class="d-inline" data-confirm="<%= slots.length > 0 ? 'This will REPLACE existing slots. Continue?' : 'Generate these slots?' %>" data-confirm-btn="Generate">
+      <button type="submit" class="btn btn-success btn-sm" data-testid="button-confirm-generate">Confirm & Generate <%= preview.length %> Slots</button>
+    </form>
+    <a href="/admin/config/meeting-dates/slots/<%= meetingDate.DateID %>" class="btn btn-outline-secondary btn-sm" data-testid="link-cancel-preview">Cancel</a>
+  </div>
+</div>
+<% } %>
+
+<div class="d-flex justify-content-between align-items-center mb-2">
+  <div class="text-muted small" data-testid="text-slot-count">
+    <%= slots.length %> time slot<%= slots.length !== 1 ? 's' : '' %>
+    <% const blockedCount = slots.filter(s => s.IsBlocked).length; %>
+    <% if (blockedCount > 0) { %><span class="text-warning">(<%= blockedCount %> blocked)</span><% } %>
+  </div>
+</div>
+
+<% if (slots.length === 0) { %>
+  <div class="text-center py-4" data-testid="text-empty-state">
+    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="text-muted mb-3" viewBox="0 0 16 16"><path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71z"/><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0"/></svg>
+    <p class="text-muted">No time slots generated yet</p>
+    <p class="text-muted small">Define time ranges and blocked ranges above, then generate</p>
+  </div>
+<% } else { %>
+
+  <div class="d-none d-md-block">
+    <div class="table-responsive" style="max-height:500px;overflow-y:auto">
+      <table class="table table-hover table-sm align-middle" data-testid="table-slots">
+        <thead class="table-light sticky-top">
+          <tr>
+            <th>Code</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Status</th>
+            <th>Block Reason</th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% slots.forEach(s => { %>
+          <tr class="<%= s.IsBlocked ? 'table-warning' : '' %>" data-testid="row-slot-<%= s.SlotID %>">
+            <td><code class="fs-6"><%= s.ScheduleCode %></code></td>
+            <td><%= s.StartTime.substring(0,5) %></td>
+            <td><%= s.EndTime.substring(0,5) %></td>
+            <td>
+              <span class="badge <%= s.IsBlocked ? 'bg-warning text-dark' : 'bg-success' %>" data-testid="badge-status-<%= s.SlotID %>">
+                <%= s.IsBlocked ? 'Blocked' : 'Available' %>
+              </span>
+            </td>
+            <td><%= s.IsBlocked && s.BlockReason ? s.BlockReason : '-' %></td>
+            <td class="text-end text-nowrap">
+              <form method="POST" action="/admin/config/meeting-dates/slots/<%= meetingDate.DateID %>/toggle-block/<%= s.SlotID %>" class="d-inline">
+                <% if (!s.IsBlocked) { %>
+                  <input type="text" name="blockReason" placeholder="Reason" class="form-control form-control-sm d-inline-block" style="width:90px" data-testid="input-block-reason-<%= s.SlotID %>">
+                <% } %>
+                <button type="submit" class="btn btn-outline-<%= s.IsBlocked ? 'success' : 'warning' %> btn-sm" data-testid="button-toggle-<%= s.SlotID %>">
+                  <%= s.IsBlocked ? 'Unblock' : 'Block' %>
+                </button>
+              </form>
+              <form method="POST" action="/admin/config/meeting-dates/slots/<%= meetingDate.DateID %>/delete/<%= s.SlotID %>" class="d-inline" data-confirm="Delete slot <%= s.ScheduleCode %>?" data-confirm-danger="true" data-confirm-btn="Delete">
+                <button type="submit" class="btn btn-outline-danger btn-sm" data-testid="button-delete-slot-<%= s.SlotID %>">Del</button>
+              </form>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="d-md-none">
+    <% slots.forEach(s => { %>
+    <div class="card mb-1 <%= s.IsBlocked ? 'border-warning' : '' %>" data-testid="card-slot-<%= s.SlotID %>">
+      <div class="card-body py-1 px-2">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <code><%= s.ScheduleCode %></code>
+            <span class="ms-1 small"><%= s.StartTime.substring(0,5) %>—<%= s.EndTime.substring(0,5) %></span>
+            <span class="badge <%= s.IsBlocked ? 'bg-warning text-dark' : 'bg-success' %> ms-1" style="font-size:0.65rem"><%= s.IsBlocked ? 'Blocked' : 'OK' %></span>
+            <% if (s.IsBlocked && s.BlockReason) { %><span class="small text-muted ms-1"><%= s.BlockReason %></span><% } %>
+          </div>
+          <div class="d-flex gap-1">
+            <form method="POST" action="/admin/config/meeting-dates/slots/<%= meetingDate.DateID %>/toggle-block/<%= s.SlotID %>">
+              <button type="submit" class="btn btn-outline-<%= s.IsBlocked ? 'success' : 'warning' %> btn-sm py-0 px-1" style="font-size:0.7rem"><%= s.IsBlocked ? '✓' : '✗' %></button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% }) %>
+  </div>
+
+<% } %>

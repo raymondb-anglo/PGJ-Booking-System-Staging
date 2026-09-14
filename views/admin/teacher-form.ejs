@@ -1,0 +1,89 @@
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0" data-testid="text-page-title"><%= title %></h1>
+  <a href="/admin/teachers" class="btn btn-outline-secondary btn-sm" data-testid="link-back">Back to Teachers</a>
+</div>
+
+
+
+<div class="card shadow-sm">
+  <div class="card-body">
+    <form method="POST" action="<%= teacher && teacher.TeacherCode ? '/admin/teachers/edit/' + teacher.TeacherCode : '/admin/teachers/create' %>" enctype="multipart/form-data" data-testid="form-teacher">
+
+      <% if (!teacher || !teacher.TeacherCode) { %>
+      <div class="mb-3">
+        <label for="teacherCode" class="form-label">Teacher Code <span class="text-danger">*</span></label>
+        <input type="text" id="teacherCode" name="teacherCode" class="form-control" value="<%= teacher ? (teacher.teacherCode || teacher.TeacherCode || '') : '' %>" required data-testid="input-teacher-code" placeholder="e.g. 64T00125">
+        <div class="form-text">Custom format. Cannot be changed after creation.</div>
+      </div>
+      <% } else { %>
+      <div class="mb-3">
+        <label class="form-label">Teacher Code</label>
+        <input type="text" class="form-control" value="<%= teacher.TeacherCode %>" disabled>
+      </div>
+      <% } %>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="teacherName" class="form-label">Full Name <span class="text-danger">*</span></label>
+          <input type="text" id="teacherName" name="teacherName" class="form-control" value="<%= teacher ? (teacher.teacherName || teacher.TeacherName || '') : '' %>" required data-testid="input-teacher-name">
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="teacherNickname" class="form-label">Nickname <span class="text-danger">*</span></label>
+          <input type="text" id="teacherNickname" name="teacherNickname" class="form-control" value="<%= teacher ? (teacher.teacherNickname || teacher.TeacherNickname || '') : '' %>" required data-testid="input-teacher-nickname">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="email" class="form-label">Email</label>
+          <input type="email" id="email" name="email" class="form-control" value="<%= teacher ? (teacher.email || teacher.Email || '') : '' %>" data-testid="input-email" placeholder="Optional">
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="room" class="form-label">Room</label>
+          <input type="text" id="room" name="room" class="form-control" value="<%= teacher ? (teacher.room || teacher.Room || '') : '' %>" data-testid="input-room">
+        </div>
+      </div>
+
+      <% if (typeof meetingDates !== 'undefined' && meetingDates.length > 0) { %>
+      <div class="mb-3">
+        <label class="form-label">Meeting Days</label>
+        <div class="d-flex flex-wrap gap-3" data-testid="div-meeting-days">
+          <%
+            var selectedDays = [];
+            if (teacher && teacher.MeetingDays) {
+              selectedDays = String(teacher.MeetingDays).split(',').map(function(d) { return d.trim(); });
+            }
+          %>
+          <% meetingDates.forEach(function(md) { %>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="meetingDays" value="<%= md.DayNumber %>"
+                     id="meetingDay<%= md.DayNumber %>"
+                     <%= selectedDays.indexOf(String(md.DayNumber)) !== -1 ? 'checked' : '' %>
+                     data-testid="checkbox-meeting-day-<%= md.DayNumber %>">
+              <label class="form-check-label" for="meetingDay<%= md.DayNumber %>"><%= md.DayLabel %></label>
+            </div>
+          <% }); %>
+        </div>
+        <div class="form-text">Select the meeting days this teacher is assigned to.</div>
+      </div>
+      <% } %>
+
+      <div class="mb-3">
+        <label for="teacherImage" class="form-label">Teacher Photo</label>
+        <% if (teacher && teacher.TeacherImage) { %>
+          <div class="mb-2">
+            <img src="<%= teacher.TeacherImage %>" alt="Current photo" class="rounded" style="width:80px;height:80px;object-fit:cover;" data-testid="img-current-photo">
+            <span class="small text-muted ms-2">Current photo</span>
+          </div>
+        <% } %>
+        <input type="file" id="teacherImage" name="teacherImage" class="form-control" accept="image/*" data-testid="input-teacher-image">
+        <div class="form-text">Max 2MB. JPG, PNG, GIF, or WebP.</div>
+      </div>
+
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary" data-testid="button-save"><%= teacher && teacher.TeacherCode ? 'Update Teacher' : 'Create Teacher' %></button>
+        <a href="/admin/teachers" class="btn btn-outline-secondary" data-testid="button-cancel">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>

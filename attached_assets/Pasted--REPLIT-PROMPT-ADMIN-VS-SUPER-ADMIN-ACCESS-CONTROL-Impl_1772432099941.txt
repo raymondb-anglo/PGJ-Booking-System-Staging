@@ -1,0 +1,148 @@
+📌 REPLIT PROMPT — ADMIN VS SUPER_ADMIN ACCESS CONTROL
+
+Implement role-based access control (RBAC) for the Admin Dashboard of the PGJ Booking System.
+
+There are two admin roles only:
+
+SUPER_ADMIN
+
+ADMIN
+
+Roles are stored in the AdminUsers table.
+
+🧱 DATABASE RULE (REFERENCE ONLY)
+
+AdminUsers table already includes:
+
+username
+
+password_hash
+
+role (SUPER_ADMIN | ADMIN)
+
+⚠️ Do NOT modify existing data unless required.
+
+🖥 DASHBOARD VISIBILITY RULES
+🔑 SUPER_ADMIN — FULL ACCESS
+
+SUPER_ADMIN can see and access ALL pages:
+
+📂 System Configuration
+
+School Year and Terms
+
+Meeting Dates
+
+T&C Templates
+
+Translations
+
+Login Page Designer
+
+📂 Data Management
+
+Teachers
+
+Students
+
+Bookings
+
+Unlock Booking
+
+PDF Template
+
+Reports
+
+🔗 Quick Links
+
+Teacher Schedule
+
+Health Check
+
+🧑‍💼 ADMIN — LIMITED ACCESS
+
+ADMIN users must ONLY see and access the following:
+
+📂 System Configuration
+
+Translations
+
+📂 Data Management
+
+Teachers
+
+Students
+
+Bookings
+
+Unlock Booking
+
+Reports
+
+🔗 Quick Links
+
+Teacher Schedule
+
+🚫 HIDDEN FROM ADMIN ROLE
+
+ADMIN users must NOT see nor access:
+
+School Year and Terms
+
+Meeting Dates
+
+T&C Templates
+
+Login Page Designer
+
+PDF Template
+
+Health Check
+
+These should be:
+
+Hidden from sidebar/navigation
+
+Blocked via route protection (even if URL is typed manually)
+
+🔒 ROUTE PROTECTION (MANDATORY)
+
+For every admin route:
+
+Validate user role from session/token
+
+If role is insufficient:
+
+Show 403 Unauthorized
+
+OR redirect to Admin Dashboard with warning
+
+⚠️ UI hiding alone is NOT sufficient.
+
+🧭 SIDEBAR / MENU LOGIC
+
+Sidebar menu must be generated dynamically based on role
+
+Do NOT hardcode menu items per page
+
+Use a centralized permissions map
+
+Example (conceptual):
+
+permissions = {
+  SUPER_ADMIN: [all pages],
+  ADMIN: [limited pages only]
+}
+✅ ACCEPTANCE CRITERIA
+
+SUPER_ADMIN sees everything
+
+ADMIN sees only allowed sections
+
+ADMIN cannot access restricted URLs directly
+
+Sidebar updates instantly after login
+
+No duplicated dashboard code
+
+Clean, maintainable permission logic

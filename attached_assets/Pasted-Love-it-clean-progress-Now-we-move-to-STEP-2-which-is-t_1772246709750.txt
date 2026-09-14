@@ -1,0 +1,106 @@
+Love it — clean progress 👌
+Now we move to STEP 2, which is the first real feature, but still very controlled.
+
+STEP 2 — Admin Slot Management (READ + VIEW ONLY)
+⚠️ Important philosophy for STEP 2
+We are NOT creating bookings yet.
+We are NOT modifying data yet.
+STEP 2 is about:
+Proving we can read from your existing MySQL schema
+Displaying teacher slots correctly
+Preparing the ground for booking logic later
+If this step is wrong, everything later breaks — so we keep it simple.
+
+🎯 Goal of STEP 2
+Create admin pages that:
+Fetch teachers from MySQL
+Fetch teacher slots from MySQL
+Display schedules clearly
+Work on mobile + desktop
+Do NOT change any data yet
+
+✅ Replit Prompt — STEP 2 (Admin Slot Viewer)
+Copy-paste everything below into Replit AI.
+
+📌 REPLIT PROMPT — STEP 2: ADMIN SLOT VIEW
+Extend the existing Node.js Express application with an Admin Slot Viewer.
+
+🔒 DATABASE RULES (DO NOT IGNORE)
+Use the existing MySQL database
+Do NOT create, modify, or drop any tables
+Do NOT insert, update, or delete any records
+Read-only database access only
+
+📄 Admin Routes
+Create the following routes under /admin:
+GET /admin/teachers
+Fetch all active teachers from the Teachers table
+Display them as a list or cards
+GET /admin/slots/:teacherId
+Fetch all slots for the selected teacher from TeacherSlots
+Order by MeetingDate, then StartTime
+
+🧠 Data Rules
+SlotStatus meanings:
+AVAILABLE → show as green
+BOOKED → show as blue
+BLOCKED → show as grey with BlockReason
+
+🖥 UI Requirements
+Use EJS templates
+Use Bootstrap 5
+Mobile-first design
+On mobile:
+Use cards instead of tables
+On desktop:
+Tables are acceptable
+
+🧩 Files to Create / Update
+/routes/admin.js
+/views/admin/teachers.ejs
+/views/admin/slots.ejs
+
+❌ Do NOT
+Do NOT add login/auth yet
+Do NOT add booking logic
+Do NOT modify slot status
+Do NOT auto-generate slots
+The admin must be able to view teachers and their slot schedules only.
+
+✅ What “Success” Looks Like
+After STEP 2:
+URLs that must work
+/admin/teachers
+/admin/slots/1 (or any valid teacher ID)
+You should see:
+Teacher list
+Slot list per teacher
+Correct colors:
+🟢 Available
+🔵 Booked
+⚪ Blocked (with reason)
+No database changes occur.
+
+🚨 If Something Is Wrong
+Stop and fix if:
+Slots show incorrect colors
+Dates/times are unordered
+App tries to INSERT / UPDATE anything
+MySQL errors appear
+We do not move forward until STEP 2 is solid.
+
+What Comes Next (Preview Only)
+Once STEP 2 works:
+➡ STEP 3 – Admin Slot Creation & Blocking
+➡ STEP 4 – Parent mobile booking flow
+➡ STEP 5 – First-come-first-served booking logic
+➡ STEP 6 – Admin overrides & reports
+
+Your Next Action
+Paste the STEP 2 prompt into Replit
+Run the app
+Confirm:
+“I can see teachers”
+“I can see slots”
+
+

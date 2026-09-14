@@ -1,0 +1,171 @@
+📌 REPLIT PROMPT — STEP 7 (EMAIL + PDF SYSTEM)
+
+Implement STEP 7 for the PGJ Booking System:
+
+Email booking confirmation to parents
+
+Allow parents to download booking confirmation as PDF
+
+Provide Admin-only PDF Template Builder to design the confirmation form
+
+🎯 FUNCTIONAL GOALS
+FOR PARENTS
+
+After successful booking:
+
+Show options:
+
+✅ “Download Booking Confirmation (PDF)”
+
+✅ “Send Confirmation to Email”
+
+PDF must include:
+
+Student Name
+
+Student ID
+
+PC Class
+
+Teacher Name
+
+Meeting Date
+
+Meeting Time
+
+Room
+
+Translator (if any)
+
+FOR ADMIN
+
+Create a PDF Form Template Builder that defines the layout used by:
+
+Email attachment
+
+Parent PDF download
+
+🛠 ADMIN PDF TEMPLATE BUILDER (NEW PAGE)
+Page: /admin/pdf-template
+
+Admin can:
+
+Upload a header image / logo
+
+Add header text
+
+Add body text
+
+Add footer text
+
+Insert placeholders for dynamic data
+
+🔖 SUPPORTED PLACEHOLDERS
+
+These must auto-fill at runtime:
+
+{{student_name}}
+{{student_id}}
+{{pc_class}}
+{{teacher_name}}
+{{meeting_date}}
+{{meeting_time}}
+{{room}}
+{{translator}}
+📄 PDF GENERATION
+
+Generate PDFs using the admin-defined template
+
+Use a server-side PDF library
+
+Ensure:
+
+A4 format
+
+Mobile-friendly layout
+
+Images scale correctly
+
+📧 EMAIL CONFIRMATION
+
+Send email immediately after successful booking
+
+Attach the generated PDF
+
+Email subject example:
+
+“PGJ Booking Confirmation – {{student_name}}”
+
+Log email status (sent / failed)
+
+🗄 DATABASE REQUIREMENTS
+
+Add tables if not existing:
+
+email_logs
+
+id
+
+booking_id
+
+email
+
+status
+
+sent_at
+
+pdf_templates
+
+id
+
+header_image
+
+header_text
+
+body_text
+
+footer_text
+
+active (true/false)
+
+🔐 ACCESS CONTROL
+
+PDF Template Builder:
+
+Admin only
+
+SUPER_ADMIN can edit
+
+Others read-only
+
+🧠 UX RULES
+
+Use global loader during:
+
+PDF generation
+
+Email sending
+
+Show success / error feedback
+
+Prevent duplicate email sending
+
+🚫 DO NOT
+
+Do NOT hardcode PDF layout
+
+Do NOT bypass admin template
+
+Do NOT expose template editor to parents
+
+✅ ACCEPTANCE CRITERIA
+
+Admin designs PDF once → used everywhere
+
+Parents can download PDF instantly
+
+Email includes correct PDF
+
+All dynamic fields populate correctly
+
+This completes STEP 7.

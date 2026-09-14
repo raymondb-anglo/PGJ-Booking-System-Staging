@@ -1,0 +1,101 @@
+Perfect — now we’re cooking 🔥
+STEP 3 is where the system starts to do something important, but still safely.
+
+STEP 3 — Admin Slot Creation, Blocking & Override
+This step gives admins full control, while still protecting against future conflicts.
+
+🎯 Goal of STEP 3
+Allow admins to:
+Create meeting slots for teachers
+Block slots (lunch, snack, unavailable)
+Book a slot manually (admin override)
+Prevent double booking
+Enforce first-come-first-served rules
+⚠️ Parents are still NOT involved yet.
+
+✅ Replit Prompt — STEP 3 (Admin Slot Management)
+Copy-paste everything below into Replit AI.
+
+📌 REPLIT PROMPT — STEP 3: ADMIN SLOT MANAGEMENT
+Extend the existing Node.js Express + MySQL application with Admin Slot Management features.
+
+🔒 DATABASE RULES
+Use the existing MySQL database
+Do NOT drop tables
+Only INSERT or UPDATE records related to slots and bookings
+Enforce no double booking
+
+🧠 Core Business Rules
+Slots are created only by Admin
+Parents can only book admin-created slots
+Booking is first come, first served
+Once a slot is BOOKED, it cannot be booked again
+Admin can override and book any slot
+
+🛠 Admin Routes
+GET /admin/slots/create/:teacherId
+Form to generate slots
+Inputs:
+Meeting Date
+Start Time
+End Time
+Slot Duration (minutes)
+POST /admin/slots/create
+Generate slots automatically based on duration
+Skip blocked time ranges
+Prevent overlapping slots
+POST /admin/slots/block
+Block a slot
+Requires:
+Slot ID
+Block Reason (Snack, Lunch, Unavailable)
+POST /admin/slots/book
+Admin books a slot manually
+Mark slot as BOOKED
+Record booking source as ADMIN
+
+🧩 Database Safety
+Use MySQL transactions
+Use row-level locking (SELECT ... FOR UPDATE)
+Reject booking if slot status is not AVAILABLE
+
+🖥 UI Requirements
+Use EJS + Bootstrap 5
+Mobile-friendly admin forms
+Clear confirmation messages
+
+📁 Files to Create / Update
+/routes/admin.js
+/views/admin/create-slots.ejs
+/views/admin/slots.ejs
+/db.js (if transaction helpers needed)
+
+❌ Do NOT
+Do NOT add parent booking yet
+Do NOT allow slot edits without validation
+Do NOT allow overlapping slots
+The admin must be able to create, block, and book slots safely without conflicts.
+
+✅ What “Success” Looks Like
+After STEP 3, admins can:
+✔ Generate slots automatically
+✔ Block lunch/snack/unavailable times
+✔ Book slots manually
+✔ Never see duplicate bookings
+✔ See immediate UI feedback
+And your database will never allow conflicts.
+
+🚨 Red Flags (Stop If You See These)
+Two bookings on same slot
+Slot created outside allowed hours
+Booking succeeds without checking status
+No transactions used
+If any of those happen — we fix before moving on.
+
+🔮 What Comes Next
+➡ STEP 4 – Parent login via Student ID
+➡ STEP 5 – Parent mobile booking UI
+➡ STEP 6 – Email confirmation & download schedule
+➡ STEP 7 – Reports, audit logs, exports
+
+

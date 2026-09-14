@@ -1,0 +1,98 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h1 class="h3 mb-0" data-testid="text-page-title">Import Students</h1>
+  </div>
+  <div>
+    <a href="/admin/students/import/template" class="btn btn-outline-primary btn-sm me-2" data-testid="link-download-template">
+      Download Template
+    </a>
+    <a href="/admin/students" class="btn btn-outline-secondary btn-sm" data-testid="link-back">Back to Students</a>
+  </div>
+</div>
+
+
+
+<% if (summary) { %>
+  <div class="alert alert-<%= summary.failed.length > 0 ? 'warning' : 'success' %>" data-testid="alert-summary">
+    <strong>Import Complete</strong><br>
+    Total: <%= summary.total %> | Success: <%= summary.successCount %> | Failed: <%= summary.failed.length %>
+  </div>
+  <% if (summary.failed.length > 0) { %>
+    <div class="card mb-3">
+      <div class="card-header bg-danger text-white">Failed Rows</div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-sm mb-0" data-testid="table-failed-rows">
+            <thead><tr><th>Student ID</th><th>Name</th><th>Reason</th></tr></thead>
+            <tbody>
+              <% summary.failed.forEach(f => { %>
+              <tr><td><%= f.studentId || '-' %></td><td><%= f.studentName || '-' %></td><td class="text-danger"><%= f.reason %></td></tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  <% } %>
+  <a href="/admin/students/import" class="btn btn-primary btn-sm" data-testid="link-import-again">Import More</a>
+  <a href="/admin/students" class="btn btn-outline-secondary btn-sm" data-testid="link-back-to-list">Back to List</a>
+<% } else if (!preview) { %>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <p class="text-muted small">Upload a CSV file with the following columns:</p>
+      <div class="mb-3">
+        <code>StudentID, StudentName, SNickname, MAGClass, PCClass, TeacherID, Email</code>
+      </div>
+      <form method="POST" action="/admin/students/import/preview" enctype="multipart/form-data" data-testid="form-upload">
+        <div class="mb-3">
+          <label for="csvFile" class="form-label">CSV File</label>
+          <input type="file" id="csvFile" name="csvFile" class="form-control" accept=".csv" required data-testid="input-csv-file">
+        </div>
+        <button type="submit" class="btn btn-primary" data-testid="button-preview">Preview Import</button>
+      </form>
+    </div>
+  </div>
+
+<% } else { %>
+
+  <div class="alert alert-info" data-testid="alert-preview-info">
+    Preview: <%= preview.filter(r => r.valid).length %> valid, <%= preview.filter(r => !r.valid).length %> invalid out of <%= preview.length %> rows
+  </div>
+
+  <div class="table-responsive mb-3">
+    <table class="table table-sm" data-testid="table-preview">
+      <thead class="table-light">
+        <tr>
+          <th>Status</th><th>Student ID</th><th>Name</th><th>Nickname</th><th>PC Class</th><th>MAG Class</th><th>Teacher</th><th>Email</th><th>Issues</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% preview.forEach((row, i) => { %>
+        <tr class="<%= row.valid ? '' : 'table-danger' %>" data-testid="row-preview-<%= i %>">
+          <td><%= row.valid ? '✓' : '✗' %></td>
+          <td><%= row.studentId %></td>
+          <td><%= row.studentName %></td>
+          <td><%= row.sNickname || '-' %></td>
+          <td><%= row.pcClass || '-' %></td>
+          <td><%= row.magClass || '-' %></td>
+          <td><%= row.teacherName || row.teacherCode || '-' %></td>
+          <td><%= row.email || '-' %></td>
+          <td class="text-danger small"><%= row.errors.join(', ') %></td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <% if (preview.some(r => r.valid)) { %>
+    <form method="POST" action="/admin/students/import/confirm" class="d-inline" data-testid="form-confirm"
+          data-confirm="Import <%= preview.filter(r => r.valid).length %> valid students?" data-confirm-btn="Confirm Import">
+      <button type="submit" class="btn btn-success" data-testid="button-confirm-import">
+        Confirm Import (<%= preview.filter(r => r.valid).length %> students)
+      </button>
+    </form>
+  <% } %>
+  <a href="/admin/students/import" class="btn btn-outline-secondary" data-testid="link-cancel-import">Cancel</a>
+
+<% } %>

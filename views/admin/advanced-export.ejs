@@ -1,0 +1,146 @@
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+  <div>
+    <a href="/admin/reports" class="text-decoration-none text-muted small">&larr; Back to Reports</a>
+    <h1 class="h3 mt-1 mb-0" data-testid="text-page-title">Advanced Booking Export</h1>
+    <small class="text-muted">Super Admin Only — Confirmed bookings only</small>
+  </div>
+  <a href="/admin/dashboard" class="btn btn-outline-secondary btn-sm" data-testid="link-back">Dashboard</a>
+</div>
+
+
+
+<div class="bg-white border-bottom py-3 mb-3" style="position: sticky; top: 56px; z-index: 10;">
+  <form method="GET" action="/admin/reports/advanced-export" data-testid="form-filters">
+    <div class="row g-2 align-items-end">
+      <div class="col-6 col-md">
+        <label class="form-label small mb-1">Meeting Day</label>
+        <select name="dateId" class="form-select form-select-sm" data-testid="select-date">
+          <option value="">All Days</option>
+          <% meetingDates.forEach(d => { %>
+            <option value="<%= d.DateID %>" <%= filters.dateId == d.DateID ? 'selected' : '' %>>
+              <%= d.DayLabel %> — <%= new Date(d.MeetingDate).toLocaleDateString() %>
+            </option>
+          <% }) %>
+        </select>
+      </div>
+      <div class="col-6 col-md">
+        <label class="form-label small mb-1">Teacher</label>
+        <select name="teacherCode" class="form-select form-select-sm" data-testid="select-teacher">
+          <option value="">All Teachers</option>
+          <% teachers.forEach(t => { %>
+            <option value="<%= t.TeacherCode %>" <%= filters.teacherCode === t.TeacherCode ? 'selected' : '' %>><%= t.TeacherName %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div class="col-6 col-md">
+        <label class="form-label small mb-1">Class</label>
+        <select name="pcClass" class="form-select form-select-sm" data-testid="select-class">
+          <option value="">All Classes</option>
+          <% classes.forEach(c => { %>
+            <option value="<%= c %>" <%= filters.pcClass === c ? 'selected' : '' %>><%= c %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div class="col-6 col-md">
+        <label class="form-label small mb-1">Teacher Email</label>
+        <input type="text" name="teacherEmail" class="form-control form-control-sm" placeholder="Search..." value="<%= filters.teacherEmail %>" data-testid="input-teacher-email">
+      </div>
+      <div class="col-6 col-md">
+        <label class="form-label small mb-1">Student Email</label>
+        <input type="text" name="studentEmail" class="form-control form-control-sm" placeholder="Search..." value="<%= filters.studentEmail %>" data-testid="input-student-email">
+      </div>
+    </div>
+    <div class="row g-2 align-items-end mt-1">
+      <div class="col-6 col-md-4">
+        <label class="form-label small mb-1">Search (Name / ID / Code)</label>
+        <input type="text" name="search" class="form-control form-control-sm" placeholder="Search all fields..." value="<%= filters.search %>" data-testid="input-search">
+      </div>
+      <div class="col-6 col-md-auto d-flex gap-1">
+        <button type="submit" class="btn btn-sm btn-primary" data-testid="button-apply-filters">Filter</button>
+        <a href="/admin/reports/advanced-export" class="btn btn-sm btn-outline-secondary" data-testid="link-clear-filters">Clear</a>
+      </div>
+    </div>
+  </form>
+  <div class="mt-2 d-flex gap-2 flex-wrap align-items-center">
+    <a href="/admin/reports/advanced-export/export/csv?<%= queryString %>" class="btn btn-sm btn-outline-success" data-testid="button-export-csv">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="me-1" viewBox="0 0 16 16"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/><path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z"/></svg>
+      Export CSV
+    </a>
+    <a href="/admin/reports/advanced-export/export/excel?<%= queryString %>" class="btn btn-sm btn-outline-primary" data-testid="button-export-excel">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="me-1" viewBox="0 0 16 16"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/><path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z"/></svg>
+      Export Excel
+    </a>
+    <a href="/admin/reports/advanced-export/export/pdf?<%= queryString %>" class="btn btn-sm btn-outline-danger" data-testid="button-export-pdf">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="me-1" viewBox="0 0 16 16"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/><path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z"/></svg>
+      Export PDF
+    </a>
+    <span class="text-muted small ms-2" data-testid="text-total-count"><%= total %> booking(s) total</span>
+  </div>
+</div>
+
+<div class="card shadow-sm mb-4">
+  <div class="card-body p-0">
+    <% if (bookings.length === 0) { %>
+      <div class="text-center text-muted py-4" data-testid="text-no-bookings">
+        No confirmed bookings found. Try adjusting the filters.
+      </div>
+    <% } else { %>
+      <div class="table-responsive">
+        <table class="table table-hover table-sm mb-0 align-middle small" data-testid="table-export">
+          <thead class="table-light">
+            <tr>
+              <th>Schedule</th>
+              <th>TeacherEmail</th>
+              <th>StudentEmail</th>
+              <th>StudentCode</th>
+              <th>TeacherName</th>
+              <th>StudentNickname</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% bookings.forEach(function(b) { %>
+              <tr data-testid="row-booking-<%= b.BookingID %>">
+                <td><strong><%= b.ScheduleCode %></strong></td>
+                <td><%= b.TeacherEmail || '—' %></td>
+                <td><%= b.StudentEmail || '—' %></td>
+                <td><%= b.StudentCode %></td>
+                <td><%= b.TeacherName %></td>
+                <td><%= b.StudentNickname %></td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+      <div class="card-footer bg-light d-flex justify-content-between align-items-center">
+        <small class="text-muted" data-testid="text-page-info">
+          Page <%= page %> of <%= totalPages %> — Showing <%= bookings.length %> of <%= total %> booking(s)
+        </small>
+        <% if (totalPages > 1) { %>
+          <nav>
+            <ul class="pagination pagination-sm mb-0">
+              <% if (page > 1) { %>
+                <li class="page-item">
+                  <a class="page-link" href="/admin/reports/advanced-export?<%= queryString %><%= queryString ? '&' : '' %>page=<%= page - 1 %>" data-testid="link-page-prev">&laquo;</a>
+                </li>
+              <% } %>
+              <% 
+                var startPage = Math.max(1, page - 2);
+                var endPage = Math.min(totalPages, page + 2);
+              %>
+              <% for (var p = startPage; p <= endPage; p++) { %>
+                <li class="page-item <%= p === page ? 'active' : '' %>">
+                  <a class="page-link" href="/admin/reports/advanced-export?<%= queryString %><%= queryString ? '&' : '' %>page=<%= p %>" data-testid="link-page-<%= p %>"><%= p %></a>
+                </li>
+              <% } %>
+              <% if (page < totalPages) { %>
+                <li class="page-item">
+                  <a class="page-link" href="/admin/reports/advanced-export?<%= queryString %><%= queryString ? '&' : '' %>page=<%= page + 1 %>" data-testid="link-page-next">&raquo;</a>
+                </li>
+              <% } %>
+            </ul>
+          </nav>
+        <% } %>
+      </div>
+    <% } %>
+  </div>
+</div>

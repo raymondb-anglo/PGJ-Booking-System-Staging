@@ -1,0 +1,162 @@
+🧪 REPLIT PROMPT — TEST FIRST-COME-FIRST-SERVED & NO DOUBLE BOOKING
+
+Create an automated test suite to verify that the booking system strictly enforces first-come-first-served rules and prevents double booking.
+
+The test must simulate multiple concurrent booking attempts for the same teacher, same date, and same time slot.
+
+🔒 BUSINESS RULES TO ENFORCE
+
+A date + time + teacher combination can only be booked once
+
+No two bookings may exist for:
+
+Same teacher
+
+Same date
+
+Same time slot
+
+The first successful transaction wins
+
+All others must fail gracefully with a clear error message
+
+🧱 DATABASE SAFETY REQUIREMENTS (MANDATORY)
+
+Ensure hard protection at database level, not UI-only:
+
+Use a UNIQUE constraint or composite index on:
+
+(teacher_id, meeting_date, start_time)
+
+Use transactions
+
+Use row-level locking
+
+No race conditions allowed
+
+🧪 TEST SCENARIOS TO IMPLEMENT
+🔁 Test 1: Simultaneous Booking Attempt
+
+Simulate:
+
+10–50 booking requests
+
+Same teacher
+
+Same date
+
+Same time slot
+
+Triggered at the same millisecond
+
+Expected result:
+
+✅ 1 booking succeeds
+
+❌ All others fail with:
+
+"This slot has already been booked."
+
+🔁 Test 2: Rapid Sequential Booking
+
+Simulate:
+
+Multiple bookings fired milliseconds apart
+
+Same slot
+
+Expected:
+
+Only the earliest commit succeeds
+
+🔁 Test 3: Different Teachers, Same Time
+
+Simulate:
+
+Same date + time
+
+Different teachers
+
+Expected:
+
+All bookings succeed (valid)
+
+🔁 Test 4: Same Teacher, Different Times
+
+Simulate:
+
+Same teacher
+
+Same date
+
+Different time slots
+
+Expected:
+
+All bookings succeed
+
+🔁 Test 5: Admin Override
+
+Simulate:
+
+Slot booked by parent
+
+Admin attempts to book same slot
+
+Expected:
+
+Admin booking fails unless explicitly unlocking first
+
+🧪 IMPLEMENTATION REQUIREMENTS
+
+Tests should run via:
+
+API-level test (preferred)
+
+OR server-side function tests
+
+Use:
+
+MySQL transactions
+
+Parallel async requests
+
+Log:
+
+Success count
+
+Failure count
+
+Error messages
+
+Output a final test summary
+
+🧯 FAILURE HANDLING
+
+On failed booking attempt:
+
+Return HTTP 409 Conflict
+
+Message:
+
+"Slot already booked. Please select another time."
+
+📊 TEST OUTPUT EXAMPLE
+TEST RESULTS
+------------
+Total Attempts: 25
+Successful Bookings: 1
+Failed Bookings: 24
+Duplicate Conflicts: 24
+Status: PASS
+✅ ACCEPTANCE CRITERIA
+
+No duplicate rows in bookings table
+
+Database enforces uniqueness
+
+Application handles conflicts cleanly
+
+Tests are repeatable
+
+Tests do not require UI interaction

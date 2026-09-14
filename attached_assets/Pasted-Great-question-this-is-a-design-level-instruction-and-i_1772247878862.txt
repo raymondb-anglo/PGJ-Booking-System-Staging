@@ -1,0 +1,68 @@
+Great question — this is a design-level instruction, and if you don’t tell Replit clearly, it will default to conditional/inline pages.
+So we lock this in before STEP 3.
+Below is a clear, enforceable Replit prompt that tells it exactly what you want.
+
+🧱 PRE-STEP — Admin Pages Must Be Separate (No Conditional Screens)
+✅ Replit Prompt — Admin Page Structure Rule
+Copy-paste this before continuing development:
+
+📌 REPLIT PROMPT — ADMIN PAGE SEPARATION
+Refactor the Admin section to use separate, dedicated pages instead of conditional or relative rendering.
+
+🧭 ADMIN PAGE RULES (MANDATORY)
+Each admin function must have its own route and its own EJS view, regardless of whether data exists.
+Do NOT
+Do NOT reuse the same page to handle multiple states (e.g., “no teachers” vs “with teachers”)
+Do NOT hide/show major sections conditionally
+Do NOT redirect automatically based on data presence
+
+📄 Required Admin Pages
+Each of the following must be a standalone page:
+/admin/dashboard
+/admin/teachers
+/admin/teachers/empty
+/admin/slots/:teacherId
+/admin/slots/empty
+/admin/slots/create/:teacherId
+
+🧠 Behavior Rules
+If no teachers exist:
+/admin/teachers redirects to /admin/teachers/empty
+If a teacher has no slots:
+/admin/slots/:teacherId redirects to /admin/slots/empty
+Each page must:
+Have its own EJS file
+Have clear messaging
+Offer a navigation action (e.g. “Add Teacher”, “Create Slots”)
+
+📁 File Structure
+/views/admin
+├── dashboard.ejs
+├── teachers.ejs
+├── teachers-empty.ejs
+├── slots.ejs
+├── slots-empty.ejs
+├── create-slots.ejs
+
+
+❌ DO NOT
+Do NOT use if/else to swap entire page content
+Do NOT combine empty + populated states into one page
+Do NOT break existing routes
+This structure must be enforced going forward.
+
+✅ Why This Matters (Quick Explanation)
+This gives you:
+Clean navigation
+Predictable URLs
+Easier testing
+Easier maintenance
+Less fragile UI logic
+It’s enterprise-style, not tutorial-style.
+
+✅ What to Check After
+Visiting /admin/teachers with no teachers shows a dedicated empty page
+Slot pages behave the same way
+No blank screens or hidden sections
+
+

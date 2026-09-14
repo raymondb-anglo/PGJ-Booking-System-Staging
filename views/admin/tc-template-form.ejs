@@ -1,0 +1,54 @@
+<a href="/admin/tc-template" class="text-decoration-none text-muted small">&larr; Back to Templates</a>
+<h1 class="h3 mt-1 mb-4" data-testid="text-page-title"><%= template ? 'Edit' : 'Create' %> T&C Template</h1>
+
+
+
+<div class="card shadow-sm">
+  <div class="card-body">
+    <form method="POST" action="/admin/tc-template/save">
+      <% if (template) { %>
+        <input type="hidden" name="templateId" value="<%= template.TemplateID %>">
+      <% } %>
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Template Name</label>
+        <input type="text" name="templateName" class="form-control" required
+               value="<%= template ? template.TemplateName : '' %>"
+               placeholder="e.g. Term 1 2026, Default Terms..."
+               data-testid="input-template-name">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Content</label>
+        <ul class="nav nav-tabs mb-3" role="tablist">
+          <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#tcEN" data-testid="tab-tc-en">English</a></li>
+          <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tcTH" data-testid="tab-tc-th">Thai</a></li>
+          <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tcCN" data-testid="tab-tc-cn">Chinese</a></li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="tcEN">
+            <textarea name="content" class="form-control" rows="15"
+                      placeholder="Enter the English terms & conditions..."
+                      data-testid="textarea-content"><%= template ? (template.Content || '') : '' %></textarea>
+          </div>
+          <div class="tab-pane fade" id="tcTH">
+            <textarea name="contentTH" class="form-control" rows="15"
+                      placeholder="Enter the Thai terms & conditions (ข้อกำหนดและเงื่อนไข)..."
+                      data-testid="textarea-content-th"><%= template ? (template.ContentTH || '') : '' %></textarea>
+          </div>
+          <div class="tab-pane fade" id="tcCN">
+            <textarea name="contentCN" class="form-control" rows="15"
+                      placeholder="Enter the Chinese terms & conditions (条款和条件)..."
+                      data-testid="textarea-content-cn"><%= template ? (template.ContentCN || '') : '' %></textarea>
+          </div>
+        </div>
+        <div class="form-text">This content will be displayed on the parent login page when this template is activated. Supports basic HTML.</div>
+      </div>
+
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary" data-testid="button-save">Save Template</button>
+        <a href="/admin/tc-template" class="btn btn-outline-secondary" data-testid="button-cancel">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,137 @@
+📌 REPLIT PROMPT — MANUAL EMAIL WITH USER-ENTERED EMAIL
+
+Update the PGJ Booking System manual email confirmation flow.
+
+Email notifications must remain fully manual and parent-initiated.
+
+🧭 PARENT CONFIRMATION SCREEN (POST-BOOKING)
+
+After a booking is confirmed:
+
+Display:
+
+Booking summary (read-only)
+
+Two actions:
+
+📧 Send Confirmation Email
+
+📄 Download Confirmation PDF
+
+📧 SEND CONFIRMATION EMAIL (MANUAL + CUSTOM EMAIL)
+
+When Send Confirmation Email is clicked:
+
+Show a modal or inline section containing:
+
+Email Address Input
+
+Required
+
+Pre-filled if student/parent email exists (if available)
+
+Editable by parent
+
+Buttons:
+
+Send Email
+
+Cancel
+
+✉️ EMAIL SEND BEHAVIOR
+
+When parent clicks Send Email:
+
+Validate email format
+
+Show global loading indicator
+
+Generate confirmation PDF using the admin-defined PDF template
+
+Send email only to the entered email address
+
+Email contents:
+
+Student Name
+
+Student ID
+
+PC Class
+
+Teacher Name
+
+Meeting Date & Time
+
+Translator (if selected)
+
+Attach generated PDF
+
+📄 DOWNLOAD PDF (UNCHANGED)
+
+Download action:
+
+Generates the same PDF
+
+No email sent
+
+Shows loader during generation
+
+🔁 UX & SAFETY RULES
+
+Disable Send button while sending
+
+Prevent duplicate submissions
+
+Show success or failure message
+
+Email failure must NOT affect booking status
+
+🗂 EMAIL LOGGING (REQUIRED)
+
+Update / create email_logs table:
+
+booking_id
+
+student_id
+
+email_recipient (string)
+
+action_type (MANUAL_SEND)
+
+status (SENT / FAILED)
+
+error_message (nullable)
+
+sent_at
+
+Log exact email address entered by parent.
+
+🔐 SECURITY
+
+Parents cannot modify booking details here
+
+Email sending is allowed multiple times
+
+No automatic emails at any point
+
+🚫 DO NOT
+
+Do NOT auto-send emails
+
+Do NOT restrict email domain
+
+Do NOT expose SMTP credentials
+
+✅ ACCEPTANCE CRITERIA
+
+Parent can type any valid email
+
+Email sends only on explicit click
+
+PDF matches admin-designed template
+
+Booking remains confirmed regardless of email status
+
+Loader appears during all async actions
+
+Implement cleanly and consistently with existing loader behavior.

@@ -1,0 +1,94 @@
+<div class="row justify-content-center">
+  <div class="col-12 col-md-8 col-lg-6">
+    <div class="d-flex align-items-center mb-4">
+      <a href="/admin/users" class="btn btn-outline-secondary btn-sm me-3" data-testid="link-back">
+        <i class="bi bi-arrow-left"></i>
+      </a>
+      <h1 class="h3 mb-0" data-testid="text-page-title"><%= title %></h1>
+    </div>
+
+    
+
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <form method="POST" action="<%= user && user.AdminID ? '/admin/users/edit/' + user.AdminID : '/admin/users/create' %>">
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Username <span class="text-danger">*</span></label>
+            <input type="text" name="username" class="form-control"
+                   value="<%= user ? user.Username : '' %>" required
+                   data-testid="input-username">
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-semibold">First Name <span class="text-danger">*</span></label>
+              <input type="text" name="firstName" class="form-control"
+                     value="<%= user ? user.FirstName : '' %>" required
+                     data-testid="input-firstname">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-semibold">Last Name <span class="text-danger">*</span></label>
+              <input type="text" name="lastName" class="form-control"
+                     value="<%= user ? user.LastName : '' %>" required
+                     data-testid="input-lastname">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-semibold">
+                Password
+                <% if (user && user.AdminID) { %>
+                  <span class="text-muted fw-normal">(leave blank to keep current)</span>
+                <% } else { %>
+                  <span class="text-danger">*</span>
+                <% } %>
+              </label>
+              <input type="password" name="password" class="form-control"
+                     <%= user && user.AdminID ? '' : 'required' %>
+                     minlength="6"
+                     data-testid="input-password">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-semibold">
+                Confirm Password
+                <% if (!user || !user.AdminID) { %>
+                  <span class="text-danger">*</span>
+                <% } %>
+              </label>
+              <input type="password" name="confirmPassword" class="form-control"
+                     <%= user && user.AdminID ? '' : 'required' %>
+                     minlength="6"
+                     data-testid="input-confirm-password">
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Role <span class="text-danger">*</span></label>
+            <select name="role" class="form-select" data-testid="select-role">
+              <option value="ADMIN" <%= (user && user.Role === 'ADMIN') || !user ? 'selected' : '' %>>Admin</option>
+              <option value="SUPER_ADMIN" <%= user && user.Role === 'SUPER_ADMIN' ? 'selected' : '' %>>Super Admin</option>
+            </select>
+          </div>
+
+          <% if (user && user.AdminID) { %>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Status</label>
+              <select name="isActive" class="form-select" data-testid="select-status">
+                <option value="1" <%= user.IsActive ? 'selected' : '' %>>Active</option>
+                <option value="0" <%= !user.IsActive ? 'selected' : '' %>>Inactive</option>
+              </select>
+            </div>
+          <% } %>
+
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary" data-testid="button-submit">
+              <%= user && user.AdminID ? 'Update' : 'Create' %> Admin
+            </button>
+            <a href="/admin/users" class="btn btn-outline-secondary" data-testid="button-cancel">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

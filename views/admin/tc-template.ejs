@@ -1,0 +1,65 @@
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+  <div>
+    <a href="/admin/dashboard" class="text-decoration-none text-muted small">&larr; Back to Dashboard</a>
+    <h1 class="h3 mt-1 mb-0" data-testid="text-page-title">Terms & Conditions Templates</h1>
+  </div>
+  <% if (canEdit) { %>
+    <a href="/admin/tc-template/create" class="btn btn-primary btn-sm" data-testid="button-create-template">+ New Template</a>
+  <% } %>
+</div>
+
+
+
+
+<div class="alert alert-info small mb-4">
+  <strong>How it works:</strong> Create multiple T&C templates and activate the one you want parents to see on the login page. Only the active template is displayed.
+</div>
+
+<% if (templates.length === 0) { %>
+  <div class="alert alert-warning">No templates found. Create one to get started.</div>
+<% } else { %>
+  <div class="row g-3">
+    <% templates.forEach(function(t) { %>
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="card shadow-sm h-100 <%= t.IsActive ? 'border-success border-2' : '' %>">
+          <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <span class="fw-semibold" data-testid="text-template-name-<%= t.TemplateID %>">
+              <%= t.TemplateName %>
+            </span>
+            <% if (t.IsActive) { %>
+              <span class="badge bg-success" data-testid="badge-active-<%= t.TemplateID %>">Active</span>
+            <% } else { %>
+              <span class="badge bg-secondary">Inactive</span>
+            <% } %>
+          </div>
+          <div class="card-body">
+            <% if (t.Content && t.Content.trim()) { %>
+              <div class="small text-muted" style="max-height:120px;overflow:hidden;">
+                <%= t.Content.substring(0, 200) %><%= t.Content.length > 200 ? '...' : '' %>
+              </div>
+            <% } else { %>
+              <div class="small text-muted fst-italic">No content yet</div>
+            <% } %>
+          </div>
+          <div class="card-footer bg-white">
+            <div class="d-flex gap-1 flex-wrap">
+              <% if (canEdit) { %>
+                <a href="/admin/tc-template/edit/<%= t.TemplateID %>" class="btn btn-outline-primary btn-sm" data-testid="button-edit-<%= t.TemplateID %>">Edit</a>
+                <% if (!t.IsActive) { %>
+                  <form method="POST" action="/admin/tc-template/activate/<%= t.TemplateID %>" class="d-inline">
+                    <button type="submit" class="btn btn-outline-success btn-sm" data-testid="button-activate-<%= t.TemplateID %>">Activate</button>
+                  </form>
+                  <form method="POST" action="/admin/tc-template/delete/<%= t.TemplateID %>" class="d-inline" data-confirm="Delete this template?" data-confirm-danger="true" data-confirm-btn="Delete">
+                    <button type="submit" class="btn btn-outline-danger btn-sm" data-testid="button-delete-<%= t.TemplateID %>">Delete</button>
+                  </form>
+                <% } %>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+<% } %>
+
+

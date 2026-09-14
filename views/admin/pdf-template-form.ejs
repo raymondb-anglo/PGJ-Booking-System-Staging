@@ -1,0 +1,73 @@
+<a href="/admin/pdf-template" class="text-decoration-none text-muted small">&larr; Back to Templates</a>
+
+<h1 class="h3 mt-1 mb-4" data-testid="text-page-title"><%= template ? 'Edit' : 'Create' %> PDF Template</h1>
+
+
+
+<div class="alert alert-info small mb-4" data-testid="text-placeholder-help">
+  <strong>Placeholders you can use:</strong><br>
+  <code>{{student_name}}</code> <code>{{student_id}}</code> <code>{{pc_class}}</code>
+  <code>{{teacher_name}}</code> <code>{{meeting_date}}</code> <code>{{meeting_time}}</code>
+  <code>{{room}}</code> <code>{{translator}}</code>
+</div>
+
+<div class="row">
+  <div class="col-lg-8">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <form method="POST" action="/admin/pdf-template/save" enctype="multipart/form-data">
+          <% if (template) { %>
+            <input type="hidden" name="templateId" value="<%= template.TemplateID %>">
+          <% } %>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Header Image (Logo)</label>
+            <% if (template && template.HeaderImage) { %>
+              <div class="mb-2">
+                <img src="<%= template.HeaderImage %>" alt="Current header" class="img-fluid rounded border" style="max-height:80px;">
+                <div class="form-check mt-1">
+                  <input class="form-check-input" type="checkbox" name="removeImage" value="1" id="removeImage" data-testid="checkbox-remove-image">
+                  <label class="form-check-label small" for="removeImage">Remove current image</label>
+                </div>
+              </div>
+            <% } %>
+            <input type="file" name="headerImage" class="form-control" accept="image/*" data-testid="input-header-image">
+            <div class="form-text">PNG, JPG, GIF, or SVG. Max 2MB.</div>
+          </div>
+
+          <div class="mb-3">
+            <label for="headerText" class="form-label fw-semibold">Header Text</label>
+            <input type="text" name="headerText" id="headerText" class="form-control"
+                   value="<%= template && template.HeaderText ? template.HeaderText : '' %>"
+                   placeholder="e.g. PGJ Booking Confirmation" data-testid="input-header-text">
+          </div>
+
+          <div class="mb-3">
+            <label for="subHeaderText" class="form-label fw-semibold">Sub Header Text <span class="text-muted fw-normal">(optional)</span></label>
+            <input type="text" name="subHeaderText" id="subHeaderText" class="form-control"
+                   value="<%= template && template.SubHeaderText ? template.SubHeaderText : '' %>"
+                   placeholder="e.g. Parent-Teacher Conference 2026" data-testid="input-sub-header-text">
+          </div>
+
+          <div class="mb-3">
+            <label for="bodyText" class="form-label fw-semibold">Body Text</label>
+            <textarea name="bodyText" id="bodyText" class="form-control" rows="12"
+                      placeholder="Use placeholders like {{student_name}}" data-testid="textarea-body-text"><%= template && template.BodyText ? template.BodyText : '' %></textarea>
+            <div class="form-text">Use placeholders above. Each line with a colon (e.g. "Student: {{student_name}}") will be formatted as bold label + value.</div>
+          </div>
+
+          <div class="mb-3">
+            <label for="footerText" class="form-label fw-semibold">Footer Text</label>
+            <input type="text" name="footerText" id="footerText" class="form-control"
+                   value="<%= template && template.FooterText ? template.FooterText : '' %>"
+                   placeholder="e.g. Thank you for using PGJ Booking System" data-testid="input-footer-text">
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100" data-testid="button-save-template">
+            <%= template ? 'Update' : 'Create' %> Template
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
