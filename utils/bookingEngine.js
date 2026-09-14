@@ -46,8 +46,8 @@ export async function createBooking(conn, { studentId, teacherCode, meetingDateI
     const nextBookingId = maxIdRows[0].NextID;
 
     await conn.query(
-      `INSERT INTO Bookings (BookingID, StudentID, TeacherCode, MeetingDateID, SlotID, ScheduleCode, TranslatorRequired, TranslatorLanguage, Status, BookedBy)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'CONFIRMED', ?)`,
+      `INSERT INTO Bookings (BookingID, StudentID, TeacherCode, MeetingDateID, SlotID, ScheduleCode, TranslatorRequired, TranslatorLanguage, Status, BookedBy, is_locked)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'CONFIRMED', ?, 1)`,
       [nextBookingId, studentId, teacherCode, meetingDateId, slotId, scheduleCode, translatorRequired ? 1 : 0, translatorLanguage || null, bookedBy]
     );
 
