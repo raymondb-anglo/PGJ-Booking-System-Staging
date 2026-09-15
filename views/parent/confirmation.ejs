@@ -42,18 +42,22 @@
             </tr>
             <% if (student.teacherRoom) { %>
               <tr>
-                <td class="text-muted fw-bold">Online Meeting</td>
-                <td>
-                  <%= student.teacherRoom %>
+                <td class="text-muted fw-bold">Meeting Day</td>
+                <td data-testid="text-confirm-day">
+                  <%= booking.DayLabel %> — <%= booking.MeetingDate ? new Date(booking.MeetingDate).toLocaleDateString()
+                      : '' %>
                 </td>
               </tr>
               <% } %>
                 <tr>
-                  <td class="text-muted fw-bold">Meeting Day</td>
-                  <td data-testid="text-confirm-day">
-                    <%= booking.DayLabel %> — <%= booking.MeetingDate ? new
-                        Date(booking.MeetingDate).toLocaleDateString() : '' %>
+                  <td class="text-muted fw-bold">
+                    <div class="mb-1">Venue</div>
+                    <div class="fw-normal">(Online Meeting)</div>
                   </td>
+                  <td>
+                    <!-- <%= student.teacherRoom %> -->
+                  </td>
+                  <td></td>
                 </tr>
                 <tr>
                   <td class="text-muted fw-bold">Schedule Code</td>
@@ -88,7 +92,8 @@
         </table>
 
         <div class="alert alert-info mt-3 mb-0" data-testid="text-notice">
-          <strong>Important:</strong> This booking cannot be changed or cancelled. If you need to make changes, please
+          <strong>Important: <i>PGJ is Online Meeting </i></strong>
+          <br>This booking cannot be changed or cancelled. If you need to make changes, please
           contact the school administration.
         </div>
       </div>
