@@ -275,8 +275,8 @@ router.post('/import/confirm', async (req, res) => {
     }
     try {
       await pool.query(
-        'INSERT INTO Teachers (TeacherID, TeacherCode, TeacherName, TeacherNickname, Email, Room, MeetingDays, IsActive) VALUES (?, ?, ?, ?, ?, ?, ?, 1)',
-        [row.teacherCode, row.teacherCode, row.teacherName, row.teacherNickname, row.email || null, row.room || null, row.meetingDays || null]
+        'INSERT INTO Teachers (TeacherCode, TeacherName, TeacherNickname, Email, Room, MeetingDays, IsActive) VALUES (?, ?, ?, ?, ?, ?, 1)',
+        [row.teacherCode, row.teacherName, row.teacherNickname, row.email || null, row.room || null, row.meetingDays || null]
       );
       successCount++;
     } catch (error) {

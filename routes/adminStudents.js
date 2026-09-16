@@ -204,7 +204,7 @@ router.get('/import', (req, res) => {
 });
 
 router.get('/import/template', (req, res) => {
-  const csvContent = 'StudentID,StudentName,SNickname,MAGClass,PCClass,TeacherID,Email\n';
+    const csvContent = 'StudentId,Email,StudentName,SNickName,MAGClass,PCClass,TeacherID,TeacherName,TeacherNickname,IsActive\n';
   res.setHeader('Content-Type', 'text/csv');
   res.setHeader('Content-Disposition', 'attachment; filename=Student_Import_Template.csv');
   res.send(csvContent);
@@ -232,9 +232,9 @@ router.post('/import/preview', upload.single('csvFile'), async (req, res) => {
     const preview = [];
     const seenIds = new Set();
     for (const row of records) {
-      const studentId = (row.StudentID || row.student_id || row.studentId || '').trim();
+      const studentId = (row.StudentId || row.StudentID || row.student_id || row.studentId || '').trim();
       const studentName = (row.StudentName || row.student_name || row.studentName || '').trim();
-      const sNickname = (row.SNickname || row.s_nickname || row.nickname || '').trim();
+      const sNickname = (row.SNickName || row.SNickname || row.s_nickname || row.nickname || '').trim();
       const magClass = (row.MAGClass || row.mag_class || row.magClass || '').trim();
       const pcClass = (row.PCClass || row.pc_class || row.pcClass || '').trim();
       const teacherCode = (row.TeacherID || row.teacher_id || row.teacherCode || row.TeacherCode || '').trim();
