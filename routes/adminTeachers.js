@@ -207,7 +207,7 @@ router.get('/import', (req, res) => {
 });
 
 router.get('/import/template', (req, res) => {
-  const csvContent = 'TeacherCode,TeacherName,TeacherNickname,Email,Room,MeetingDays\n';
+  const csvContent = 'TeacherCode,TeacherName,TeacherNickname,TeacherImage,Email,Room,IsActive,MeetingDays\n';
   res.setHeader('Content-Type', 'text/csv');
   res.setHeader('Content-Disposition', 'attachment; filename=Teacher_Import_Template.csv');
   res.send(csvContent);
@@ -235,6 +235,8 @@ router.post('/import/preview', csvUpload.single('csvFile'), async (req, res) => 
       const teacherCode = (row.TeacherCode || row.teacher_code || row.teacherCode || row.TeacherID || '').trim();
       const teacherName = (row.TeacherName || row.teacher_name || row.teacherName || '').trim();
       const teacherNickname = (row.TeacherNickname || row.teacher_nickname || row.teacherNickname || row.Nickname || '').trim();
+      const teacherImage = (row.TeacherImage || row.teacher_image || row.teacherImage || '').trim();
+      const isActive = (row.IsActive || row.is_active || row.isActive || '').trim();
       const email = (row.Email || row.email || '').trim();
       const room = (row.Room || row.room || '').trim();
       const meetingDays = (row.MeetingDays || row.meeting_days || row.meetingDays || '').trim();
@@ -248,7 +250,7 @@ router.post('/import/preview', csvUpload.single('csvFile'), async (req, res) => 
 
       if (teacherCode) seenCodes.add(teacherCode);
 
-      preview.push({ teacherCode, teacherName, teacherNickname, email, room, meetingDays, errors, valid: errors.length === 0 });
+      preview.push({ teacherCode, teacherName, teacherNickname, teacherImage, email, room, isActive, meetingDays, errors, valid: errors.length === 0 });
     }
 
     req.session.teacherImportPreview = preview;

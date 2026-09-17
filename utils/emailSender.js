@@ -69,7 +69,7 @@ export async function sendBookingConfirmation(email, bookingData, pdfBuffer) {
             </tr>
             <tr>
               <td style="padding-right: 15px; padding-bottom: 5px;">Venue:</td>
-              <td style="padding-bottom: 5px;"><i>(Online Meeting)</i></td>
+              <td style="padding-bottom: 5px;"><b>${bookingData.room}</b></td>
             </tr>
             <tr>
               <td style="padding-right: 15px; padding-bottom: 5px;">Translator:</td>

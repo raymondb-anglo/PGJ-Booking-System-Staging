@@ -258,10 +258,12 @@ router.get('/confirmation', requireStudentAuth, async (req, res) => {
       `SELECT b.BookingID, b.ScheduleCode, b.TranslatorRequired, b.TranslatorLanguage,
               b.CreatedAt, b.Status,
               md.MeetingDate, md.DayLabel,
-              ts.StartTime, ts.EndTime
+              ts.StartTime, ts.EndTime,
+              t.Room AS teacherRoom
        FROM Bookings b
        LEFT JOIN MeetingDates md ON md.DateID = b.MeetingDateID
        LEFT JOIN TimeSlots ts ON ts.SlotID = b.SlotID
+       LEFT JOIN Teachers t ON t.TeacherCode = b.TeacherCode
        WHERE b.BookingID = ?`,
       [lastBooking.bookingId]
     );
@@ -299,10 +301,12 @@ router.get('/view/:bookingId', requireStudentAuth, async (req, res) => {
       `SELECT b.BookingID, b.ScheduleCode, b.TranslatorRequired, b.TranslatorLanguage,
               b.CreatedAt, b.Status, b.StudentID,
               md.MeetingDate, md.DayLabel,
-              ts.StartTime, ts.EndTime
+              ts.StartTime, ts.EndTime,
+              t.Room AS teacherRoom
        FROM Bookings b
        LEFT JOIN MeetingDates md ON md.DateID = b.MeetingDateID
        LEFT JOIN TimeSlots ts ON ts.SlotID = b.SlotID
+       LEFT JOIN Teachers t ON t.TeacherCode = b.TeacherCode
        WHERE b.BookingID = ? AND b.StudentID = ? AND b.Status = 'CONFIRMED'`,
       [bookingId, student.studentId]
     );
