@@ -81,7 +81,7 @@ export async function unlockBooking(conn, bookingId) {
 
   const booking = rows[0];
   await conn.query(
-    'UPDATE Bookings SET Status = ?, CancelledAt = NOW() WHERE BookingID = ?',
+    'UPDATE Bookings SET Status = ?, CancelledAt = GETDATE() WHERE BookingID = ?',
     ['UNLOCKED', bookingId]
   );
 
@@ -109,7 +109,7 @@ export async function cancelBooking(conn, bookingId) {
 
   const booking = rows[0];
   await conn.query(
-    'UPDATE Bookings SET Status = ?, CancelledAt = NOW() WHERE BookingID = ?',
+    'UPDATE Bookings SET Status = ?, CancelledAt = GETDATE() WHERE BookingID = ?',
     ['CANCELLED', bookingId]
   );
 
