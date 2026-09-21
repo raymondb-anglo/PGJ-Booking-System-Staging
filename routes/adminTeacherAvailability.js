@@ -164,8 +164,11 @@ router.post('/save', async (req, res) => {
       await conn.query(
         `UPDATE TeacherAvailability SET IsAvailable = ?, BlockedReason = ? WHERE TeacherCode = ? AND SlotID = ?;
          IF @@ROWCOUNT = 0
-         INSERT INTO TeacherAvailability (TeacherCode, MeetingDateID, SlotID, IsAvailable, BlockedReason)
-         VALUES (?, ?, ?, ?, ?);`,
+         BEGIN
+           DECLARE @NextAvailID INT = ISNULL((SELECT MAX(AvailabilityID) FROM TeacherAvailability WITH (UPDLOCK, HOLDLOCK)), 0) + 1;
+           INSERT INTO TeacherAvailability (AvailabilityID, TeacherCode, MeetingDateID, SlotID, IsAvailable, BlockedReason)
+           VALUES (@NextAvailID, ?, ?, ?, ?, ?);
+         END`,
         [isTeacherBlocked ? 0 : 1, reason, teacherCode, slot.SlotID, teacherCode, dateId, slot.SlotID, isTeacherBlocked ? 0 : 1, reason]
       );
     }
@@ -210,8 +213,11 @@ router.post('/bulk-block', async (req, res) => {
       await conn.query(
         `UPDATE TeacherAvailability SET IsAvailable = 0, BlockedReason = ? WHERE TeacherCode = ? AND SlotID = ?;
          IF @@ROWCOUNT = 0
-         INSERT INTO TeacherAvailability (TeacherCode, MeetingDateID, SlotID, IsAvailable, BlockedReason)
-         VALUES (?, ?, ?, 0, ?);`,
+         BEGIN
+           DECLARE @NextAvailID INT = ISNULL((SELECT MAX(AvailabilityID) FROM TeacherAvailability WITH (UPDLOCK, HOLDLOCK)), 0) + 1;
+           INSERT INTO TeacherAvailability (AvailabilityID, TeacherCode, MeetingDateID, SlotID, IsAvailable, BlockedReason)
+           VALUES (@NextAvailID, ?, ?, ?, 0, ?);
+         END`,
         [reason, teacherCode, slotId, teacherCode, dateId, slotId, reason]
       );
     }
@@ -252,8 +258,11 @@ router.post('/bulk-unblock', async (req, res) => {
       await conn.query(
         `UPDATE TeacherAvailability SET IsAvailable = 1, BlockedReason = NULL WHERE TeacherCode = ? AND SlotID = ?;
          IF @@ROWCOUNT = 0
-         INSERT INTO TeacherAvailability (TeacherCode, MeetingDateID, SlotID, IsAvailable, BlockedReason)
-         VALUES (?, ?, ?, 1, NULL);`,
+         BEGIN
+           DECLARE @NextAvailID INT = ISNULL((SELECT MAX(AvailabilityID) FROM TeacherAvailability WITH (UPDLOCK, HOLDLOCK)), 0) + 1;
+           INSERT INTO TeacherAvailability (AvailabilityID, TeacherCode, MeetingDateID, SlotID, IsAvailable, BlockedReason)
+           VALUES (@NextAvailID, ?, ?, ?, 1, NULL);
+         END`,
         [teacherCode, slotId, teacherCode, dateId, slotId]
       );
     }
@@ -302,8 +311,11 @@ router.post('/copy-from-teacher', async (req, res) => {
       await conn.query(
         `UPDATE TeacherAvailability SET IsAvailable = ?, BlockedReason = ? WHERE TeacherCode = ? AND SlotID = ?;
          IF @@ROWCOUNT = 0
-         INSERT INTO TeacherAvailability (TeacherCode, MeetingDateID, SlotID, IsAvailable, BlockedReason)
-         VALUES (?, ?, ?, ?, ?);`,
+         BEGIN
+           DECLARE @NextAvailID INT = ISNULL((SELECT MAX(AvailabilityID) FROM TeacherAvailability WITH (UPDLOCK, HOLDLOCK)), 0) + 1;
+           INSERT INTO TeacherAvailability (AvailabilityID, TeacherCode, MeetingDateID, SlotID, IsAvailable, BlockedReason)
+           VALUES (@NextAvailID, ?, ?, ?, ?, ?);
+         END`,
         [a.IsAvailable, a.BlockedReason, teacherCode, a.SlotID, teacherCode, dateId, a.SlotID, a.IsAvailable, a.BlockedReason]
       );
       copied++;
@@ -371,8 +383,11 @@ router.post('/copy-from-day', async (req, res) => {
         await conn.query(
           `UPDATE TeacherAvailability SET IsAvailable = ?, BlockedReason = ? WHERE TeacherCode = ? AND SlotID = ?;
            IF @@ROWCOUNT = 0
-           INSERT INTO TeacherAvailability (TeacherCode, MeetingDateID, SlotID, IsAvailable, BlockedReason)
-           VALUES (?, ?, ?, ?, ?);`,
+           BEGIN
+             DECLARE @NextAvailID INT = ISNULL((SELECT MAX(AvailabilityID) FROM TeacherAvailability WITH (UPDLOCK, HOLDLOCK)), 0) + 1;
+             INSERT INTO TeacherAvailability (AvailabilityID, TeacherCode, MeetingDateID, SlotID, IsAvailable, BlockedReason)
+             VALUES (@NextAvailID, ?, ?, ?, ?, ?);
+           END`,
           [match.IsAvailable, match.BlockedReason, teacherCode, ts.SlotID, teacherCode, dateId, ts.SlotID, match.IsAvailable, match.BlockedReason]
         );
         copied++;
@@ -556,8 +571,11 @@ router.post('/import/confirm', async (req, res) => {
         await conn.query(
           `UPDATE TeacherAvailability SET IsAvailable = ?, BlockedReason = ? WHERE TeacherCode = ? AND SlotID = ?;
            IF @@ROWCOUNT = 0
-           INSERT INTO TeacherAvailability (TeacherCode, MeetingDateID, SlotID, IsAvailable, BlockedReason)
-           VALUES (?, ?, ?, ?, ?);`,
+           BEGIN
+             DECLARE @NextAvailID INT = ISNULL((SELECT MAX(AvailabilityID) FROM TeacherAvailability WITH (UPDLOCK, HOLDLOCK)), 0) + 1;
+             INSERT INTO TeacherAvailability (AvailabilityID, TeacherCode, MeetingDateID, SlotID, IsAvailable, BlockedReason)
+             VALUES (@NextAvailID, ?, ?, ?, ?, ?);
+           END`,
           [row.isAvailable, row.isAvailable === 0 ? (row.blockReason || null) : null, row.teacherCode, row.slotId, row.teacherCode, row.dateId, row.slotId, row.isAvailable, row.isAvailable === 0 ? (row.blockReason || null) : null]
         );
         successCount++;
