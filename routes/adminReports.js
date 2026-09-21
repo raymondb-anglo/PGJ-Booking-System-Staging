@@ -8,7 +8,7 @@ function buildFilterWhere(query) {
   const params = [];
 
   if (query.schoolYearId) {
-    where.push('md.SchoolYearID = ?');
+    where.push('bt.SchoolYearID = ?');
     params.push(query.schoolYearId);
   }
   if (query.termId) {
@@ -71,6 +71,7 @@ function getBookingsQuery(whereClause, hasEmailLogs) {
     LEFT JOIN Students s ON s.StudentID = b.StudentID
     LEFT JOIN Teachers t ON t.TeacherCode = b.TeacherCode
     LEFT JOIN MeetingDates md ON md.DateID = b.MeetingDateID
+    LEFT JOIN BookingTerms bt ON bt.TermID = md.TermID
     LEFT JOIN TimeSlots ts ON ts.SlotID = b.SlotID
     ${whereClause}
     ORDER BY b.CreatedAt DESC
@@ -326,7 +327,7 @@ router.get('/export/pdf', async (req, res) => {
     const [[{ studentsWithBooking }]] = await pool.query("SELECT COUNT(DISTINCT b.StudentID) as studentsWithBooking FROM Bookings b WHERE b.Status='CONFIRMED'");
 
     const [filteredBookings] = await pool.query(
-      `SELECT COUNT(*) as cnt FROM Bookings b LEFT JOIN MeetingDates md ON md.DateID = b.MeetingDateID ${whereClause}`,
+      `SELECT COUNT(*) as cnt FROM Bookings b LEFT JOIN MeetingDates md ON md.DateID = b.MeetingDateID LEFT JOIN BookingTerms bt ON bt.TermID = md.TermID ${whereClause}`,
       params
     );
     const filteredCount = filteredBookings[0].cnt;
