@@ -96,7 +96,23 @@ router.get('/', async (req, res) => {
     );
 
     const [bookings] = await pool.query(
-      BASE_SQL + whereClause + ORDER_SQL + ` OFFSET ${offset} ROWS FETCH NEXT ${limit} ROWS ONLY`,
+      `SELECT * FROM (
+        SELECT ROW_NUMBER() OVER (${ORDER_SQL.trim()}) AS _RowNum,
+               b.BookingID, b.ScheduleCode,
+               t.Email AS TeacherEmail, t.TeacherName,
+               s.Email AS StudentEmail, s.StudentID AS StudentCode,
+               s.SNickname, s.StudentName, s.PCClass,
+               md.DayNumber, md.DayLabel,
+               ts.StartTime, ts.EndTime
+        FROM Bookings b
+        INNER JOIN Students s ON s.StudentID = b.StudentID
+        INNER JOIN Teachers t ON t.TeacherCode = b.TeacherCode
+        INNER JOIN TimeSlots ts ON ts.SlotID = b.SlotID
+        INNER JOIN MeetingDates md ON md.DateID = b.MeetingDateID
+        WHERE b.Status = 'CONFIRMED'${whereClause ? ' ' + whereClause.trim() : ''}
+      ) AS _paged
+      WHERE _paged._RowNum > ${offset} AND _paged._RowNum <= ${offset + limit}
+      ORDER BY _paged._RowNum`,
       params
     );
 
