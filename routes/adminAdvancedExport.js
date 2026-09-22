@@ -96,8 +96,8 @@ router.get('/', async (req, res) => {
     );
 
     const [bookings] = await pool.query(
-      BASE_SQL + whereClause + ORDER_SQL + ' OFFSET ? ROWS FETCH NEXT ? ROWS ONLY',
-      [...params, offset, limit]
+      BASE_SQL + whereClause + ORDER_SQL + ` OFFSET ${offset} ROWS FETCH NEXT ${limit} ROWS ONLY`,
+      params
     );
 
     const totalPages = Math.ceil(total / limit);
