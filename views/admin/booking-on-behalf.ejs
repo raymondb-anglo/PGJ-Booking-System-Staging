@@ -29,7 +29,7 @@
             <option value="">— Select Date —</option>
             <% meetingDates.forEach(d => { %>
               <option value="<%= d.DateID %>" <%= selectedDateId == d.DateID ? 'selected' : '' %> <%= d.slotCount === 0 ? 'disabled' : '' %>>
-                <%= d.DayLabel %> — <%= new Date(d.MeetingDate).toLocaleDateString() %><%= d.slotCount === 0 ? ' [No Slots]' : '' %>
+                <%= d.DayLabel %> — <%= new Date(d.MeetingDate).toLocaleDateString('en-GB') %><%= d.slotCount === 0 ? ' [No Slots]' : '' %>
               </option>
             <% }) %>
           </select>

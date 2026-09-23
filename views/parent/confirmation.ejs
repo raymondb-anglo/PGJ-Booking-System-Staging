@@ -44,7 +44,7 @@
               <tr>
                 <td class="text-muted fw-bold">Meeting Day</td>
                 <td data-testid="text-confirm-day">
-                  <%= booking.DayLabel %> — <%= booking.MeetingDate ? new Date(booking.MeetingDate).toLocaleDateString()
+                  <%= booking.DayLabel %> — <%= booking.MeetingDate ? new Date(booking.MeetingDate).toLocaleDateString('en-GB')
                       : '' %>
                 </td>
               </tr>

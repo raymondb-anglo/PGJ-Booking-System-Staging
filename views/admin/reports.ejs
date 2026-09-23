@@ -133,7 +133,7 @@
         <select name="meetingDateId" class="form-select form-select-sm" data-testid="select-meeting-date">
           <option value="">All Dates</option>
           <% if (typeof meetingDates !== 'undefined') { meetingDates.forEach(function(d) { %>
-            <option value="<%= d.DateID %>" <%= (typeof filters !== 'undefined' && filters.meetingDateId == d.DateID) ? 'selected' : '' %>><%= d.DayLabel %> — <%= new Date(d.MeetingDate).toLocaleDateString() %></option>
+            <option value="<%= d.DateID %>" <%= (typeof filters !== 'undefined' && filters.meetingDateId == d.DateID) ? 'selected' : '' %>><%= d.DayLabel %> — <%= new Date(d.MeetingDate).toLocaleDateString('en-GB') %></option>
           <% }); } %>
         </select>
       </div>
@@ -230,7 +230,7 @@
                 <td><%= b.StudentName || '—' %></td>
                 <td><%= b.PCClass || '—' %></td>
                 <td><%= b.TeacherName || b.TeacherCode || '—' %></td>
-                <td><%= b.MeetingDate ? new Date(b.MeetingDate).toLocaleDateString() : '—' %></td>
+                <td><%= b.MeetingDate ? new Date(b.MeetingDate).toLocaleDateString('en-GB') : '—' %></td>
                 <td><%= b.DayNumber || '—' %></td>
                 <td><strong><%= b.ScheduleCode || '—' %></strong></td>
                 <td class="text-nowrap"><%= b.StartTime ? b.StartTime.substring(0,5) : '' %> – <%= b.EndTime ? b.EndTime.substring(0,5) : '' %></td>

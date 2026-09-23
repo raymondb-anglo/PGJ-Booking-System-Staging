@@ -352,7 +352,7 @@ async function getBookingDataForPdf(bookingId, student) {
   if (rows.length === 0) return null;
   const b = rows[0];
   const timeRange = (b.StartTime ? b.StartTime.substring(0,5) : '') + ' – ' + (b.EndTime ? b.EndTime.substring(0,5) : '');
-  const meetingDate = b.MeetingDate ? new Date(b.MeetingDate).toLocaleDateString() : '';
+  const meetingDate = b.MeetingDate ? new Date(b.MeetingDate).toLocaleDateString('en-GB') : '';
   return {
     bookingId: b.BookingID,
     studentId: student.studentId,

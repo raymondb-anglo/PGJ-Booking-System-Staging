@@ -44,7 +44,7 @@
           <% existingBookings.forEach(b => { %>
             <tr data-testid="row-existing-booking-<%= b.BookingID %>">
               <td><%= b.DayLabel %></td>
-              <td><%= b.MeetingDate ? new Date(b.MeetingDate).toLocaleDateString() : '' %></td>
+              <td><%= b.MeetingDate ? new Date(b.MeetingDate).toLocaleDateString('en-GB') : '' %></td>
               <td><strong><%= b.ScheduleCode %></strong></td>
               <td><%= b.StartTime ? b.StartTime.substring(0,5) : '' %> – <%= b.EndTime ? b.EndTime.substring(0,5) : '' %></td>
               <td>
@@ -89,7 +89,7 @@
                 <option value="<%= d.DateID %>"
                         <%= selectedDateId === d.DateID ? 'selected' : '' %>
                         <%= d.slotCount === 0 ? 'disabled' : '' %>>
-                  <%= d.DayLabel %> — <%= new Date(d.MeetingDate).toLocaleDateString() %><%= d.slotCount === 0 ? ' [No Slots]' : '' %><%= hasExisting ? ' ✓ Booked' : '' %>
+                  <%= d.DayLabel %> — <%= new Date(d.MeetingDate).toLocaleDateString('en-GB') %><%= d.slotCount === 0 ? ' [No Slots]' : '' %><%= hasExisting ? ' ✓ Booked' : '' %>
                 </option>
               <% }) %>
             </select>

@@ -18,7 +18,7 @@
           <option value="">All Days</option>
           <% meetingDates.forEach(d => { %>
             <option value="<%= d.DateID %>" <%= filters.dateId == d.DateID ? 'selected' : '' %>>
-              <%= d.DayLabel %> — <%= new Date(d.MeetingDate).toLocaleDateString() %>
+              <%= d.DayLabel %> — <%= new Date(d.MeetingDate).toLocaleDateString('en-GB') %>
             </option>
           <% }) %>
         </select>

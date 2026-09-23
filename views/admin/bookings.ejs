@@ -27,7 +27,7 @@
         <select name="dateId" class="form-select form-select-sm" data-testid="select-date">
           <option value="">All Dates</option>
           <% meetingDates.forEach(d => { %>
-            <option value="<%= d.DateID %>" <%= selectedDateId == d.DateID ? 'selected' : '' %>><%= d.DayLabel %> — <%= new Date(d.MeetingDate).toLocaleDateString() %></option>
+            <option value="<%= d.DateID %>" <%= selectedDateId == d.DateID ? 'selected' : '' %>><%= d.DayLabel %> — <%= new Date(d.MeetingDate).toLocaleDateString('en-GB') %></option>
           <% }) %>
         </select>
       </div>
@@ -89,7 +89,7 @@
                   <% if (b.PCClass) { %><br><small class="text-muted"><%= b.PCClass %></small><% } %>
                 </td>
                 <td><%= b.TeacherName || b.TeacherCode %><% if (b.TeacherNickname) { %> (<%= b.TeacherNickname %>)<% } %></td>
-                <td><%= b.DayLabel %><br><small class="text-muted"><%= b.MeetingDate ? new Date(b.MeetingDate).toLocaleDateString() : '' %></small></td>
+                <td><%= b.DayLabel %><br><small class="text-muted"><%= b.MeetingDate ? new Date(b.MeetingDate).toLocaleDateString('en-GB') : '' %></small></td>
                 <td><strong><%= b.ScheduleCode %></strong></td>
                 <td><%= b.StartTime ? b.StartTime.toString().substring(0,5) : '' %> – <%= b.EndTime ? b.EndTime.toString().substring(0,5) : '' %></td>
                 <td>
