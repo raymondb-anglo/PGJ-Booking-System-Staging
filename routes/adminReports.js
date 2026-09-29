@@ -11,6 +11,10 @@ function buildFilterWhere(query) {
     where.push('bt.SchoolYearID = ?');
     params.push(query.schoolYearId);
   }
+  if (query.pcClass) {
+    where.push('s.PCClass = ?');
+    params.push(query.pcClass);
+  }
   if (query.termId) {
     where.push('md.TermID = ?');
     params.push(query.termId);
@@ -128,6 +132,10 @@ router.get('/', async (req, res) => {
     const [teachers] = await pool.query(
       'SELECT TeacherCode, TeacherName FROM Teachers WHERE IsActive=1 ORDER BY TeacherName'
     );
+    const [pcClassesRaw] = await pool.query(
+      'SELECT DISTINCT PCClass FROM Students WHERE IsActive=1 AND PCClass IS NOT NULL ORDER BY PCClass'
+    );
+    const pcClasses = pcClassesRaw.map(r => r.PCClass);
 
     const [[{ studentsWithBooking }]] = await pool.query(
       "SELECT COUNT(DISTINCT b.StudentID) as studentsWithBooking FROM Bookings b WHERE b.Status='CONFIRMED'"
@@ -137,6 +145,7 @@ router.get('/', async (req, res) => {
 
     const filterObj = {
       schoolYearId: req.query.schoolYearId || '',
+      pcClass: req.query.pcClass || '',
       termId: req.query.termId || '',
       meetingDateId: req.query.meetingDateId || '',
       teacherCode: req.query.teacherCode || '',
@@ -162,6 +171,7 @@ router.get('/', async (req, res) => {
       availableSlots,
       bookings,
       schoolYears,
+      pcClasses,
       terms,
       meetingDates,
       teachers,
@@ -178,9 +188,9 @@ router.get('/', async (req, res) => {
       title: 'Reports',
       totalStudents: 0, totalTeachers: 0, totalMeetingDates: 0, totalTimeSlots: 0,
       totalBookings: 0, emailsSent: 0, pdfDownloaded: 0, availableSlots: 0,
-      bookings: [], schoolYears: [], terms: [], meetingDates: [], teachers: [],
+      bookings: [], schoolYears: [], pcClasses: [], terms: [], meetingDates: [], teachers: [],
       studentsWithBooking: 0, studentsWithoutBooking: 0, bookingPercentage: 0,
-      filters: { schoolYearId: '', termId: '', meetingDateId: '', teacherCode: '', status: '', translatorRequired: '', emailSent: '' },
+      filters: { schoolYearId: '', pcClass: '', termId: '', meetingDateId: '', teacherCode: '', status: '', translatorRequired: '', emailSent: '' },
       queryString: '',
       adminRole: req.session.adminRole || 'ADMIN',
       error: 'Failed to load reports: ' + error.message
@@ -327,7 +337,7 @@ router.get('/export/pdf', async (req, res) => {
     const [[{ studentsWithBooking }]] = await pool.query("SELECT COUNT(DISTINCT b.StudentID) as studentsWithBooking FROM Bookings b WHERE b.Status='CONFIRMED'");
 
     const [filteredBookings] = await pool.query(
-      `SELECT COUNT(*) as cnt FROM Bookings b LEFT JOIN MeetingDates md ON md.DateID = b.MeetingDateID LEFT JOIN BookingTerms bt ON bt.TermID = md.TermID ${whereClause}`,
+      `SELECT COUNT(*) as cnt FROM Bookings b LEFT JOIN MeetingDates md ON md.DateID = b.MeetingDateID LEFT JOIN BookingTerms bt ON bt.TermID = md.TermID LEFT JOIN Students s ON s.StudentID = b.StudentID ${whereClause}`,
       params
     );
     const filteredCount = filteredBookings[0].cnt;

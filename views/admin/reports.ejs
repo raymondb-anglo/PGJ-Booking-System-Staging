@@ -129,6 +129,15 @@
         </select>
       </div>
       <div class="col-6 col-md">
+        <label class="form-label small mb-1">Level</label>
+        <select name="pcClass" class="form-select form-select-sm" data-testid="select-level">
+          <option value="">All Levels</option>
+          <% if (typeof pcClasses !== 'undefined') { pcClasses.forEach(function(c) { %>
+            <option value="<%= c %>" <%= (typeof filters !== 'undefined' && filters.pcClass === c) ? 'selected' : '' %>><%= c %></option>
+          <% }); } %>
+        </select>
+      </div>
+      <div class="col-6 col-md">
         <label class="form-label small mb-1">Meeting Date</label>
         <select name="meetingDateId" class="form-select form-select-sm" data-testid="select-meeting-date">
           <option value="">All Dates</option>
