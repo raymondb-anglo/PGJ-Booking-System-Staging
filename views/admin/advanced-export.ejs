@@ -33,9 +33,9 @@
         </select>
       </div>
       <div class="col-6 col-md">
-        <label class="form-label small mb-1">Class</label>
+        <label class="form-label small mb-1">Level</label>
         <select name="pcClass" class="form-select form-select-sm" data-testid="select-class">
-          <option value="">All Classes</option>
+          <option value="">All Levels</option>
           <% classes.forEach(c => { %>
             <option value="<%= c %>" <%= filters.pcClass === c ? 'selected' : '' %>><%= c %></option>
           <% }) %>
