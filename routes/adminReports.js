@@ -12,8 +12,8 @@ function buildFilterWhere(query) {
     params.push(query.schoolYearId);
   }
   if (query.pcClass) {
-    where.push('s.PCClass = ?');
-    params.push(query.pcClass);
+    where.push('s.PCClass LIKE ?');
+    params.push(query.pcClass + '%');
   }
   if (query.termId) {
     where.push('md.TermID = ?');
@@ -135,7 +135,22 @@ router.get('/', async (req, res) => {
     const [pcClassesRaw] = await pool.query(
       'SELECT DISTINCT PCClass FROM Students WHERE IsActive=1 AND PCClass IS NOT NULL ORDER BY PCClass'
     );
-    const pcClasses = pcClassesRaw.map(r => r.PCClass);
+    // Extract unique short level codes (e.g. JC1, P1, S3, K2) from full PCClass values
+    const levelSet = new Set();
+    pcClassesRaw.forEach(r => {
+      const match = r.PCClass.match(/^(K\d+P?|P\d+|S\d+|JC\d+)/i);
+      if (match) levelSet.add(match[1]);
+    });
+    const pcClasses = [...levelSet].sort((a, b) => {
+      const order = { K: 1, P: 2, S: 3, J: 4 };
+      const oa = order[a[0]] || 99;
+      const ob = order[b[0]] || 99;
+      if (oa !== ob) return oa - ob;
+      const na = parseInt(a.replace(/\D+/g, '')) || 0;
+      const nb = parseInt(b.replace(/\D+/g, '')) || 0;
+      if (na !== nb) return na - nb;
+      return a.localeCompare(b);
+    });
 
     const [[{ studentsWithBooking }]] = await pool.query(
       "SELECT COUNT(DISTINCT b.StudentID) as studentsWithBooking FROM Bookings b WHERE b.Status='CONFIRMED'"
