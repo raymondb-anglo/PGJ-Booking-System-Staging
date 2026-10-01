@@ -65,7 +65,7 @@ function getBookingsQuery(whereClause, hasEmailLogs) {
     ? "(SELECT TOP 1 el.Email FROM EmailLogs el WHERE el.BookingID = b.BookingID AND el.Status='SENT' ORDER BY el.LogID DESC)"
     : "NULL";
   return `
-    SELECT b.*, s.StudentName, s.PCClass, t.TeacherName,
+    SELECT b.*, s.StudentName, s.SNickname, s.PCClass, t.TeacherName,
            md.MeetingDate, md.DayNumber, md.DayLabel,
            ts.ScheduleCode, ts.StartTime, ts.EndTime,
            ${emailSentSub} as EmailSentCount,
@@ -238,7 +238,7 @@ router.get('/export/csv', async (req, res) => {
     let csv = headers.map(escCsv).join(',') + '\n';
     for (const b of bookings) {
       csv += [
-        b.BookingID, b.StudentID, b.StudentName, b.PCClass, b.TeacherCode, b.TeacherName,
+        b.BookingID, b.StudentID, b.StudentName + (b.SNickname ? ' (' + b.SNickname + ')' : ''), b.PCClass, b.TeacherCode, b.TeacherName,
         b.MeetingDate, b.DayNumber, b.DayLabel, b.ScheduleCode, b.StartTime, b.EndTime,
         b.TranslatorRequired ? 'Yes' : 'No', b.TranslatorLanguage || '', b.Status, b.BookedBy,
         b.EmailSentCount > 0 ? 'Yes' : 'No', b.LastEmailAddress || '',
@@ -296,7 +296,7 @@ router.get('/export/excel', async (req, res) => {
       sheet.addRow({
         BookingID: b.BookingID,
         StudentID: b.StudentID,
-        StudentName: b.StudentName,
+        StudentName: b.StudentName + (b.SNickname ? ' (' + b.SNickname + ')' : ''),
         PCClass: b.PCClass,
         TeacherCode: b.TeacherCode,
         TeacherName: b.TeacherName,
@@ -403,7 +403,7 @@ router.get('/export/pdf', async (req, res) => {
 router.get('/students-without-booking', async (req, res) => {
   try {
     let sql = `
-      SELECT s.StudentID, s.StudentName, s.PCClass, t.TeacherName
+      SELECT s.StudentID, s.StudentName, s.SNickname, s.PCClass, t.TeacherName
       FROM Students s
       LEFT JOIN Teachers t ON t.TeacherCode = s.TeacherID
       WHERE s.IsActive = 1

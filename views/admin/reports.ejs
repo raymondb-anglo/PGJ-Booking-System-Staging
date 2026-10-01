@@ -236,7 +236,7 @@
             <% bookings.forEach(function(b) { %>
               <tr data-testid="row-booking-<%= b.BookingID %>">
                 <td><%= b.StudentID %></td>
-                <td><%= b.StudentName || '—' %></td>
+                <td><%= b.StudentName || '—' %><% if (b.SNickname) { %> (<%= b.SNickname %>)<% } %></td>
                 <td><%= b.PCClass || '—' %></td>
                 <td><%= b.TeacherName || b.TeacherCode || '—' %></td>
                 <td><%= b.MeetingDate ? new Date(b.MeetingDate).toLocaleDateString('en-GB') : '—' %></td>
@@ -365,7 +365,7 @@ function loadStudentsWithoutBooking() {
       students.forEach(function(s) {
         html += '<tr data-testid="row-student-no-booking-' + s.StudentID + '">';
         html += '<td>' + s.StudentID + '</td>';
-        html += '<td>' + (s.StudentName || '—') + '</td>';
+        html += '<td>' + (s.StudentName || '—') + (s.SNickname ? ' (' + s.SNickname + ')' : '') + '</td>';
         html += '<td>' + (s.PCClass || '—') + '</td>';
         html += '<td>' + (s.TeacherName || '—') + '</td>';
         html += '</tr>';
