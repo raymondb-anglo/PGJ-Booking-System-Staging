@@ -218,6 +218,7 @@
               <th>Student ID</th>
               <th>Student Name</th>
               <th>PC Class</th>
+              <th>MAG Class</th>
               <th>Teacher Name</th>
               <th>Meeting Date</th>
               <th>Day No.</th>
@@ -238,6 +239,7 @@
                 <td><%= b.StudentID %></td>
                 <td><%= b.StudentName || '—' %><% if (b.SNickname) { %> (<%= b.SNickname %>)<% } %></td>
                 <td><%= b.PCClass || '—' %></td>
+                <td><%= b.MAGClass || '—' %></td>
                 <td><%= b.TeacherName || b.TeacherCode || '—' %></td>
                 <td><%= b.MeetingDate ? new Date(b.MeetingDate).toLocaleDateString('en-GB') : '—' %></td>
                 <td><%= b.DayNumber || '—' %></td>
