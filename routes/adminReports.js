@@ -65,7 +65,7 @@ function getBookingsQuery(whereClause, hasEmailLogs) {
     ? "(SELECT TOP 1 el.Email FROM EmailLogs el WHERE el.BookingID = b.BookingID AND el.Status='SENT' ORDER BY el.LogID DESC)"
     : "NULL";
   return `
-    SELECT b.*, s.StudentName, s.SNickname, s.PCClass, t.TeacherName,
+    SELECT b.*, s.StudentName, s.SNickname, s.PCClass, s.MAGClass, t.TeacherName,
            md.MeetingDate, md.DayNumber, md.DayLabel,
            ts.ScheduleCode, ts.StartTime, ts.EndTime,
            ${emailSentSub} as EmailSentCount,
@@ -220,7 +220,7 @@ router.get('/export/csv', async (req, res) => {
     const [bookings] = await pool.query(getBookingsQuery(whereClause, hasEmailLogs), params);
 
     const headers = [
-      'Booking ID', 'Student ID', 'Student Name', 'PC Class', 'Teacher Code', 'Teacher Name',
+      'Booking ID', 'Student ID', 'Student Name', 'PC Class', 'MAG Class', 'Teacher Code', 'Teacher Name',
       'Meeting Date', 'Day Number', 'Day Label', 'Schedule Code', 'Start Time', 'End Time',
       'Translator Required', 'Translator Language', 'Status', 'Booked By',
       'Email Sent', 'Email Address', 'PDF Generated', 'Created At'
@@ -238,7 +238,7 @@ router.get('/export/csv', async (req, res) => {
     let csv = headers.map(escCsv).join(',') + '\n';
     for (const b of bookings) {
       csv += [
-        b.BookingID, b.StudentID, b.StudentName + (b.SNickname ? ' (' + b.SNickname + ')' : ''), b.PCClass, b.TeacherCode, b.TeacherName,
+        b.BookingID, b.StudentID, b.StudentName + (b.SNickname ? ' (' + b.SNickname + ')' : ''), b.PCClass, b.MAGClass || '', b.TeacherCode, b.TeacherName,
         b.MeetingDate, b.DayNumber, b.DayLabel, b.ScheduleCode, b.StartTime, b.EndTime,
         b.TranslatorRequired ? 'Yes' : 'No', b.TranslatorLanguage || '', b.Status, b.BookedBy,
         b.EmailSentCount > 0 ? 'Yes' : 'No', b.LastEmailAddress || '',
@@ -274,6 +274,7 @@ router.get('/export/excel', async (req, res) => {
       { header: 'Student ID', key: 'StudentID', width: 15 },
       { header: 'Student Name', key: 'StudentName', width: 25 },
       { header: 'PC Class', key: 'PCClass', width: 12 },
+      { header: 'MAG Class', key: 'MAGClass', width: 20 },
       { header: 'Teacher Code', key: 'TeacherCode', width: 15 },
       { header: 'Teacher Name', key: 'TeacherName', width: 25 },
       { header: 'Meeting Date', key: 'MeetingDate', width: 15 },
@@ -298,6 +299,7 @@ router.get('/export/excel', async (req, res) => {
         StudentID: b.StudentID,
         StudentName: b.StudentName + (b.SNickname ? ' (' + b.SNickname + ')' : ''),
         PCClass: b.PCClass,
+        MAGClass: b.MAGClass || '',
         TeacherCode: b.TeacherCode,
         TeacherName: b.TeacherName,
         MeetingDate: b.MeetingDate,
